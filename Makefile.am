@@ -86,7 +86,7 @@ mod_LTLIBRARIES				=
 EXTRA_PROGRAMS				= examples/davici-command \
 					  examples/davici-event \
 					  examples/davici-multiple \
-					  examples/example-stream \
+					  examples/davici-stream \
 					  src/davicictl
 EXTRA					=
 
@@ -125,7 +125,7 @@ if ENABLE_EXAMPLES
    noinst_PROGRAMS			+= examples/davici-command
    noinst_PROGRAMS			+= examples/davici-event
    noinst_PROGRAMS			+= examples/davici-multiple
-   noinst_PROGRAMS			+= examples/example-stream
+   noinst_PROGRAMS			+= examples/davici-stream
 endif
 
 
@@ -147,10 +147,10 @@ examples_davici_multiple_CPPFLAGS	= -DPROGRAM_NAME="\"davici-multiple\"" $(AM_CP
 examples_davici_multiple_SOURCES	= examples/davici-multiple.c
 
 
-# macros for examples/example-stream
-examples_example_stream_DEPENDENCIES	= Makefile config.h
-examples_example_stream_CPPFLAGS	= -DPROGRAM_NAME="\"example-stream\"" $(AM_CPPFLAGS)
-examples_example_stream_SOURCES		= examples/example-stream.c
+# macros for examples/davici-stream
+examples_davici_stream_DEPENDENCIES	= Makefile config.h
+examples_davici_stream_CPPFLAGS		= -DPROGRAM_NAME="\"davici-stream\"" $(AM_CPPFLAGS)
+examples_davici_stream_SOURCES		= examples/davici-stream.c
 
 
 # macros for src/davicictl
