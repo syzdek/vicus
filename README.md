@@ -1,6 +1,6 @@
 
-Davici Utilities for Strongswan
-===============================
+Versatile IKE Control User Software for strongSwan
+===================================
 
 
 Copyright

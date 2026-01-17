@@ -1,5 +1,5 @@
 #
-#   Davici Utilities for Strongswan
+#   Versatile IKE Control User Software for strongSwan
 #   Copyright (C) 2026 David M. Syzdek <david@syzdek.net>.
 #   All rights reserved.
 #
@@ -35,7 +35,7 @@ AC_PREREQ([2.65])
 
 AC_COPYRIGHT([Copyright (C) 2026 David M. Syzdek <david@syzdek.net>.])
 AC_REVISION(0.1)
-AC_INIT([Davici Utilities for Strongswan],[0.3],[david@syzdek.net],[davici-utils],[https://github.com/syzdek/davici-utils/])
+AC_INIT([Versatile IKE Control User Software for strongSwan],[0.3],[david@syzdek.net],[vicus],[https://github.com/syzdek/vicus/])
 
 AC_SUBST([RELEASE_MONTH],["January 2026"])
 
@@ -180,7 +180,7 @@ AC_OUTPUT
 
 # Show local config
 AC_MSG_NOTICE([ ])
-AC_MSG_NOTICE([   davici-utils $GIT_PACKAGE_VERSION ($GIT_PACKAGE_BUILD)])
+AC_MSG_NOTICE([   vicus $GIT_PACKAGE_VERSION ($GIT_PACKAGE_BUILD)])
 AC_MSG_NOTICE([ ])
 AC_MSG_NOTICE([   Features:])
 AC_MSG_NOTICE([      Debug Output               ${USE_DEBUG}])
