@@ -87,6 +87,7 @@ EXTRA_PROGRAMS				= examples/davici-command \
 					  examples/davici-event \
 					  examples/davici-multiple \
 					  examples/davici-stream \
+					  src/cygnusctl \
 					  src/davici/davicictl
 EXTRA					=
 
@@ -127,6 +128,9 @@ endif
 if ENABLE_LIBVICUS_LA
    include_HEADERS 			+= include/vicus.h
    lib_LTLIBRARIES 			+= lib/libvicus.la
+endif
+if ENABLE_CYGNUSCTL
+   sbin_PROGRAMS			+= src/cygnusctl
 endif
 if ENABLE_DAVICICTL
    sbin_PROGRAMS			+= src/davici/davicictl
@@ -183,6 +187,14 @@ lib_libvicus_la_LDFLAGS			= -rpath'$(libdir)' \
 					  $(AM_LDFLAGS) \
 					  -export-symbols $(srcdir)/lib/libvicus/libvicus.sym
 lib_libvicus_la_SOURCES			= $(lib_libvicus_a_SOURCES)
+
+
+# macros for src/cygnusctl
+src_cygnusctl_DEPENDENCIES		= Makefile config.h $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
+src_cygnusctl_CPPFLAGS			= -DPROGRAM_NAME="\"cygnusctl\"" $(AM_CPPFLAGS)
+src_cygnusctl_LDADD			= $(AM_LDADD) $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
+src_cygnusctl_SOURCES			= src/cygnusctl.h \
+					  src/cygnusctl.c
 
 
 # macros for src/davici/davicictl
