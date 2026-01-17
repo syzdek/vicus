@@ -87,7 +87,7 @@ EXTRA_PROGRAMS				= examples/davici-command \
 					  examples/davici-event \
 					  examples/davici-multiple \
 					  examples/davici-stream \
-					  src/davicictl
+					  src/davici/davicictl
 EXTRA					=
 
 
@@ -121,7 +121,7 @@ DISTCHECK_CONFIGURE_FLAGS		= --enable-strictwarnings \
 
 # conditional build
 if ENABLE_DAVICICTL
-   sbin_PROGRAMS			+= src/davicictl
+   sbin_PROGRAMS			+= src/davici/davicictl
 endif
 if ENABLE_DAVICI_EXAMPLES
    noinst_PROGRAMS			+= examples/davici-command
@@ -155,17 +155,17 @@ examples_davici_stream_CPPFLAGS		= -DPROGRAM_NAME="\"davici-stream\"" $(AM_CPPFL
 examples_davici_stream_SOURCES		= examples/davici-stream.c
 
 
-# macros for src/davicictl
-src_davicictl_DEPENDENCIES		= Makefile config.h
-src_davicictl_CPPFLAGS			= -DPROGRAM_NAME="\"davicictl\"" $(AM_CPPFLAGS)
-src_davicictl_SOURCES			= src/davicictl.h \
-					  src/davicictl.c \
-					  src/davicictl-misc.c \
-					  src/davicictl-parser.c \
-					  src/widget-counters.c \
-					  src/widget-diagnostics.c \
-					  src/widget-raw.c \
-					  src/widget-rekey.c
+# macros for src/davici/davicictl
+src_davici_davicictl_DEPENDENCIES	= Makefile config.h
+src_davici_davicictl_CPPFLAGS		= -DPROGRAM_NAME="\"davicictl\"" $(AM_CPPFLAGS)
+src_davici_davicictl_SOURCES		= src/davici/davicictl.h \
+					  src/davici/davicictl.c \
+					  src/davici/davicictl-misc.c \
+					  src/davici/davicictl-parser.c \
+					  src/davici/widget-counters.c \
+					  src/davici/widget-diagnostics.c \
+					  src/davici/widget-raw.c \
+					  src/davici/widget-rekey.c
 
 
 # Makefile includes
