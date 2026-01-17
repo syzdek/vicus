@@ -83,7 +83,7 @@ pkgdata_DATA				=
 sbin_SCRIPTS				=
 sbin_PROGRAMS				=
 mod_LTLIBRARIES				=
-EXTRA_PROGRAMS				= examples/example-command \
+EXTRA_PROGRAMS				= examples/davici-command \
 					  examples/example-event \
 					  examples/example-multiple \
 					  examples/example-stream \
@@ -122,17 +122,17 @@ if ENABLE_DAVICICTL
    sbin_PROGRAMS			+= src/davicictl
 endif
 if ENABLE_EXAMPLES
-   noinst_PROGRAMS			+= examples/example-command
+   noinst_PROGRAMS			+= examples/davici-command
    noinst_PROGRAMS			+= examples/example-event
    noinst_PROGRAMS			+= examples/example-multiple
    noinst_PROGRAMS			+= examples/example-stream
 endif
 
 
-# macros for examples/example-command
-examples_example_command_DEPENDENCIES	= Makefile config.h
-examples_example_command_CPPFLAGS	= -DPROGRAM_NAME="\"example-command\"" $(AM_CPPFLAGS)
-examples_example_command_SOURCES	= examples/example-command.c
+# macros for examples/davici-command
+examples_davici_command_DEPENDENCIES	= Makefile config.h
+examples_davici_command_CPPFLAGS	= -DPROGRAM_NAME="\"davici-command\"" $(AM_CPPFLAGS)
+examples_davici_command_SOURCES		= examples/davici-command.c
 
 
 # macros for examples/example-event
