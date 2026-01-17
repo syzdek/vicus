@@ -115,6 +115,11 @@ typedef struct _libvicus               vicus_t;
 //////////////////
 // MARK: - Prototypes
 
+//-----------------//
+// core prototypes //
+//-----------------//
+// MARK: core prototypes
+
 _VICUS_F int
 vicus_connect(
          vicus_t *                     vd );
