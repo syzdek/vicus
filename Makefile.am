@@ -134,30 +134,35 @@ endif
 # macros for examples/davici-command
 examples_davici_command_DEPENDENCIES	= Makefile config.h
 examples_davici_command_CPPFLAGS	= -DPROGRAM_NAME="\"davici-command\"" $(AM_CPPFLAGS)
+examples_davici_command_LDADD		= $(AM_LDADD) -ldavici
 examples_davici_command_SOURCES		= examples/davici-command.c
 
 
 # macros for examples/davici-event
 examples_davici_event_DEPENDENCIES	= Makefile config.h
 examples_davici_event_CPPFLAGS		= -DPROGRAM_NAME="\"davici-event\"" $(AM_CPPFLAGS)
+examples_davici_event_LDADD		= $(AM_LDADD) -ldavici
 examples_davici_event_SOURCES		= examples/davici-event.c
 
 
 # macros for examples/davici-multiple
 examples_davici_multiple_DEPENDENCIES	= Makefile config.h
 examples_davici_multiple_CPPFLAGS	= -DPROGRAM_NAME="\"davici-multiple\"" $(AM_CPPFLAGS)
+examples_davici_multiple_LDADD		= $(AM_LDADD) -ldavici
 examples_davici_multiple_SOURCES	= examples/davici-multiple.c
 
 
 # macros for examples/davici-stream
 examples_davici_stream_DEPENDENCIES	= Makefile config.h
 examples_davici_stream_CPPFLAGS		= -DPROGRAM_NAME="\"davici-stream\"" $(AM_CPPFLAGS)
+examples_davici_stream_LDADD		= $(AM_LDADD) -ldavici
 examples_davici_stream_SOURCES		= examples/davici-stream.c
 
 
 # macros for src/davici/davicictl
 src_davici_davicictl_DEPENDENCIES	= Makefile config.h
 src_davici_davicictl_CPPFLAGS		= -DPROGRAM_NAME="\"davicictl\"" $(AM_CPPFLAGS)
+src_davici_davicictl_LDADD		= $(AM_LDADD) -ldavici
 src_davici_davicictl_SOURCES		= src/davici/davicictl.h \
 					  src/davici/davicictl.c \
 					  src/davici/davicictl-misc.c \

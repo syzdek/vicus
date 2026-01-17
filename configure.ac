@@ -114,19 +114,6 @@ AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 
-# search for libraries
-AC_SEARCH_LIBS([davici_cancel],           [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
-AC_SEARCH_LIBS([davici_connect_unix],     [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
-AC_SEARCH_LIBS([davici_disconnect],       [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
-AC_SEARCH_LIBS([davici_get_name],         [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
-AC_SEARCH_LIBS([davici_get_value_str],    [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
-AC_SEARCH_LIBS([davici_new_cmd],          [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
-AC_SEARCH_LIBS([davici_parse],            [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
-AC_SEARCH_LIBS([davici_queue],            [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
-AC_SEARCH_LIBS([davici_queue_streamed],   [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
-AC_SEARCH_LIBS([davici_read],             [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
-AC_SEARCH_LIBS([davici_write],            [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
-
 # check for required functions
 AC_CHECK_FUNCS([memset],         [], [AC_MSG_ERROR([missing required functions])])
 AC_CHECK_FUNCS([strcasecmp],     [], [AC_MSG_ERROR([missing required functions])])
@@ -142,7 +129,6 @@ AC_CHECK_FUNCS([strtoumax],      [], [AC_MSG_ERROR([missing required functions])
 
 # check for headers
 AC_CHECK_HEADERS([assert.h],    [], [AC_MSG_ERROR([missing required headers])])
-AC_CHECK_HEADERS([davici.h],    [], [AC_MSG_ERROR([missing required headers])])
 AC_CHECK_HEADERS([errno.h],     [], [AC_MSG_ERROR([missing required headers])])
 AC_CHECK_HEADERS([fcntl.h],     [], [AC_MSG_ERROR([missing required headers])])
 AC_CHECK_HEADERS([features.h],  [], [])
@@ -173,6 +159,7 @@ AC_BINDLE_GIT_PACKAGE_VERSION([contrib/bindletools/build-aux/git-package-version
 AC_BINDLE_ENABLE_WARNINGS([-Wno-unknown-pragmas -Wno-missing-format-attribute -Wno-implicit-fallthrough -Wno-alloc-size-larger-than -Wno-larger-than], [], [c11])
 AC_VICUS_DAVICICTL
 AC_VICUS_DAVICI_EXAMPLES
+AC_VICUS_DAVICI_CHECKS
 AC_VICUS_EXAMPLES
 
 # Creates outputs

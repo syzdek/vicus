@@ -33,7 +33,7 @@
 
 # AC_VICUS_DAVICI_EXAMPLES()
 # ______________________________________________________________________________
-AC_DEFUN([AC_VICUS_DAVICI_EXAMPLES],[dnl
+AC_DEFUN_ONCE([AC_VICUS_DAVICI_EXAMPLES],[dnl
    enableval=""
    AC_ARG_ENABLE(
       davici-examples,
@@ -55,7 +55,7 @@ AC_DEFUN([AC_VICUS_DAVICI_EXAMPLES],[dnl
 
 # AC_VICUS_DAVICICTL()
 # ______________________________________________________________________________
-AC_DEFUN([AC_VICUS_DAVICICTL],[dnl
+AC_DEFUN_ONCE([AC_VICUS_DAVICICTL],[dnl
    enableval=""
    AC_ARG_ENABLE(
       davicictl,
@@ -65,13 +65,48 @@ AC_DEFUN([AC_VICUS_DAVICICTL],[dnl
    )
 
    if test "x${EDAVICICTL}" == "xyes";then
-      ENABLE_DAVICICTL"yes"
+      ENABLE_DAVICICTL="yes"
    else
       ENABLE_DAVICICTL="no"
    fi
 
    AM_CONDITIONAL([ENABLE_DAVICICTL],  [test "$ENABLE_DAVICICTL" = "yes"])
    AM_CONDITIONAL([DISABLE_DAVICICTL], [test "$ENABLE_DAVICICTL" = "no"])
+])dnl
+
+
+# AC_VICUS_DAVICI_CHECKS()
+# ______________________________________________________________________________
+AC_DEFUN([AC_VICUS_DAVICI_CHECKS],[dnl
+
+   # prerequists
+   AC_REQUIRE([AC_VICUS_DAVICI_EXAMPLES])
+   AC_REQUIRE([AC_VICUS_DAVICICTL])
+
+   _VICUS_DAVICI_CHECK=no
+   if test "x${ENABLE_DAVICI_EXAMPLES}" == "xyes"; then
+      _VICUS_DAVICI_CHECK=yes
+   fi
+   if test "x${ENABLE_DAVICICTL}" == "xyes"; then
+      _VICUS_DAVICI_CHECK=yes
+   fi
+
+   if test "${_VICUS_DAVICI_CHECK}" == "yes"; then
+      OLD_LIBS="${LIBS}"
+      AC_CHECK_HEADERS([davici.h],                        [], [AC_MSG_ERROR([missing required headers])])
+      AC_SEARCH_LIBS([davici_cancel],           [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
+      AC_SEARCH_LIBS([davici_connect_unix],     [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
+      AC_SEARCH_LIBS([davici_disconnect],       [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
+      AC_SEARCH_LIBS([davici_get_name],         [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
+      AC_SEARCH_LIBS([davici_get_value_str],    [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
+      AC_SEARCH_LIBS([davici_new_cmd],          [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
+      AC_SEARCH_LIBS([davici_parse],            [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
+      AC_SEARCH_LIBS([davici_queue],            [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
+      AC_SEARCH_LIBS([davici_queue_streamed],   [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
+      AC_SEARCH_LIBS([davici_read],             [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
+      AC_SEARCH_LIBS([davici_write],            [davici], [], [AC_MSG_ERROR([missing required function in -ldavici])])
+      LIBS="${OLD_LIBS}"
+   fi
 ])dnl
 
 
