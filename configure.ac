@@ -161,6 +161,8 @@ AC_VICUS_DAVICICTL
 AC_VICUS_DAVICI_EXAMPLES
 AC_VICUS_DAVICI_CHECKS
 AC_VICUS_EXAMPLES
+AC_VICUS_CYGNUSCTL
+AC_VICUS_LIBVICUS
 
 # Creates outputs
 AC_CONFIG_FILES([Makefile])
@@ -174,9 +176,11 @@ AC_MSG_NOTICE([   Features:])
 AC_MSG_NOTICE([      Debug Output               ${USE_DEBUG}])
 AC_MSG_NOTICE([ ])
 AC_MSG_NOTICE([   Options:])
-AC_MSG_NOTICE([      install davicictl          ${ENABLE_DAVICICTL}])
-AC_MSG_NOTICE([      build examples             ${ENABLE_EXAMPLES}])
+AC_MSG_NOTICE([      davicictl                  ${ENABLE_DAVICICTL}])
 AC_MSG_NOTICE([      build davici examples      ${ENABLE_DAVICI_EXAMPLES}])
+AC_MSG_NOTICE([      libvicus                   ${ENABLE_LIBVICUS}])
+AC_MSG_NOTICE([      cygnusctl                  ${ENABLE_CYGNUSCTL}])
+AC_MSG_NOTICE([      examples                   ${ENABLE_EXAMPLES}])
 AC_MSG_NOTICE([ ])
 AC_MSG_NOTICE([   Please send suggestions to:   $PACKAGE_BUGREPORT])
 AC_MSG_NOTICE([ ])

@@ -122,13 +122,70 @@ AC_DEFUN([AC_VICUS_EXAMPLES],[dnl
    )
 
    if test "x${EEXAMPLES}" == "xyes";then
-      ENABLE_EXAMPLES="yes"
+      ENABLE_EXAMPLES="build"
    else
-      ENABLE_EXAMPLES="no"
+      ENABLE_EXAMPLES="skip"
    fi
 
-   AM_CONDITIONAL([ENABLE_EXAMPLES],  [test "$ENABLE_EXAMPLES" = "yes"])
-   AM_CONDITIONAL([DISABLE_EXAMPLES], [test "$ENABLE_EXAMPLES" = "no"])
+   AM_CONDITIONAL([ENABLE_EXAMPLES],  [test "$ENABLE_EXAMPLES"  = "build"])
+   AM_CONDITIONAL([DISABLE_EXAMPLES], [test "$ENABLE_EXAMPLES" != "build"])
+])dnl
+
+
+# AC_VICUS_CYGNUSCTL()
+# ______________________________________________________________________________
+AC_DEFUN([AC_VICUS_CYGNUSCTL],[dnl
+   enableval=""
+   AC_ARG_ENABLE(
+      cygnusctl,
+      [AS_HELP_STRING([--disable-cygnusctl], [do not install cygnusctl])],
+      [ ECYGNUSCTL=$enableval ],
+      [ ECYGNUSCTL=$enableval ]
+   )
+
+   if test "x${ECYGNUSCTL}" == "xno";then
+      ENABLE_CYGNUSCTL="skip"
+   else
+      ENABLE_CYGNUSCTL="install"
+   fi
+
+   AM_CONDITIONAL([ENABLE_CYGNUSCTL],  [test "$ENABLE_CYGNUSCTL"  = "install"])
+   AM_CONDITIONAL([DISABLE_CYGNUSCTL], [test "$ENABLE_CYGNUSCTL" != "install"])
+])dnl
+
+
+# AC_VICUS_LIBVICUS()
+# ______________________________________________________________________________
+AC_DEFUN([AC_VICUS_LIBVICUS],[dnl
+
+   # prerequists
+   AC_REQUIRE([AC_VICUS_CYGNUSCTL])
+   AC_REQUIRE([AC_VICUS_EXAMPLES])
+
+   enableval=""
+   AC_ARG_ENABLE(
+      libvicus,
+      [AS_HELP_STRING([--disable-libvicus], [do not install libvicus])],
+      [ ELIBVICUS=$enableval ],
+      [ ELIBVICUS=$enableval ]
+   )
+
+   if test "x${ELIBVICUS}" == "xno";then
+      if test "x${ENABLE_CYGNUSCTL}" == "xinstall"; then
+         ENABLE_LIBVICUS="build"
+      elif test "x${ENABLE_EXAMPLES}" == "xbuild"; then
+         ENABLE_LIBVICUS="build"
+      else
+         ENABLE_LIBVICUS="skip"
+      fi
+   else
+      ENABLE_LIBVICUS="install"
+   fi
+
+   AM_CONDITIONAL([ENABLE_LIBVICUS_LA],  [test "$ENABLE_LIBVICUS"  = "install"])
+   AM_CONDITIONAL([DISABLE_LIBVICUS_LA], [test "$ENABLE_LIBVICUS" != "install"])
+   AM_CONDITIONAL([ENABLE_LIBVICUS_A],   [test "$ENABLE_LIBVICUS"  = "build"])
+   AM_CONDITIONAL([DISABLE_LIBVICUS_A],  [test "$ENABLE_LIBVICUS" != "build"])
 ])dnl
 
 
