@@ -80,6 +80,12 @@
 ///////////////////
 // MARK: - Definitions
 
+#define VICUS_SUCCESS                  0
+#define VICUS_NO_MEMORY                -1
+#define VICUS_CONNECT_ERROR            -2
+#define VICUS_SERVER_DOWN              -3
+#define VICUS_NOT_SUPPORTED            -4
+
 
 //////////////////
 //              //
@@ -127,6 +133,11 @@ _VICUS_F int
 vicus_initialize(
          vicus_t **                    vdp,
          const char *                  uri );
+
+
+_VICUS_F const char *
+vicus_strerror(
+         int                           err );
 
 
 #endif /* end of header */

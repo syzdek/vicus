@@ -110,4 +110,21 @@ vicus_disconnect(
 //         vicus_t **                    vdp,
 //         const char *                  uri );
 
+
+const char *
+vicus_strerror(
+         int                           err )
+{
+   switch(err)
+   {  case VICUS_SUCCESS:              return("success");
+      case VICUS_NO_MEMORY:            return("out of memory");
+      case VICUS_CONNECT_ERROR:        return("connect error");
+      case VICUS_SERVER_DOWN:          return("can't contact VICI server");
+      case VICUS_NOT_SUPPORTED:        return("not support");
+      default:                         break;
+   };
+   return("unknown error");
+}
+
+
 /* end of source */
