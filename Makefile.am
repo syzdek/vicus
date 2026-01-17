@@ -75,7 +75,7 @@ man_MANS				=
 info_TEXINFOS				=
 noinst_LTLIBRARIES			=
 noinst_LIBRARIES			=
-noinst_HEADERS				=
+noinst_HEADERS				= include/vicus.h
 noinst_PROGRAMS				=
 bin_PROGRAMS				=
 bin_SCRIPTS				=
@@ -102,7 +102,8 @@ EXTRA_DIST				= AUTHORS.md \
 					  COPYING.md \
 					  NEWS.md \
 					  README.md \
-					  TODO.md
+					  TODO.md \
+					  lib/libvicus/libvicus.sym
 CLEANFILES				= $(builddir)/a.out   $(srcdir)/a.out \
 					  $(builddir)/*/a.out $(srcdir)/*/a.out \
 					  config.h.in~ $(srcdir)/config.h.in~ \
@@ -120,6 +121,13 @@ DISTCHECK_CONFIGURE_FLAGS		= --enable-strictwarnings \
 
 
 # conditional build
+if ENABLE_LIBVICUS_A
+   noinst_LIBRARIES 			+= lib/libvicus.a
+endif
+if ENABLE_LIBVICUS_LA
+   include_HEADERS 			+= include/vicus.h
+   lib_LTLIBRARIES 			+= lib/libvicus.la
+endif
 if ENABLE_DAVICICTL
    sbin_PROGRAMS			+= src/davici/davicictl
 endif
@@ -157,6 +165,24 @@ examples_davici_stream_DEPENDENCIES	= Makefile config.h
 examples_davici_stream_CPPFLAGS		= -DPROGRAM_NAME="\"davici-stream\"" $(AM_CPPFLAGS)
 examples_davici_stream_LDADD		= $(AM_LDADD) -ldavici
 examples_davici_stream_SOURCES		= examples/davici-stream.c
+
+
+# macros for lib/libvicus.a
+lib_libvicus_a_DEPENDENCIES		= Makefile config.h
+lib_libvicus_a_CPPFLAGS			= $(AM_CPPFLAGS) -I$(srcdir)/lib/libvicus
+lib_libvicus_a_SOURCES			= include/vicus.h \
+					  lib/libvicus/libvicus.h \
+					  lib/libvicus/lcore.c
+
+
+# macros for lib/libvicus.la
+lib_libvicus_la_DEPENDENCIES		= Makefile config.h lib/libvicus/libvicus.sym
+lib_libvicus_la_CPPFLAGS		= $(AM_CPPFLAGS) -I$(srcdir)/lib/libvicus
+lib_libvicus_la_LDFLAGS			= -rpath'$(libdir)' \
+					  -version-info $(LIB_VERSION_INFO) \
+					  $(AM_LDFLAGS) \
+					  -export-symbols $(srcdir)/lib/libvicus/libvicus.sym
+lib_libvicus_la_SOURCES			= $(lib_libvicus_a_SOURCES)
 
 
 # macros for src/davici/davicictl
