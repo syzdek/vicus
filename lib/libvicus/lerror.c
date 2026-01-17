@@ -30,11 +30,9 @@
  *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/*
- *  include/vicus.h - common includes and prototypes
- */
-#ifndef __VICUS_H
-#define __VICUS_H 1
+#define __LIB_LIBVICUS_LERROR_C 1
+#include "libvicus.h"
+
 
 ///////////////
 //           //
@@ -43,8 +41,7 @@
 ///////////////
 // MARK: - Headers
 
-#include <inttypes.h>
-#include <stddef.h>
+#include <assert.h>
 
 
 //////////////
@@ -54,24 +51,6 @@
 //////////////
 // MARK: - Macros
 
-#undef _VICUS_I
-#undef _VICUS_F
-#undef _VICUS_V
-#ifdef _LIB_LIBVICUS_H
-#  define _VICUS_I      inline
-#  define _VICUS_F      /* empty */
-#  define _VICUS_V      extern
-#else
-#  define _VICUS_I      extern
-#  define _VICUS_F      extern
-#  define _VICUS_V      extern
-#endif
-
-#undef  VICUS_SET
-#undef  VICUS_UNSET
-#define VICUS_SET(flgs, flg)        ( flgs | flg )
-#define VICUS_UNSET(flgs, flg)      ( flgs & ~flg )
-
 
 ///////////////////
 //               //
@@ -79,33 +58,6 @@
 //               //
 ///////////////////
 // MARK: - Definitions
-
-#define VICUS_SUCCESS                  0
-#define VICUS_EUNKNOWN                 -1
-#define VICUS_ENOMEM                   -2
-#define VICUS_ECONNECT                 -3
-#define VICUS_ECONNREFUSED             -4
-#define VICUS_ENOTSUP                  -5
-#define VICUS_EINVAL                   -6
-#define VICUS_EURI                     -7
-
-
-//////////////////
-//              //
-//  Data Types  //
-//              //
-//////////////////
-// MARK: - Data Types
-
-typedef struct _libvicus               vicus_t;
-
-
-/////////////////
-//             //
-//  Variables  //
-//             //
-/////////////////
-// MARK: - Variables
 
 
 //////////////////
@@ -115,37 +67,34 @@ typedef struct _libvicus               vicus_t;
 //////////////////
 // MARK: - Prototypes
 
-_VICUS_F int
-vicus_connect(
-         vicus_t *                     vd );
 
+/////////////////
+//             //
+//  Functions  //
+//             //
+/////////////////
+// MARK: - Functions
 
-_VICUS_F int
-vicus_disconnect(
-         vicus_t *                     vd );
+#define VICUS_EUNKNOWN                 -1
+#define VICUS_EURL                     -7
 
-
-_VICUS_F int
-vicus_init_fd(
-         vicus_t **                    vdp,
-         int                           fd,
-         int                           proto );
-
-
-_VICUS_F int
-vicus_initialize(
-         vicus_t **                    vdp,
-         const char *                  uri );
-
-
-//------------------//
-// error prototypes //
-//------------------//
-// MARK: error prototypes
-
-_VICUS_F const char *
+const char *
 vicus_strerror(
-         int                           err );
+         int                           err )
+{
+   switch(err)
+   {  case VICUS_SUCCESS:              return("success");
+      case VICUS_ECONNECT:             return("connect error");
+      case VICUS_ECONNREFUSED:         return("can't contact VICI server");
+      case VICUS_EINVAL:               return("invalid argument");
+      case VICUS_ENOMEM:               return("out of memory");
+      case VICUS_ENOTSUP:              return("request or operation not supported");
+      case VICUS_EUNKNOWN:             break;
+      case VICUS_EURI:                 return("invalid URI");
+      default:                         break;
+   };
+   return("unknown error");
+}
 
 
-#endif /* end of header */
+/* end of source */
