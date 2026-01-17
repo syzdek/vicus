@@ -31,9 +31,53 @@
 #   acinclude.m4 - custom m4 macros used by configure.ac
 #
 
-# AC_DAVICI_UTILS_EXAMPLES()
+# AC_VICUS_DAVICI_EXAMPLES()
 # ______________________________________________________________________________
-AC_DEFUN([AC_DAVICI_UTILS_EXAMPLES],[dnl
+AC_DEFUN([AC_VICUS_DAVICI_EXAMPLES],[dnl
+   enableval=""
+   AC_ARG_ENABLE(
+      davici-examples,
+      [AS_HELP_STRING([--enable-davici-examples], [build davici example programs])],
+      [ EDAVICIEXAMPLES=$enableval ],
+      [ EDAVICIEXAMPLES=$enableval ]
+   )
+
+   if test "x${EDAVICIEXAMPLES}" == "xyes";then
+      ENABLE_DAVICI_EXAMPLES="yes"
+   else
+      ENABLE_DAVICI_EXAMPLES="no"
+   fi
+
+   AM_CONDITIONAL([ENABLE_DAVICI_EXAMPLES],  [test "$ENABLE_DAVICI_EXAMPLES" = "yes"])
+   AM_CONDITIONAL([DISABLE_DAVICI_EXAMPLES], [test "$ENABLE_DAVICI_EXAMPLES" = "no"])
+])dnl
+
+
+# AC_VICUS_DAVICICTL()
+# ______________________________________________________________________________
+AC_DEFUN([AC_VICUS_DAVICICTL],[dnl
+   enableval=""
+   AC_ARG_ENABLE(
+      davicictl,
+      [AS_HELP_STRING([--disable-davicictl], [install davicictl])],
+      [ EDAVICICTL=$enableval ],
+      [ EDAVICICTL=$enableval ]
+   )
+
+   if test "x${EDAVICICTL}" == "xyes";then
+      ENABLE_DAVICICTL"yes"
+   else
+      ENABLE_DAVICICTL="no"
+   fi
+
+   AM_CONDITIONAL([ENABLE_DAVICICTL],  [test "$ENABLE_DAVICICTL" = "yes"])
+   AM_CONDITIONAL([DISABLE_DAVICICTL], [test "$ENABLE_DAVICICTL" = "no"])
+])dnl
+
+
+# AC_VICUS_EXAMPLES()
+# ______________________________________________________________________________
+AC_DEFUN([AC_VICUS_EXAMPLES],[dnl
    enableval=""
    AC_ARG_ENABLE(
       examples,
@@ -50,28 +94,6 @@ AC_DEFUN([AC_DAVICI_UTILS_EXAMPLES],[dnl
 
    AM_CONDITIONAL([ENABLE_EXAMPLES],  [test "$ENABLE_EXAMPLES" = "yes"])
    AM_CONDITIONAL([DISABLE_EXAMPLES], [test "$ENABLE_EXAMPLES" = "no"])
-])dnl
-
-
-# AC_DAVICI_UTILS_DAVICICTL()
-# ______________________________________________________________________________
-AC_DEFUN([AC_DAVICI_UTILS_DAVICICTL],[dnl
-   enableval=""
-   AC_ARG_ENABLE(
-      examples,
-      [AS_HELP_STRING([--disable-davicictl], [do not install davicictl])],
-      [ EDAVICICTL=$enableval ],
-      [ EDAVICICTL=$enableval ]
-   )
-
-   if test "x${EDAVICICTL}" == "xno";then
-      ENABLE_DAVICICTL"no"
-   else
-      ENABLE_DAVICICTL="yes"
-   fi
-
-   AM_CONDITIONAL([ENABLE_DAVICICTL],  [test "$ENABLE_DAVICICTL" = "yes"])
-   AM_CONDITIONAL([DISABLE_DAVICICTL], [test "$ENABLE_DAVICICTL" = "no"])
 ])dnl
 
 

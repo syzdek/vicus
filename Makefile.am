@@ -112,6 +112,8 @@ CLEANFILES				= $(builddir)/a.out   $(srcdir)/a.out \
 					  @PACKAGE_TARNAME@-*.zip
 DISTCHECK_CONFIGURE_FLAGS		= --enable-strictwarnings \
 					  --enable-examples \
+					  --enable-davicictl \
+					  --enable-davici-examples \
 					  CFLAGS="$(CFLAGS)" \
 					  CPPFLAGS="$(CPPFLAGS)" \
 					  LDFLAGS="$(LDFLAGS)"
@@ -121,7 +123,7 @@ DISTCHECK_CONFIGURE_FLAGS		= --enable-strictwarnings \
 if ENABLE_DAVICICTL
    sbin_PROGRAMS			+= src/davicictl
 endif
-if ENABLE_EXAMPLES
+if ENABLE_DAVICI_EXAMPLES
    noinst_PROGRAMS			+= examples/davici-command
    noinst_PROGRAMS			+= examples/davici-event
    noinst_PROGRAMS			+= examples/davici-multiple

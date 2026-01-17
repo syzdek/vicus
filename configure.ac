@@ -171,8 +171,9 @@ AC_BINDLE_GIT_PACKAGE_VERSION([contrib/bindletools/build-aux/git-package-version
 
 # custom configure options
 AC_BINDLE_ENABLE_WARNINGS([-Wno-unknown-pragmas -Wno-missing-format-attribute -Wno-implicit-fallthrough -Wno-alloc-size-larger-than -Wno-larger-than], [], [c11])
-AC_DAVICI_UTILS_DAVICICTL
-AC_DAVICI_UTILS_EXAMPLES
+AC_VICUS_DAVICICTL
+AC_VICUS_DAVICI_EXAMPLES
+AC_VICUS_EXAMPLES
 
 # Creates outputs
 AC_CONFIG_FILES([Makefile])
@@ -188,6 +189,7 @@ AC_MSG_NOTICE([ ])
 AC_MSG_NOTICE([   Options:])
 AC_MSG_NOTICE([      install davicictl          ${ENABLE_DAVICICTL}])
 AC_MSG_NOTICE([      build examples             ${ENABLE_EXAMPLES}])
+AC_MSG_NOTICE([      build davici examples      ${ENABLE_DAVICI_EXAMPLES}])
 AC_MSG_NOTICE([ ])
 AC_MSG_NOTICE([   Please send suggestions to:   $PACKAGE_BUGREPORT])
 AC_MSG_NOTICE([ ])
