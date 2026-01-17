@@ -75,7 +75,8 @@ man_MANS				=
 info_TEXINFOS				=
 noinst_LTLIBRARIES			=
 noinst_LIBRARIES			=
-noinst_HEADERS				= include/vicus.h
+noinst_HEADERS				= include/vicus.h \
+					  include/vicus_noinst.h
 noinst_PROGRAMS				=
 bin_PROGRAMS				=
 bin_SCRIPTS				=
@@ -175,8 +176,10 @@ examples_davici_stream_SOURCES		= examples/davici-stream.c
 lib_libvicus_a_DEPENDENCIES		= Makefile config.h
 lib_libvicus_a_CPPFLAGS			= $(AM_CPPFLAGS) -I$(srcdir)/lib/libvicus
 lib_libvicus_a_SOURCES			= include/vicus.h \
+					  include/vicus_noinst.h \
 					  lib/libvicus/libvicus.h \
-					  lib/libvicus/lcore.c
+					  lib/libvicus/lcore.c \
+					  lib/libvicus/lmisc.c
 
 
 # macros for lib/libvicus.la

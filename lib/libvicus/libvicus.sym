@@ -1,2 +1,4 @@
 vicus_disconnect
 vicus_strerror
+vicus_strlcat
+vicus_strlcpy

@@ -30,11 +30,9 @@
  *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/*
- *  lib/libnetcalc/libnetcalc.h - common includes and prototypes
- */
-#ifndef __LIB_LIBVICUS_H
-#define __LIB_LIBVICUS_H 1
+#define __LIB_LIBVICUS_LMISC_C 1
+#include "libvicus.h"
+
 
 ///////////////
 //           //
@@ -43,17 +41,11 @@
 ///////////////
 // MARK: - Headers
 
-// defined in the Single UNIX Specification
-#ifndef _XOPEN_SOURCE
-#   define _XOPEN_SOURCE 600
-#endif
-
-#ifdef HAVE_CONFIG_H
-#   include <config.h>
-#endif
-
-#include <vicus.h>
-#include <vicus_noinst.h>
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <unistd.h>
 
 
 //////////////
@@ -74,32 +66,63 @@
 
 //////////////////
 //              //
-//  Data Types  //
-//              //
-//////////////////
-// MARK: - Data Types
-
-struct _libvicus
-{  int                        s;
-   int                        s_proto;
-};
-
-
-/////////////////
-//             //
-//  Variables  //
-//             //
-/////////////////
-// MARK: - Variables
-
-
-//////////////////
-//              //
 //  Prototypes  //
 //              //
 //////////////////
 // MARK: - Prototypes
 
 
-#endif /* end of header */
+/////////////////
+//             //
+//  Functions  //
+//             //
+/////////////////
+// MARK: - Functions
 
+size_t
+vicus_strlcat(
+         char * restrict               dst,
+         const char * restrict         src,
+         size_t                        dstsize )
+{
+   size_t      len;
+
+   assert(src     != NULL);
+   assert(dstsize  > 0);
+
+   for(len = 0; ((*dst)); len++, dst++);
+   if (!(src))
+      return(len);
+
+   dstsize--;
+   for(; ( (len < dstsize) && ((*dst = *src)) ); len++, dst++, src++);
+   *dst = '\0';
+
+   for(; ((*src)); len++, src++);
+
+   return(len);
+}
+
+
+size_t
+vicus_strlcpy(
+         char * restrict               dst,
+         const char * restrict         src,
+         size_t                        dstsize )
+{
+   size_t      len;
+
+   assert(dst     != NULL);
+   assert(src     != NULL);
+   assert(dstsize  > 0);
+
+   dstsize--;
+   for(len = 0; ( (len < dstsize) && ((*dst = *src)) ); len++, dst++, src++);
+   *dst = '\0';
+
+   for(; ((*src)); len++, src++);
+
+   return(len);
+}
+
+/* end of source */

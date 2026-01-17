@@ -31,10 +31,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /*
- *  lib/libnetcalc/libnetcalc.h - common includes and prototypes
+ *  include/vicus_noinst.h - common includes and prototypes
  */
-#ifndef __LIB_LIBVICUS_H
-#define __LIB_LIBVICUS_H 1
+#ifndef __VICUS_NOINST_H
+#define __VICUS_NOINST_H 1
 
 ///////////////
 //           //
@@ -43,17 +43,7 @@
 ///////////////
 // MARK: - Headers
 
-// defined in the Single UNIX Specification
-#ifndef _XOPEN_SOURCE
-#   define _XOPEN_SOURCE 600
-#endif
-
-#ifdef HAVE_CONFIG_H
-#   include <config.h>
-#endif
-
 #include <vicus.h>
-#include <vicus_noinst.h>
 
 
 //////////////
@@ -79,11 +69,6 @@
 //////////////////
 // MARK: - Data Types
 
-struct _libvicus
-{  int                        s;
-   int                        s_proto;
-};
-
 
 /////////////////
 //             //
@@ -100,6 +85,23 @@ struct _libvicus
 //////////////////
 // MARK: - Prototypes
 
+//--------------------------//
+// miscellaneous prototypes //
+//--------------------------//
+#pragma mark miscellaneous prototypes
+
+_VICUS_F size_t
+vicus_strlcat(
+         char * restrict               dst,
+         const char * restrict         src,
+         size_t                        dstsize );
+
+
+_VICUS_F size_t
+vicus_strlcpy(
+         char * restrict               dst,
+         const char * restrict         src,
+         size_t                        dstsize );
+
 
 #endif /* end of header */
-
