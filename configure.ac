@@ -128,19 +128,19 @@ AC_CHECK_FUNCS([strtoull],       [], [AC_MSG_ERROR([missing required functions])
 AC_CHECK_FUNCS([strtoumax],      [], [AC_MSG_ERROR([missing required functions])])
 
 # check for headers
-AC_CHECK_HEADERS([assert.h],    [], [AC_MSG_ERROR([missing required headers])])
-AC_CHECK_HEADERS([errno.h],     [], [AC_MSG_ERROR([missing required headers])])
-AC_CHECK_HEADERS([fcntl.h],     [], [AC_MSG_ERROR([missing required headers])])
-AC_CHECK_HEADERS([features.h],  [], [])
-AC_CHECK_HEADERS([getopt.h],    [], [AC_MSG_ERROR([missing required headers])])
-AC_CHECK_HEADERS([inttypes.h],  [], [AC_MSG_ERROR([missing required headers])])
-AC_CHECK_HEADERS([stddef.h],    [], [AC_MSG_ERROR([missing required headers])])
-AC_CHECK_HEADERS([stdint.h],    [], [AC_MSG_ERROR([missing required headers])])
-AC_CHECK_HEADERS([stdio.h],     [], [AC_MSG_ERROR([missing required headers])])
-AC_CHECK_HEADERS([stdlib.h],    [], [AC_MSG_ERROR([missing required headers])])
-AC_CHECK_HEADERS([string.h],    [], [AC_MSG_ERROR([missing required headers])])
-AC_CHECK_HEADERS([strings.h],   [], [AC_MSG_ERROR([missing required headers])])
-AC_CHECK_HEADERS([unistd.h],    [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([assert.h],     [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([errno.h],      [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([fcntl.h],      [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([features.h],   [], [])
+AC_CHECK_HEADERS([getopt.h],     [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([inttypes.h],   [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([stddef.h],     [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([stdint.h],     [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([stdio.h],      [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([stdlib.h],     [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([string.h],     [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([strings.h],    [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([unistd.h],     [], [AC_MSG_ERROR([missing required headers])])
 
 # check for data types
 AC_CHECK_TYPES([atomic_intmax_t],   [], [AC_MSG_ERROR([missing required data type])], [#include <stdatomic.h>])
@@ -163,6 +163,7 @@ AC_VICUS_DAVICI_CHECKS
 AC_VICUS_EXAMPLES
 AC_VICUS_CYGNUSCTL
 AC_VICUS_LIBVICUS
+AC_VICUS_SOCKET
 
 # Creates outputs
 AC_CONFIG_FILES([Makefile])
@@ -174,6 +175,7 @@ AC_MSG_NOTICE([   vicus $GIT_PACKAGE_VERSION ($GIT_PACKAGE_BUILD)])
 AC_MSG_NOTICE([ ])
 AC_MSG_NOTICE([   Features:])
 AC_MSG_NOTICE([      Debug Output               ${USE_DEBUG}])
+AC_MSG_NOTICE([      Network Socket Type        ${USE_SOCKET_TYPE}])
 AC_MSG_NOTICE([ ])
 AC_MSG_NOTICE([   Options:])
 AC_MSG_NOTICE([      davicictl                  ${ENABLE_DAVICICTL}])

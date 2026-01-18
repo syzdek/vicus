@@ -189,5 +189,84 @@ AC_DEFUN([AC_VICUS_LIBVICUS],[dnl
 ])dnl
 
 
+# AC_VICUS_SOCKET()
+# ______________________________________________________________________________
+AC_DEFUN([AC_VICUS_SOCKET],[dnl
+   withval=""
+   AC_ARG_WITH(
+      socket,
+      [AS_HELP_STRING([--with-socket=type], [socket type to use (bsd or winsock2)])],
+      [ WSOCKET=$withval ],
+      [ WSOCKET=$withval ]
+   )
+
+   if test "x${WSOCKET}" == "xbsd";then
+      USE_BSDSOCKETS=yes
+      USE_WINSOCK2=no
+   elif test "x${WSOCKET}" == "xwinsock2";then
+      USE_BSDSOCKETS=no
+      USE_WINSOCK2=yes
+   else
+      USE_BSDSOCKETS=maybe
+      USE_WINSOCK2=maybe
+   fi
+
+   HAVE_BSDSOCKETS=yes
+   if test "x${USE_BSDSOCKETS}" != "xno"; then
+      AC_CHECK_HEADERS([arpa/inet.h],              [], [HAVE_BSDSOCKETS=no])
+      AC_CHECK_HEADERS([netdb.h],                  [], [HAVE_BSDSOCKETS=no])
+      AC_CHECK_HEADERS([sys/socket.h],             [], [HAVE_BSDSOCKETS=no])
+      if test "x${HAVE_BSDSOCKETS}" = "xyes"; then
+         USE_WINSOCK2=no
+      fi
+   else
+      HAVE_BSDSOCKETS=no
+   fi
+
+   HAVE_WINSOCK2=yes
+   if test "x${USE_WINSOCK2}" != "xno"; then
+      AC_SEARCH_LIBS([WSAStartup],        [ws2_32],   [], [], [-lmswsock])
+      AC_CHECK_HEADERS([windows.h],       [], [HAVE_WINSOCK2=no])
+      AC_CHECK_HEADERS([winsock2.h],      [], [HAVE_WINSOCK2=no])
+      AC_CHECK_HEADERS([ws2tcpip.h],      [], [HAVE_WINSOCK2=no])
+      AC_CHECK_FUNCS([WSACleanup],        [], [HAVE_WINSOCK2=no])
+      AC_CHECK_FUNCS([WSAStartup],        [], [HAVE_WINSOCK2=no])
+      AC_CHECK_FUNCS([closesocket],       [], [HAVE_WINSOCK2=no])
+   else
+      HAVE_WINSOCK2=no
+   fi
+
+   USE_SOCKET_TYPE="none"
+   if test "x${USE_BSDSOCKETS}" = "xyes"; then
+      if test "x${HAVE_BSDSOCKETS}" != "xyes"; then
+         AC_MSG_ERROR([missing requirements for BSD sockets])
+      fi
+      USE_SOCKET_TYPE=bsd
+   elif test "x${USE_WINSOCK2}" = "xyes"; then
+      if test "x${HAVE_WINSOCK2}" != "xyes"; then
+         AC_MSG_ERROR([missing requirements for Winsock2])
+      fi
+      USE_SOCKET_TYPE=winsock2
+   elif test "x${HAVE_BSDSOCKETS}" = "xyes"; then
+      USE_SOCKET_TYPE=bsd
+   elif test "x${HAVE_WINSOCK2}" = "xyes"; then
+      USE_SOCKET_TYPE=winsock2
+   else
+      AC_MSG_ERROR([unable to determine network socket type])
+   fi
+
+   if test "x${USE_SOCKET_TYPE}" = "xwinsock2"; then
+      AC_DEFINE_UNQUOTED(WITH_WINSOCK2,      1, [Enable Winsock2 Code])
+   else
+      AC_DEFINE_UNQUOTED(WITHOUT_WINSOCK2,   1, [Disable Winsock2 Code])
+   fi
+
+   AM_CONDITIONAL([WITH_BSD_SOCKETS],     [test "$USE_SOCKET_TYPE"  = "bsd"])
+   AM_CONDITIONAL([WITHOUT_BSD_SOCKETS],  [test "$USE_SOCKET_TYPE" != "bsd"])
+   AM_CONDITIONAL([WITH_WINSOCK2],        [test "$USE_SOCKET_TYPE"  = "winsock2"])
+   AM_CONDITIONAL([WITHOUT_WINSOCK2],     [test "$USE_SOCKET_TYPE" != "winsock2"])
+])dnl
+
+
 # end of m4 file
 
