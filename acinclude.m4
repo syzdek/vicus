@@ -232,9 +232,15 @@ AC_DEFUN([AC_VICUS_SOCKET],[dnl
       AC_CHECK_FUNCS([WSACleanup],        [], [HAVE_WINSOCK2=no])
       AC_CHECK_FUNCS([WSAStartup],        [], [HAVE_WINSOCK2=no])
       AC_CHECK_FUNCS([closesocket],       [], [HAVE_WINSOCK2=no])
+      AC_CHECK_FUNCS([shutdown],          [], [HAVE_WINSOCK2=no])
    else
       HAVE_WINSOCK2=no
    fi
+
+   AC_CHECK_FUNCS([getaddrinfo],    [], [AC_MSG_ERROR([missing required functions])])
+   AC_CHECK_FUNCS([recv],           [], [AC_MSG_ERROR([missing required functions])])
+   AC_CHECK_FUNCS([send],           [], [AC_MSG_ERROR([missing required functions])])
+   AC_CHECK_FUNCS([socket],         [], [AC_MSG_ERROR([missing required functions])])
 
    USE_SOCKET_TYPE="none"
    if test "x${USE_BSDSOCKETS}" = "xyes"; then
