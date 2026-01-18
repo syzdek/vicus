@@ -42,6 +42,9 @@ V					= 0
 
 # directory locations
 moddir					= $(pkglibexecdir)/modules
+win64_builddir				= build-win64-x86
+win64_distdir				= $(PACKAGE_TARNAME)-$(PACKAGE_VERSION)-win64-x86
+abs_win64_distdir			= $(abs_builddir)/$(win64_distdir)
 
 # Global flags
 AM_LIBS					=
@@ -224,11 +227,51 @@ include contrib/bindletools/build-aux/makefile-version.am
 
 
 # custom targets
-.PHONY: git-clean
+.PHONY: git-clean mingw32
 
 git-clean:
 	git fsck --full --unreachable
 	git gc --auto --aggressive
+
+
+mingw32: $(win64_distdir).zip
+
+
+$(win64_distdir).zip: $(win64_builddir)/netcalc-built
+	@rm -Rf "$(@)" "$(win64_distdir)"
+	make -C "$(win64_builddir)" install
+	@rm -f "$(win64_distdir)/libnetcalc.la"
+	zip -r "$(@)" "$(win64_distdir)"
+	@rm -Rf "$(win64_distdir)"
+	@touch "$(@)"
+
+
+$(win64_builddir)/netcalc-built: $(win64_builddir)/Makefile
+	@rm -f "$(@)"
+	make -C "$(win64_builddir)"
+	@touch "$(@)"
+
+
+$(win64_builddir)/Makefile: Makefile
+	@rm -Rf "$(win64_builddir)" "$(win64_distdir)"
+	@mkdir -p "$(win64_builddir)"
+	cd "$(win64_builddir)" && "$(abs_top_srcdir)/configure" \
+		--host=x86_64-w64-mingw32 \
+		--prefix="$(abs_win64_distdir)" \
+		--bindir="$(abs_win64_distdir)" \
+		--docdir="$(abs_win64_distdir)" \
+		--libdir="$(abs_win64_distdir)" \
+		--includedir="$(abs_win64_distdir)" \
+		--enable-strictwarnings \
+		--disable-debug \
+		--enable-libvicus \
+		--enable-cygnusctl \
+		--disable-examples \
+		--disable-davicictl \
+		--disable-davici-examples \
+		--enable-static \
+		CFLAGS="-Wno-implicit-fallthrough"
+	@touch "$(@)"
 
 
 # local targets
@@ -241,6 +284,8 @@ install-data-hook:
 uninstall-local:
 
 clean-local:
+	rm -Rf $(win64_builddir)
+	rm -Rf $(PACKAGE_TARNAME)-*-win64-x86 $(PACKAGE_TARNAME)-*-win64-x86.zip
 
 distclean-local:
 	rm -fR $(srcdir)/autom4te.cache
