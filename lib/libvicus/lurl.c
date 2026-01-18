@@ -46,7 +46,9 @@
 #include <string.h>
 #include <strings.h>
 #include <unistd.h>
-#include <arpa/inet.h>
+#ifndef VICUS_WITH_WINSOCK2
+#   include <arpa/inet.h>
+#endif
 
 
 //////////////
@@ -260,6 +262,7 @@ vicus_url_parse_tcp(
 
    // resolve hostname/IP address
    memset(&hints, 0, sizeof(struct addrinfo));
+   hints.ai_family   = AF_UNSPEC;
    hints.ai_protocol = IPPROTO_TCP;
    hints.ai_socktype = SOCK_STREAM;
    if ((rc = getaddrinfo(host_str, port_str, &hints, &ai)) != 0)

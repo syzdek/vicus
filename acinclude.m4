@@ -256,9 +256,9 @@ AC_DEFUN([AC_VICUS_SOCKET],[dnl
    fi
 
    if test "x${USE_SOCKET_TYPE}" = "xwinsock2"; then
-      AC_DEFINE_UNQUOTED(WITH_WINSOCK2,      1, [Enable Winsock2 Code])
+      AC_DEFINE_UNQUOTED(VICUS_WITH_WINSOCK2,      1, [Enable Winsock2 Code])
    else
-      AC_DEFINE_UNQUOTED(WITHOUT_WINSOCK2,   1, [Disable Winsock2 Code])
+      AC_DEFINE_UNQUOTED(VICUS_WITHOUT_WINSOCK2,   1, [Disable Winsock2 Code])
    fi
 
    AM_CONDITIONAL([WITH_BSD_SOCKETS],     [test "$USE_SOCKET_TYPE"  = "bsd"])

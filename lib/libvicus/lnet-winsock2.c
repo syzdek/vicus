@@ -30,11 +30,9 @@
  *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/*
- *  lib/libnetcalc/libnetcalc.h - common includes and prototypes
- */
-#ifndef __LIB_LIBVICUS_H
-#define __LIB_LIBVICUS_H 1
+#define __LIB_LIBVICUS_LNET_WINSOCK2_C 1
+#include "libvicus.h"
+
 
 ///////////////
 //           //
@@ -43,27 +41,11 @@
 ///////////////
 // MARK: - Headers
 
-// defined in the Single UNIX Specification
-#ifndef _XOPEN_SOURCE
-#   define _XOPEN_SOURCE 600
-#endif
-
-#ifdef HAVE_CONFIG_H
-#   include <config.h>
-#endif
-
-#include <sys/types.h>
-#ifdef VICUS_WITH_WINSOCK2
-#   define WIN32_LEAN_AND_MEAN
-#   include <winsock2.h>
-#   include <ws2tcpip.h>
-#else
-#   include <sys/socket.h>
-#   include <netdb.h>
-#endif
-
-#include <vicus.h>
-#include <vicus_noinst.h>
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <unistd.h>
 
 
 //////////////
@@ -81,43 +63,6 @@
 ///////////////////
 // MARK: - Definitions
 
-#undef   VICUS_DOMAIN_LENGTH
-#define  VICUS_DOMAIN_LENGTH  255         // RFC 1035
-
-#undef   VICUS_URI_LENGTH
-#define  VICUS_URI_LENGTH     268         // strlen("tcp://:65535") + VICUS_DOMAIN_LENGTH + 1
-
-
-//////////////////
-//              //
-//  Data Types  //
-//              //
-//////////////////
-// MARK: - Data Types
-
-struct _libvicus
-{  int                        s;
-   int                        s_proto;
-   vicus_urldesc_t *          vudp;       // vicus URL description pointer
-};
-
-
-struct _libvicus_urldesc
-{  char *                     vud_uri;
-   char *                     vud_host;
-   struct addrinfo *          vud_addrinfo;
-   int                        vud_port;
-   int                        vud_proto;
-};
-
-
-/////////////////
-//             //
-//  Variables  //
-//             //
-/////////////////
-// MARK: - Variables
-
 
 //////////////////
 //              //
@@ -126,20 +71,37 @@ struct _libvicus_urldesc
 //////////////////
 // MARK: - Prototypes
 
-//--------------------//
-// network prototypes //
-//--------------------//
-// MARK: network prototypes
 
-_VICUS_F int
+/////////////////
+//             //
+//  Functions  //
+//             //
+/////////////////
+// MARK: - Functions
+
+int
 vicus_net_initialize(
-         vicus_t *                     vd );
+         vicus_t *                     vd )
+{
+   int         rc;
+   WSADATA     wsaData;
+
+   assert(vd != NULL);
+
+   if ((rc = WSAStartup(MAKEWORD(2,2), &wsaData)) != 0)
+      return(VICUS_EUNKNOWN);
+
+   return(0);
+}
 
 
-_VICUS_F int
+int
 vicus_net_terminate(
-         vicus_t *                     vd );
+         vicus_t *                     vd )
+{
+   assert(vd != NULL);
+   WSACleanup();
+   return(0);
+}
 
-
-#endif /* end of header */
-
+/* end of source */

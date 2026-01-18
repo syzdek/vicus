@@ -108,7 +108,9 @@ EXTRA_DIST				= AUTHORS.md \
 					  NEWS.md \
 					  README.md \
 					  TODO.md \
-					  lib/libvicus/libvicus.sym
+					  lib/libvicus/libvicus.sym \
+					  lib/libvicus/lnet-bsdsocket.c \
+					  lib/libvicus/lnet-winsock2.c
 CLEANFILES				= $(builddir)/a.out   $(srcdir)/a.out \
 					  $(builddir)/*/a.out $(srcdir)/*/a.out \
 					  config.h.in~ $(srcdir)/config.h.in~ \
@@ -185,6 +187,12 @@ lib_libvicus_a_SOURCES			= include/vicus.h \
 					  lib/libvicus/lerror.c \
 					  lib/libvicus/lmisc.c \
 					  lib/libvicus/lurl.c
+if WITH_BSD_SOCKETS
+   lib_libvicus_a_SOURCES		+= lib/libvicus/lnet-bsdsocket.c
+endif
+if WITH_WINSOCK2
+   lib_libvicus_a_SOURCES		+= lib/libvicus/lnet-winsock2.c
+endif
 
 
 # macros for lib/libvicus.la
@@ -259,6 +267,7 @@ $(win64_builddir)/Makefile: Makefile
 		--host=x86_64-w64-mingw32 \
 		--prefix="$(abs_win64_distdir)" \
 		--bindir="$(abs_win64_distdir)" \
+		--sbindir="$(abs_win64_distdir)" \
 		--docdir="$(abs_win64_distdir)" \
 		--libdir="$(abs_win64_distdir)" \
 		--includedir="$(abs_win64_distdir)" \

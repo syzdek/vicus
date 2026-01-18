@@ -87,6 +87,7 @@ int
 vicus_alloc(
          vicus_t **                    vdp )
 {
+   int            rc;
    vicus_t *      vd;
 
    assert(vdp != NULL);
@@ -94,6 +95,11 @@ vicus_alloc(
    if ((vd = malloc(sizeof(vicus_t))) == NULL)
       return(VICUS_ENOMEM);
    memset(vd, 0, sizeof(vicus_t));
+
+   if ((rc = vicus_net_initialize(vd)) != VICUS_SUCCESS)
+   {  free(vd);
+      return(rc);
+   };
 
    *vdp = vd;
 
@@ -112,6 +118,8 @@ vicus_disconnect(
 {
    if (!(vd))
       return(0);
+
+   vicus_net_terminate(vd);
 
    if (vd->s != -1)
       close(vd->s);
@@ -163,10 +171,10 @@ vicus_initialize(
 
    assert(vdp != NULL);
 
-   if ((rc = vicus_url_parse(uri, &vudp)) != VICUS_SUCCESS)
+   if ((rc = vicus_alloc(&vd)) != VICUS_SUCCESS)
       return(rc);
 
-   if ((rc = vicus_alloc(&vd)) != VICUS_SUCCESS)
+   if ((rc = vicus_url_parse(uri, &vudp)) != VICUS_SUCCESS)
       return(rc);
    vd->vudp = vudp;
 
