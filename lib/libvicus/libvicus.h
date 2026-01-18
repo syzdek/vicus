@@ -52,6 +52,10 @@
 #   include <config.h>
 #endif
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+
 #include <vicus.h>
 #include <vicus_noinst.h>
 
@@ -71,6 +75,12 @@
 ///////////////////
 // MARK: - Definitions
 
+#undef   VICUS_DOMAIN_LENGTH
+#define  VICUS_DOMAIN_LENGTH  255         // RFC 1035
+
+#undef   VICUS_URI_LENGTH
+#define  VICUS_URI_LENGTH     268         // strlen("tcp://:65535") + VICUS_DOMAIN_LENGTH + 1
+
 
 //////////////////
 //              //
@@ -82,6 +92,16 @@
 struct _libvicus
 {  int                        s;
    int                        s_proto;
+   vicus_urldesc_t *          vudp;       // vicus URL description pointer
+};
+
+
+struct _libvicus_urldesc
+{  char *                     vud_uri;
+   char *                     vud_host;
+   struct addrinfo *          vud_addrinfo;
+   int                        vud_port;
+   int                        vud_proto;
 };
 
 

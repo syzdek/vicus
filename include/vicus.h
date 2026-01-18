@@ -88,6 +88,11 @@
 #define VICUS_ENOTSUP                  -5
 #define VICUS_EINVAL                   -6
 #define VICUS_EURI                     -7
+#define VICUS_EDNSRES                  -8
+
+
+#define VICUS_PROTO_UNIX               0x00000001
+#define VICUS_PROTO_TCP                0x00000002
 
 
 //////////////////
@@ -98,6 +103,7 @@
 // MARK: - Data Types
 
 typedef struct _libvicus               vicus_t;
+typedef struct _libvicus_urldesc       vicus_urldesc_t;
 
 
 /////////////////
@@ -151,6 +157,22 @@ vicus_initialize(
 _VICUS_F const char *
 vicus_strerror(
          int                           err );
+
+
+//-----------------//
+// URL prototypes //
+//-----------------//
+// MARK: URL prototypes
+
+_VICUS_F void
+ldap_free_urldesc(
+         vicus_urldesc_t *             vudp );
+
+
+_VICUS_F int
+vicus_url_parse(
+         const char *                  url,
+         vicus_urldesc_t **            vudppp );
 
 
 #endif /* end of header */

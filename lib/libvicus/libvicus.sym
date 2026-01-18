@@ -1,4 +1,6 @@
 vicus_disconnect
+ldap_free_urldesc
 vicus_strerror
 vicus_strlcat
 vicus_strlcpy
+vicus_url_parse

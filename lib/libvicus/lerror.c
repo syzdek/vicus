@@ -86,6 +86,7 @@ vicus_strerror(
    {  case VICUS_SUCCESS:              return("success");
       case VICUS_ECONNECT:             return("connect error");
       case VICUS_ECONNREFUSED:         return("can't contact VICI server");
+      case VICUS_EDNSRES:              return("unable to resolve hostname");
       case VICUS_EINVAL:               return("invalid argument");
       case VICUS_ENOMEM:               return("out of memory");
       case VICUS_ENOTSUP:              return("request or operation not supported");
