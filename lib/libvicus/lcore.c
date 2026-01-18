@@ -71,6 +71,10 @@
 //////////////////
 // MARK: - Prototypes
 
+static int
+vicus_alloc(
+         vicus_t **                    vdp );
+
 
 /////////////////
 //             //
@@ -78,6 +82,24 @@
 //             //
 /////////////////
 // MARK: - Functions
+
+int
+vicus_alloc(
+         vicus_t **                    vdp )
+{
+   vicus_t *      vd;
+
+   assert(vdp != NULL);
+
+   if ((vd = malloc(sizeof(vicus_t))) == NULL)
+      return(VICUS_ENOMEM);
+   memset(vd, 0, sizeof(vicus_t));
+
+   *vdp = vd;
+
+   return(0);
+}
+
 
 //int
 //vicus_connect(
@@ -91,8 +113,11 @@ vicus_disconnect(
    if (!(vd))
       return(0);
 
-   if (vd->s == -1)
+   if (vd->s != -1)
       close(vd->s);
+   ldap_free_urldesc(vd->vudp);
+
+   free(vd);
 
    return(0);
 }
@@ -105,12 +130,30 @@ vicus_disconnect(
 //         int                           proto );
 
 
-//int
-//vicus_initialize(
-//         vicus_t **                    vdp,
-//         const char *                  uri );
 
 
+int
+vicus_initialize(
+         vicus_t **                    vdp,
+         const char *                  uri )
+{
+   int                  rc;
+   vicus_t *            vd;
+   vicus_urldesc_t *    vudp;
+
+   assert(vdp != NULL);
+
+   if ((rc = vicus_url_parse(uri, &vudp)) != VICUS_SUCCESS)
+      return(rc);
+
+   if ((rc = vicus_alloc(&vd)) != VICUS_SUCCESS)
+      return(rc);
+   vd->vudp = vudp;
+
+   *vdp = vd;
+
+   return(0);
+}
 
 
 /* end of source */
