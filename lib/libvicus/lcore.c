@@ -123,13 +123,33 @@ vicus_disconnect(
 }
 
 
-//int
-//vicus_init_fd(
-//         vicus_t **                    vdp,
-//         int                           fd,
-//         int                           proto );
+int
+vicus_init_fd(
+         vicus_t **                    vdp,
+         int                           fd,
+         int                           proto )
+{
+   int                  rc;
+   vicus_t *            vd;
 
+   assert(vdp != NULL);
 
+   switch(proto)
+   {  case VICUS_PROTO_TCP:      break;
+      case VICUS_PROTO_UNIX:     break;
+      default:                   return(-1);
+   };
+
+   if ((rc = vicus_alloc(&vd)) != VICUS_SUCCESS)
+      return(rc);
+
+   vd->s       = fd;
+   vd->s_proto = proto;
+
+   *vdp = vd;
+
+   return(0);
+}
 
 
 int
