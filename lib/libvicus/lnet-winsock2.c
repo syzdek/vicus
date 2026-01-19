@@ -32,6 +32,7 @@
  */
 #define __LIB_LIBVICUS_LNET_WINSOCK2_C 1
 #include "libvicus.h"
+#ifndef VICUS_WITH_WINSOCK2
 
 
 ///////////////
@@ -46,6 +47,10 @@
 #include <string.h>
 #include <strings.h>
 #include <unistd.h>
+
+#define WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
+#include <ws2tcpip.h>
 
 
 //////////////
@@ -104,4 +109,4 @@ vicus_net_terminate(
    return(0);
 }
 
-/* end of source */
+#endif /* end of source */

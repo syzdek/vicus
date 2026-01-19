@@ -46,7 +46,10 @@
 #include <string.h>
 #include <strings.h>
 #include <unistd.h>
+
 #include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netdb.h>
 
 
 //////////////
@@ -63,6 +66,14 @@
 //               //
 ///////////////////
 // MARK: - Definitions
+
+
+//////////////////
+//              //
+//  Data Types  //
+//              //
+//////////////////
+// MARK: - Data Types
 
 
 //////////////////

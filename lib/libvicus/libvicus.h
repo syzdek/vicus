@@ -53,14 +53,6 @@
 #endif
 
 #include <sys/types.h>
-#ifdef VICUS_WITH_WINSOCK2
-#   define WIN32_LEAN_AND_MEAN
-#   include <winsock2.h>
-#   include <ws2tcpip.h>
-#else
-#   include <sys/socket.h>
-#   include <netdb.h>
-#endif
 
 #include <vicus.h>
 #include <vicus_noinst.h>
@@ -102,10 +94,20 @@ struct _libvicus
 };
 
 
+struct _libvicus_addrinfo
+{  int                        ai_family;
+   int                        ai_socktype;
+   int                        ai_protocol;
+   unsigned                   ai_addrlen;
+   void *                     ai_addr;
+   vicus_addrinfo_t *         ai_next;
+};
+
+
 struct _libvicus_urldesc
 {  char *                     vud_uri;
    char *                     vud_host;
-   struct addrinfo *          vud_addrinfo;
+   vicus_addrinfo_t *         vud_addrinfo;
    int                        vud_port;
    int                        vud_proto;
 };
@@ -130,6 +132,18 @@ struct _libvicus_urldesc
 // network prototypes //
 //--------------------//
 // MARK: network prototypes
+
+extern void
+vicus_freeaddrinfo(
+         vicus_addrinfo_t *            res );
+
+
+extern int
+vicus_getaddrinfo(
+         const char *                  hostname,
+         const char *                  servname,
+         vicus_addrinfo_t **           resp );
+
 
 _VICUS_F int
 vicus_net_initialize(

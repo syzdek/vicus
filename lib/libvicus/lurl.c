@@ -46,9 +46,6 @@
 #include <string.h>
 #include <strings.h>
 #include <unistd.h>
-#ifndef VICUS_WITH_WINSOCK2
-#   include <arpa/inet.h>
-#endif
 
 
 //////////////
@@ -110,7 +107,7 @@ ldap_free_urldesc(
       if ((vudp[idx].vud_uri))
          free(vudp[idx].vud_uri);
       if ((vudp[idx].vud_addrinfo))
-         freeaddrinfo(vudp[idx].vud_addrinfo);
+         vicus_freeaddrinfo(vudp[idx].vud_addrinfo);
    };
    free(vudp);
 
@@ -216,8 +213,7 @@ vicus_url_parse_tcp(
    char *               host_str;
    char *               port_str;
    char *               ptr;
-   struct addrinfo      hints;
-   struct addrinfo *    ai;
+   vicus_addrinfo_t *   ai;
 
    assert(str        != NULL);
    assert(vudpp      != NULL);
@@ -261,26 +257,13 @@ vicus_url_parse_tcp(
    };
 
    // resolve hostname/IP address
-   memset(&hints, 0, sizeof(struct addrinfo));
-   hints.ai_family   = AF_UNSPEC;
-   hints.ai_protocol = IPPROTO_TCP;
-   hints.ai_socktype = SOCK_STREAM;
-   if ((rc = getaddrinfo(host_str, port_str, &hints, &ai)) != 0)
-   {  switch(rc)
-      {  case EAI_AGAIN:   return(VICUS_EDNSRES);
-         case EAI_FAIL:    return(VICUS_EDNSRES);
-         case EAI_MEMORY:  return(VICUS_ENOMEM);
-         case EAI_NODATA:  return(VICUS_EDNSRES);
-         case EAI_SERVICE: return(VICUS_EDNSRES);
-         default:          break;
-      };
-      return(VICUS_EURI);
-   };
+   if ((rc = vicus_getaddrinfo(host_str, port_str, &ai)) != VICUS_SUCCESS)
+      return(rc);
 
    // allocate memory for new URL description
    size = sizeof(vicus_urldesc_t) * (size_t)(vudp_idx+2);
    if ((vudp = realloc(*vudpp, size)) == NULL)
-   {  freeaddrinfo(ai);
+   {  vicus_freeaddrinfo(ai);
       return(VICUS_ENOMEM);
    };
    *vudpp = vudp;

@@ -186,6 +186,7 @@ lib_libvicus_a_SOURCES			= include/vicus.h \
 					  lib/libvicus/lcore.c \
 					  lib/libvicus/lerror.c \
 					  lib/libvicus/lmisc.c \
+					  lib/libvicus/lnet.c \
 					  lib/libvicus/lurl.c
 if WITH_BSD_SOCKETS
    lib_libvicus_a_SOURCES		+= lib/libvicus/lnet-bsdsocket.c
