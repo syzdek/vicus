@@ -1,5 +1,5 @@
+vicus_connect
 vicus_disconnect
-ldap_free_urldesc
 vicus_init_fd
 vicus_initialize
 vicus_strerror
