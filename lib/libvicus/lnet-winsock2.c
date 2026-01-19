@@ -32,7 +32,7 @@
  */
 #define __LIB_LIBVICUS_LNET_WINSOCK2_C 1
 #include "libvicus.h"
-#ifndef VICUS_WITH_WINSOCK2
+#ifdef VICUS_WITH_WINSOCK2
 
 
 ///////////////
@@ -83,6 +83,23 @@
 //             //
 /////////////////
 // MARK: - Functions
+
+int
+vicus_getunixinfo(
+         const char *                  path,
+         vicus_addrinfo_t **           resp )
+{
+   assert(path != NULL);
+   assert(resp != NULL);
+
+   if (!(path))
+      return(VICUS_EINVAL);
+   if (!(resp))
+      return(VICUS_EINVAL);
+
+   return(VICUS_ENOTSUP);
+}
+
 
 int
 vicus_net_initialize(

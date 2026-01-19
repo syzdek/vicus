@@ -49,6 +49,7 @@
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <sys/un.h>
 #include <netdb.h>
 
 
@@ -90,6 +91,50 @@
 //             //
 /////////////////
 // MARK: - Functions
+
+int
+vicus_getunixinfo(
+         const char *                  path,
+         vicus_addrinfo_t **           resp )
+{
+   size_t                     path_maxlen;
+   size_t                     size;
+   vicus_addrinfo_t *         dst;
+   struct sockaddr_un *       sa;
+
+   assert(path != NULL);
+   assert(resp != NULL);
+
+   path_maxlen  = sizeof(struct sockaddr_un);
+   path_maxlen -= offsetof(struct sockaddr_un, sun_path);
+   if (strlen(path) >= (path_maxlen-1))
+      return(VICUS_EURI);
+
+   if ((dst = malloc(sizeof(vicus_addrinfo_t))) == NULL)
+      return(VICUS_ENOMEM);
+   memset(dst, 0, sizeof(vicus_addrinfo_t));
+   dst->ai_addrlen   = sizeof(struct sockaddr_un);
+   dst->ai_family    = PF_LOCAL;
+   dst->ai_protocol  = 0;
+   dst->ai_socktype  = SOCK_STREAM;
+
+   // copy ai_addr
+   size = sizeof(struct sockaddr_storage);
+   if ((sa = malloc(size)) == NULL)
+   {  vicus_freeaddrinfo(dst);
+      return(VICUS_ENOMEM);
+   };
+   memset(sa, 0, sizeof(struct sockaddr_storage));
+   vicus_strlcpy(sa->sun_path, path, path_maxlen);
+   sa->sun_family = PF_LOCAL;
+   sa->sun_len    = sizeof(struct sockaddr_un);
+   dst->ai_addr   = sa;
+
+   *resp = dst;
+
+   return(0);
+}
+
 
 int
 vicus_net_initialize(

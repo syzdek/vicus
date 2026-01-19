@@ -106,10 +106,9 @@ struct _libvicus_addrinfo
 
 struct _libvicus_urldesc
 {  char *                     vud_uri;
-   char *                     vud_host;
    vicus_addrinfo_t *         vud_addrinfo;
-   int                        vud_port;
    int                        vud_proto;
+   int                        _int_padding;
 };
 
 
@@ -142,6 +141,12 @@ extern int
 vicus_getaddrinfo(
          const char *                  hostname,
          const char *                  servname,
+         vicus_addrinfo_t **           resp );
+
+
+extern int
+vicus_getunixinfo(
+         const char *                  path,
          vicus_addrinfo_t **           resp );
 
 
