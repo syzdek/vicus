@@ -164,6 +164,7 @@ AC_VICUS_EXAMPLES
 AC_VICUS_CYGNUSCTL
 AC_VICUS_LIBVICUS
 AC_VICUS_SOCKET
+AC_VICUS_DOCS
 
 # Creates outputs
 AC_CONFIG_FILES([Makefile])
@@ -183,6 +184,7 @@ AC_MSG_NOTICE([      build davici examples      ${ENABLE_DAVICI_EXAMPLES}])
 AC_MSG_NOTICE([      libvicus                   ${ENABLE_LIBVICUS}])
 AC_MSG_NOTICE([      cygnusctl                  ${ENABLE_CYGNUSCTL}])
 AC_MSG_NOTICE([      examples                   ${ENABLE_EXAMPLES}])
+AC_MSG_NOTICE([      extra documentation        ${ENABLE_DOCUMENATION}])
 AC_MSG_NOTICE([ ])
 AC_MSG_NOTICE([   Please send suggestions to:   $PACKAGE_BUGREPORT])
 AC_MSG_NOTICE([ ])

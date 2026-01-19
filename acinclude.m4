@@ -110,6 +110,28 @@ AC_DEFUN([AC_VICUS_DAVICI_CHECKS],[dnl
 ])dnl
 
 
+# AC_VICUS_DOCS()
+# ______________________________________________________________________________
+AC_DEFUN([AC_VICUS_DOCS],[dnl
+   enableval=""
+   AC_ARG_ENABLE(
+      extra-docs,
+      [AS_HELP_STRING([--enable-extra-docs], [install extra documentation])],
+      [ EDOCUMENATION=$enableval ],
+      [ EDOCUMENATION=$enableval ]
+   )
+
+   if test "x${EDOCUMENATION}" == "xyes";then
+      ENABLE_DOCUMENATION="install"
+   else
+      ENABLE_DOCUMENATION="skip"
+   fi
+
+   AM_CONDITIONAL([ENABLE_DOCUMENATION],  [test "$ENABLE_DOCUMENATION"  = "install"])
+   AM_CONDITIONAL([DISABLE_DOCUMENATION], [test "$ENABLE_DOCUMENATION" != "install"])
+])dnl
+
+
 # AC_VICUS_EXAMPLES()
 # ______________________________________________________________________________
 AC_DEFUN([AC_VICUS_EXAMPLES],[dnl

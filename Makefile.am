@@ -147,6 +147,14 @@ if ENABLE_DAVICI_EXAMPLES
    noinst_PROGRAMS			+= examples/davici-multiple
    noinst_PROGRAMS			+= examples/davici-stream
 endif
+if ENABLE_DOCUMENATION
+   doc_DATA				+= AUTHORS.md
+   doc_DATA				+= ChangeLog.md
+   doc_DATA				+= COPYING.md
+   doc_DATA				+= NEWS.md
+   doc_DATA				+= README.md
+   doc_DATA				+= TODO.md
+endif
 
 
 # macros for examples/davici-command
@@ -279,6 +287,7 @@ $(win64_builddir)/Makefile: Makefile
 		--disable-examples \
 		--disable-davicictl \
 		--disable-davici-examples \
+		--enable-extra-docs \
 		--enable-static \
 		--disable-shared \
 		CFLAGS="-Wno-implicit-fallthrough"
