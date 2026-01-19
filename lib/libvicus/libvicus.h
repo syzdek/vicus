@@ -107,8 +107,7 @@ struct _libvicus_addrinfo
 struct _libvicus_urldesc
 {  char *                     vud_uri;
    vicus_addrinfo_t *         vud_addrinfo;
-   int                        vud_proto;
-   int                        _int_padding;
+   vicus_urldesc_t *          vud_next;
 };
 
 

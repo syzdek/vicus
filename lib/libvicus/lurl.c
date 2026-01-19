@@ -74,15 +74,13 @@
 static int
 vicus_url_parse_tcp(
          char *                        str,
-         vicus_urldesc_t **            vudpp,
-         int *                         vudp_idxp );
+         vicus_urldesc_t **            vudpp );
 
 
 static int
 vicus_url_parse_unix(
          char *                        path,
-         vicus_urldesc_t **            vudpp,
-         int *                         vudp_idxp );
+         vicus_urldesc_t **            vudpp );
 
 
 /////////////////
@@ -96,18 +94,20 @@ void
 ldap_free_urldesc(
          vicus_urldesc_t *             vudp )
 {
-   int idx;
+   vicus_urldesc_t *    vudp_cur;
+   vicus_urldesc_t *    vudp_next;
 
    if (!(vudp))
       return;
 
-   for(idx = 0; ((vudp[idx].vud_proto)); idx++)
-   {  if ((vudp[idx].vud_uri))
-         free(vudp[idx].vud_uri);
-      if ((vudp[idx].vud_addrinfo))
-         vicus_freeaddrinfo(vudp[idx].vud_addrinfo);
+   for(vudp_cur = vudp; ((vudp_cur)); vudp_cur = vudp_next)
+   {  vudp_next = vudp_cur->vud_next;
+      if ((vudp_cur->vud_uri))
+         free(vudp_cur->vud_uri);
+      if ((vudp_cur->vud_addrinfo))
+         vicus_freeaddrinfo(vudp_cur->vud_addrinfo);
+      free(vudp_cur);
    };
-   free(vudp);
 
    return;
 }
@@ -119,18 +119,18 @@ vicus_url_parse(
          vicus_urldesc_t **            vudpp )
 {
    int                  rc;
-   int                  vudp_idx;
    const char *         url_next;
    char                 url_str[VICUS_URI_LENGTH];
    size_t               url_strlen;
    size_t               len;
    vicus_urldesc_t *    vudp;
+   vicus_urldesc_t **   vudp_cur;
 
    assert(url     != NULL);
    assert(vudpp   != NULL);
 
    vudp     = NULL;
-   vudp_idx = 0;
+   vudp_cur = &vudp;
 
    while(url[0] != '\0')
    {  // determine end of URL
@@ -152,33 +152,36 @@ vicus_url_parse(
 
       // process path as UNIX socket
       if (url_str[0] == '/')
-      {  if ((rc = vicus_url_parse_unix(url_str, &vudp, &vudp_idx)) != VICUS_SUCCESS)
+      {  if ((rc = vicus_url_parse_unix(url_str, vudp_cur)) != VICUS_SUCCESS)
          {  ldap_free_urldesc(vudp);
             return(rc);
          };
-         url = &url_next[1];
+         vudp_cur = &(*vudp_cur)->vud_next;
+         url      = &url_next[1];
          continue;
       };
 
       // process UNIX scheme
       len = strlen("unix://");
       if (!(strncasecmp(url_str, "unix://", len)))
-      {  if ((rc = vicus_url_parse_unix(&url_str[len], &vudp, &vudp_idx)) != VICUS_SUCCESS)
+      {  if ((rc = vicus_url_parse_unix(&url_str[len], vudp_cur)) != VICUS_SUCCESS)
          {  ldap_free_urldesc(vudp);
             return(rc);
          };
-         url = &url_next[1];
+         vudp_cur = &(*vudp_cur)->vud_next;
+         url      = &url_next[1];
          continue;
       };
 
       // process TCP scheme
       len = strlen("tcp://");
       if (!(strncasecmp(url_str, "tcp://", len)))
-      {  if ((rc = vicus_url_parse_tcp(&url_str[len], &vudp, &vudp_idx)) != VICUS_SUCCESS)
+      {  if ((rc = vicus_url_parse_tcp(&url_str[len], vudp_cur)) != VICUS_SUCCESS)
          {  ldap_free_urldesc(vudp);
             return(rc);
          };
-         url = &url_next[1];
+         vudp_cur = &(*vudp_cur)->vud_next;
+         url      = &url_next[1];
          continue;
       };
 
@@ -198,26 +201,19 @@ vicus_url_parse(
 int
 vicus_url_parse_tcp(
          char *                        str,
-         vicus_urldesc_t **            vudpp,
-         int *                         vudp_idxp )
+         vicus_urldesc_t **            vudpp )
 {
    int                  rc;
-   int                  vudp_idx;
    int                  is_ipv6;
    int                  port;
-   size_t               size;
    size_t               urilen;
    vicus_urldesc_t *    vudp;
    char *               host_str;
    char *               port_str;
    char *               ptr;
-   vicus_addrinfo_t *   ai;
 
    assert(str        != NULL);
    assert(vudpp      != NULL);
-   assert(vudp_idxp  != NULL);
-
-   vudp_idx = *vudp_idxp;
 
    is_ipv6  = 0;
    host_str = NULL;
@@ -226,7 +222,7 @@ vicus_url_parse_tcp(
    if (str[0] == '\0')
       return(VICUS_EURI);
 
-   // process hostname/IP address
+   // parse hostname/IP address
    host_str = str;
    if (str[0] == '[')
    {  host_str = &str[1];
@@ -240,7 +236,7 @@ vicus_url_parse_tcp(
    if (host_str[0] == '\0')
       return(VICUS_EURI);
 
-   // process port
+   // parse port
    if ((ptr = strchr(str, ':')) != NULL)
    {  port_str    = &ptr[0];
       port_str[0] = '\0';
@@ -253,21 +249,12 @@ vicus_url_parse_tcp(
          return(VICUS_EURI);
    };
 
-   // resolve hostname/IP address
-   if ((rc = vicus_getaddrinfo(host_str, port_str, &ai)) != VICUS_SUCCESS)
-      return(rc);
-
    // allocate memory for new URL description
-   size = sizeof(vicus_urldesc_t) * (size_t)(vudp_idx+2);
-   if ((vudp = realloc(*vudpp, size)) == NULL)
-   {  vicus_freeaddrinfo(ai);
+   if ((vudp = malloc(sizeof(vicus_urldesc_t))) == NULL)
       return(VICUS_ENOMEM);
-   };
-   *vudpp = vudp;
-   memset(&vudp[vudp_idx+0], 0, sizeof(vicus_urldesc_t));
-   memset(&vudp[vudp_idx+1], 0, sizeof(vicus_urldesc_t));
+   memset(vudp, 0, sizeof(vicus_urldesc_t));
 
-   vudp[vudp_idx].vud_proto = VICUS_PROTO_TCP;
+   *vudpp            = vudp;
 
    // copies URL string
    urilen = strlen(host_str) + strlen("tcp://") + 1;
@@ -275,22 +262,22 @@ vicus_url_parse_tcp(
       urilen += 2;
    if ((port_str))
       urilen += 1 + strlen(port_str);
-   if ((vudp[vudp_idx].vud_uri = malloc(urilen)) == NULL)
+   if ((vudp->vud_uri = malloc(urilen)) == NULL)
       return(VICUS_ENOMEM);
-   vicus_strlcpy(vudp[vudp_idx].vud_uri, "tcp://",    urilen);
+   vicus_strlcpy(vudp->vud_uri, "tcp://",    urilen);
    if ((is_ipv6))
-      vicus_strlcat(vudp[vudp_idx].vud_uri, "[",      urilen);
-   vicus_strlcat(vudp[vudp_idx].vud_uri, host_str,    urilen);
+      vicus_strlcat(vudp->vud_uri, "[",      urilen);
+   vicus_strlcat(vudp->vud_uri, host_str,    urilen);
    if ((is_ipv6))
-      vicus_strlcat(vudp[vudp_idx].vud_uri, "]",      urilen);
+      vicus_strlcat(vudp->vud_uri, "]",      urilen);
    if ((port_str))
-   {  vicus_strlcat(vudp[vudp_idx].vud_uri, ":",      urilen);
-      vicus_strlcat(vudp[vudp_idx].vud_uri, port_str, urilen);
+   {  vicus_strlcat(vudp->vud_uri, ":",      urilen);
+      vicus_strlcat(vudp->vud_uri, port_str, urilen);
    };
 
-   vudp[vudp_idx].vud_addrinfo  = ai;
-
-   (*vudp_idxp)++;
+   // resolve hostname/IP address
+   if ((rc = vicus_getaddrinfo(host_str, port_str, &vudp->vud_addrinfo)) != VICUS_SUCCESS)
+      return(rc);
 
    return(0);
 }
@@ -299,44 +286,34 @@ vicus_url_parse_tcp(
 int
 vicus_url_parse_unix(
          char *                        path,
-         vicus_urldesc_t **            vudpp,
-         int *                         vudp_idxp )
+         vicus_urldesc_t **            vudpp )
 {
    int                  rc;
-   int                  vudp_idx;
-   size_t               size;
    size_t               urilen;
    vicus_urldesc_t *    vudp;
 
    assert(path       != NULL);
    assert(vudpp      != NULL);
-   assert(vudp_idxp  != NULL);
-
-   vudp_idx = *vudp_idxp;
 
    if (path[0] == '\0')
       return(VICUS_EURI);
 
    // allocate memory for new URL description
-   size = sizeof(vicus_urldesc_t) * (size_t)(vudp_idx+2);
-   if ((vudp = realloc(*vudpp, size)) == NULL)
+   if ((vudp = malloc(sizeof(vicus_urldesc_t))) == NULL)
       return(VICUS_ENOMEM);
+   memset(vudp, 0, sizeof(vicus_urldesc_t));
    *vudpp = vudp;
-   memset(&vudp[vudp_idx+0], 0, sizeof(vicus_urldesc_t));
-   memset(&vudp[vudp_idx+1], 0, sizeof(vicus_urldesc_t));
 
-   vudp[vudp_idx].vud_proto = VICUS_PROTO_UNIX;
-
+   // copies URL string
    urilen = strlen(path) + strlen("unix://") + 1;
-   if ((vudp[vudp_idx].vud_uri = malloc(urilen)) == NULL)
+   if ((vudp->vud_uri = malloc(urilen)) == NULL)
       return(VICUS_ENOMEM);
-   vicus_strlcpy(vudp[vudp_idx].vud_uri, "unix://", urilen);
-   vicus_strlcat(vudp[vudp_idx].vud_uri, path,      urilen);
+   vicus_strlcpy(vudp->vud_uri, "unix://", urilen);
+   vicus_strlcat(vudp->vud_uri, path,      urilen);
 
-   if ((rc = vicus_getunixinfo(path, &vudp[vudp_idx].vud_addrinfo)) != VICUS_SUCCESS)
+   // allocates struct sockaddr
+   if ((rc = vicus_getunixinfo(path, &vudp->vud_addrinfo)) != VICUS_SUCCESS)
       return(rc);
-
-   (*vudp_idxp)++;
 
    return(0);
 }
