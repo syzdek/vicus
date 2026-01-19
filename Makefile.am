@@ -236,28 +236,28 @@ include contrib/bindletools/build-aux/makefile-version.am
 
 
 # custom targets
-.PHONY: git-clean mingw32
+.PHONY: git-clean mingw32 mingw32-clean dist-mingw32
 
 git-clean:
 	git fsck --full --unreachable
 	git gc --auto --aggressive
 
 
-mingw32: $(win64_distdir).zip
+dist-mingw32: $(win64_distdir).zip
 
 
-$(win64_distdir).zip: $(win64_builddir)/netcalc-built
+mingw32: $(win64_builddir)/Makefile
+	make -C "$(win64_builddir)" V=$(V)
+
+
+mingw32-clean:
+	make -C "$(win64_builddir)" clean
+
+
+$(win64_distdir).zip: mingw32
 	@rm -Rf "$(@)" "$(win64_distdir)"
 	make -C "$(win64_builddir)" install
-	@rm -f "$(win64_distdir)/libnetcalc.la"
 	zip -r "$(@)" "$(win64_distdir)"
-	@rm -Rf "$(win64_distdir)"
-	@touch "$(@)"
-
-
-$(win64_builddir)/netcalc-built: $(win64_builddir)/Makefile
-	@rm -f "$(@)"
-	make -C "$(win64_builddir)"
 	@touch "$(@)"
 
 
@@ -280,6 +280,7 @@ $(win64_builddir)/Makefile: Makefile
 		--disable-davicictl \
 		--disable-davici-examples \
 		--enable-static \
+		--disable-shared \
 		CFLAGS="-Wno-implicit-fallthrough"
 	@touch "$(@)"
 
@@ -294,10 +295,11 @@ install-data-hook:
 uninstall-local:
 
 clean-local:
-	rm -Rf $(win64_builddir)
-	rm -Rf $(PACKAGE_TARNAME)-*-win64-x86 $(PACKAGE_TARNAME)-*-win64-x86.zip
+	rm -Rf $(PACKAGE_TARNAME)-*-win64-x86
+	rm -Rf $(PACKAGE_TARNAME)-*-win64-x86.zip
 
 distclean-local:
+	rm -Rf $(win64_builddir)
 	rm -fR $(srcdir)/autom4te.cache
 
 # end of automake file
