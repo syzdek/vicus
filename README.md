@@ -119,6 +119,6 @@ New Release Checklist:
     $ ./configure
     $ make update
     $ make distcheck
-    $ make dist-bzip2
     $ make dist-xz
+    $ make dist-mingw32
 
