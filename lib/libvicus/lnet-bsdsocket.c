@@ -307,4 +307,41 @@ vicus_net_terminate(
    return(0);
 }
 
+
+ssize_t
+vicus_send(
+         vicus_t *                     vd,
+         const void *                  buff,
+         size_t                        len )
+{
+   int               rc;
+   ssize_t           size;
+   struct pollfd     fds;
+
+   VicusTrace();
+   assert(vd != NULL);
+
+   if (vd->s == -1)
+      return(VICUS_ECONNECT);
+
+   fds.fd      = vd->s;
+   fds.revents = 0;
+   fds.events  = POLLOUT;
+   if ((rc = poll(&fds, 1, 10000)) == -1)
+      return(VICUS_EUNKNOWN);
+   if (!(fds.revents & POLLOUT))
+   {  close(vd->s);
+      vd->s = -1;
+      return(VICUS_EUNKNOWN);
+   };
+   if ((size = send(vd->s, buff, len, 0)) == -1)
+   {  close(vd->s);
+      vd->s = -1;
+      return(VICUS_EUNKNOWN);
+   };
+
+   return(size);
+}
+
+
 /* end of source */

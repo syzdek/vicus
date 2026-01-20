@@ -44,6 +44,7 @@
 // MARK: - Headers
 
 #include <vicus.h>
+#include <sys/types.h>
 
 
 //////////////
@@ -144,6 +145,18 @@ vicus_strlcpy(
          char * restrict               dst,
          const char * restrict         src,
          size_t                        dstsize );
+
+
+//--------------------//
+// network prototypes //
+//--------------------//
+#pragma mark network prototypes
+
+_VICUS_F ssize_t
+vicus_send(
+         vicus_t *                     vd,
+         const void *                  buff,
+         size_t                        len );
 
 
 #endif /* end of header */
