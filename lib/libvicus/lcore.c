@@ -43,9 +43,11 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <strings.h>
 #include <unistd.h>
+#include <stdarg.h>
 
 
 //////////////
@@ -78,6 +80,18 @@ vicus_alloc(
 
 /////////////////
 //             //
+//  Variables  //
+//             //
+/////////////////
+// MARK: - Variables
+
+int      vicus_opt_debug         = 0;
+int      vicus_opt_debug_fileno  = STDOUT_FILENO;
+int      vicus_opt_trace         = 0;
+
+
+/////////////////
+//             //
 //  Functions  //
 //             //
 /////////////////
@@ -89,6 +103,8 @@ vicus_alloc(
 {
    int            rc;
    vicus_t *      vd;
+
+   VicusTrace();
 
    assert(vdp != NULL);
 
@@ -113,9 +129,62 @@ vicus_alloc(
 
 
 int
+vicus_debug(
+         const char *                  file,
+         int                           line,
+         const char *                  fmt,
+         ... )
+{
+   FILE *         fs;
+   int            len;
+   va_list        ap;
+
+   if (!(vicus_opt_debug))
+      return(0);
+
+   len   = 0;
+   fs    = (vicus_opt_debug_fileno == STDERR_FILENO)
+         ? stderr
+         : stdout;
+
+   if ((vicus_opt_trace))
+      len += fprintf(fs, "%s: %i: ", file, line);
+
+   va_start(ap, fmt);
+      len += vfprintf(fs, fmt, ap);
+   va_end(ap);
+
+   return(len);
+}
+
+
+int
+vicus_debug_trace(
+         const char *                  file,
+         int                           line,
+         const char *                  func )
+{
+   FILE *         fs;
+
+   if (!(vicus_opt_debug))
+      return(0);
+
+   fs    = (vicus_opt_debug_fileno == STDERR_FILENO)
+         ? stderr
+         : stdout;
+
+   if (!(vicus_opt_trace))
+      return(fprintf(fs, "%s()\n", func));
+   return(fprintf(fs, "%s: %i: %s()\n", file, line, func));
+}
+
+
+int
 vicus_disconnect(
          vicus_t *                     vd )
 {
+   VicusTrace();
+
    if (!(vd))
       return(0);
 
@@ -139,6 +208,8 @@ vicus_init_fd(
 {
    int                  rc;
    vicus_t *            vd;
+
+   VicusTrace();
 
    assert(vdp != NULL);
 
@@ -168,6 +239,8 @@ vicus_initialize(
    int                  rc;
    vicus_t *            vd;
    vicus_urldesc_t *    vudp;
+
+   VicusTrace();
 
    assert(vdp != NULL);
 

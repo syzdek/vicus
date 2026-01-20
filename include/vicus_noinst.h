@@ -53,6 +53,14 @@
 //////////////
 // MARK: - Macros
 
+#ifdef USE_DEBUG
+#  define VicusDebug(...)  vicus_debug(__FILE__, __LINE__, __VA_ARGS__)
+#  define VicusTrace()     vicus_debug_trace(__FILE__, __LINE__, __FUNCTION__)
+#else
+#  define VicusDebug(...)  /* vicus_debug(__FILE__, __LINE__, __VA_ARGS__) */
+#  define VicusTrace()     /* vicus_debug_trace(__FILE__, __LINE__, __FUNCTION__) */
+#endif
+
 
 ///////////////////
 //               //
@@ -84,6 +92,26 @@
 //              //
 //////////////////
 // MARK: - Prototypes
+
+//-----------------//
+// core prototypes //
+//-----------------//
+// MARK: core prototypes
+
+_VICUS_F int
+vicus_debug(
+         const char *                  file,
+         int                           line,
+         const char *                  fmt,
+         ... );
+
+
+_VICUS_F int
+vicus_debug_trace(
+         const char *                  file,
+         int                           line,
+         const char *                  func );
+
 
 //--------------------------//
 // miscellaneous prototypes //
