@@ -164,6 +164,11 @@ my_version(
          my_config_t *                 cnf );
 
 
+//----------------//
+// main prototype //
+//----------------//
+#pragma mark main prototype
+
 extern int
 main(
          int                           argc,
@@ -1317,6 +1322,11 @@ my_version(
    return(0);
 }
 
+
+//---------------//
+// main function //
+//---------------//
+#pragma mark main function
 
 int
 main(
