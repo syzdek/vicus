@@ -98,6 +98,7 @@ vicus_base64_encode(
    size_t         byte;
    uint8_t *      dat;
 
+   VicusTrace();
    assert(dst != NULL);
    assert(src != NULL);
    assert(s   >  0);
@@ -163,6 +164,7 @@ vicus_hexdump(
    const uint8_t *      b;
    char                 str[17];
 
+   VicusTrace();
    assert(dat != NULL);
 
    b        = dat;
@@ -204,6 +206,7 @@ vicus_strlcat(
 {
    size_t      len;
 
+   VicusTrace();
    assert(src     != NULL);
    assert(dstsize  > 0);
 
@@ -229,6 +232,7 @@ vicus_strlcpy(
 {
    size_t      len;
 
+   VicusTrace();
    assert(dst     != NULL);
    assert(src     != NULL);
    assert(dstsize  > 0);

@@ -237,6 +237,7 @@ vicus_ntop(
 {
    void *               addr;
 
+   VicusTrace();
    assert(ai   != NULL);
    assert(dst  != NULL);
 

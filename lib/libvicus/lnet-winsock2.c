@@ -169,6 +169,7 @@ vicus_getunixinfo(
          const char *                  path,
          vicus_addrinfo_t **           resp )
 {
+   VicusTrace();
    assert(path != NULL);
    assert(resp != NULL);
 
@@ -188,6 +189,7 @@ vicus_net_initialize(
    int         rc;
    WSADATA     wsaData;
 
+   VicusTrace();
    assert(vd != NULL);
 
    if ((rc = WSAStartup(MAKEWORD(2,2), &wsaData)) != 0)
@@ -201,6 +203,7 @@ int
 vicus_net_terminate(
          vicus_t *                     vd )
 {
+   VicusTrace();
    assert(vd != NULL);
    WSACleanup();
    return(0);

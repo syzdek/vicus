@@ -82,6 +82,7 @@ const char *
 vicus_strerror(
          int                           err )
 {
+   VicusTrace();
    switch(err)
    {  case VICUS_SUCCESS:              return("success");
       case VICUS_ECONNECT:             return("connection error");

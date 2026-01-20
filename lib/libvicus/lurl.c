@@ -97,6 +97,8 @@ ldap_free_urldesc(
    vicus_urldesc_t *    vudp_cur;
    vicus_urldesc_t *    vudp_next;
 
+   VicusTrace();
+
    if (!(vudp))
       return;
 

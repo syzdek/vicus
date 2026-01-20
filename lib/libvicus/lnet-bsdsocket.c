@@ -112,6 +112,7 @@ int
 vicus_close(
          vicus_t *                     vd )
 {
+   VicusTrace();
    assert(vd != NULL);
 
    if (vd->s != -1)

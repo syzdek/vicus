@@ -123,7 +123,8 @@ struct _libvicus_urldesc
 // MARK: - Variables
 
 extern int     vicus_opt_debug;
-extern int     vicus_opt_debug_fileno;
+extern int     vicus_opt_debug_stderr;
+extern int     vicus_opt_debug_source;
 extern int     vicus_opt_trace;
 
 

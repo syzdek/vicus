@@ -100,6 +100,7 @@
 #define VICUS_OPT_REQTIME              6
 #define VICUS_OPT_CUR_URL              7
 #define VICUS_OPT_CUR_ADDR             8
+#define VICUS_OPT_DEBUG_SOURCE         9
 
 #define VICUS_TRUE                     1
 #define VICUS_FALSE                    0

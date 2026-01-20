@@ -97,9 +97,10 @@ vicus_set_option_global(
 /////////////////
 // MARK: - Variables
 
-int      vicus_opt_debug         = 0;
-int      vicus_opt_debug_fileno  = STDOUT_FILENO;
-int      vicus_opt_trace         = 0;
+int      vicus_opt_debug         = VICUS_FALSE;
+int      vicus_opt_debug_stderr  = VICUS_FALSE;
+int      vicus_opt_debug_source  = VICUS_FALSE;
+int      vicus_opt_trace         = VICUS_FALSE;
 
 
 /////////////////
@@ -157,11 +158,11 @@ vicus_debug(
       return(0);
 
    len   = 0;
-   fs    = (vicus_opt_debug_fileno == STDERR_FILENO)
-         ? stderr
-         : stdout;
+   fs    = (vicus_opt_debug_stderr == VICUS_FALSE)
+         ? stdout
+         : stderr;
 
-   if ((vicus_opt_trace))
+   if ((vicus_opt_debug_source))
       len += fprintf(fs, "%s: %i: ", file, line);
 
    va_start(ap, fmt);
@@ -180,14 +181,14 @@ vicus_debug_trace(
 {
    FILE *         fs;
 
-   if (!(vicus_opt_debug))
+   if (!(vicus_opt_trace))
       return(0);
 
-   fs    = (vicus_opt_debug_fileno == STDERR_FILENO)
-         ? stderr
-         : stdout;
+   fs    = (vicus_opt_debug_stderr == VICUS_FALSE)
+         ? stdout
+         : stderr;
 
-   if (!(vicus_opt_trace))
+   if (!(vicus_opt_debug_source))
       return(fprintf(fs, "%s()\n", func));
    return(fprintf(fs, "%s: %i: %s()\n", file, line, func));
 }
@@ -218,6 +219,7 @@ void
 vicus_free(
          void *                        ptr )
 {
+   VicusTrace();
    if (!(ptr))
       return;
    free(ptr);
@@ -296,8 +298,12 @@ vicus_get_option_global(
          *((int *)outvalue) = vicus_opt_debug;
          break;
 
+      case VICUS_OPT_DEBUG_SOURCE:
+         *((int *)outvalue)  = vicus_opt_debug_source;
+         break;
+
       case VICUS_OPT_DEBUG_STDERR:
-         *((int *)outvalue)  = (vicus_opt_debug_fileno == STDERR_FILENO) ? VICUS_TRUE : VICUS_FALSE;
+         *((int *)outvalue)  = vicus_opt_debug_stderr;
          break;
 
       case VICUS_OPT_TRACE:
@@ -417,8 +423,12 @@ vicus_set_option_global(
          vicus_opt_debug   = ((ival)) ? VICUS_TRUE : VICUS_FALSE;
          break;
 
+      case VICUS_OPT_DEBUG_SOURCE:
+         vicus_opt_debug_source  = ((ival)) ? VICUS_TRUE : VICUS_FALSE;
+         break;
+
       case VICUS_OPT_DEBUG_STDERR:
-         vicus_opt_debug_fileno  = ((ival)) ? STDERR_FILENO : STDOUT_FILENO;
+         vicus_opt_debug_stderr  = ((ival)) ? VICUS_TRUE : VICUS_FALSE;
          break;
 
       case VICUS_OPT_TRACE:
