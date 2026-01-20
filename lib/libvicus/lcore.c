@@ -231,6 +231,10 @@ vicus_get_option(
          int                           option,
          void *                        outvalue )
 {
+   char *      str;
+   char        buff[256];
+   size_t      len;
+
    VicusTrace();
    assert(outvalue != NULL);
 
@@ -238,7 +242,26 @@ vicus_get_option(
       return(vicus_get_option_global(option, outvalue));
 
    switch(option)
-   {
+   {  case VICUS_OPT_CUR_ADDR:
+         if (!(vd->s_ai))
+            return(VICUS_ENOTSUP);
+         if (vicus_ntop(vd->s_ai, buff, sizeof(buff)) != VICUS_SUCCESS)
+            return(VICUS_EUNKNOWN);
+         len = strlen(buff) + 1;
+         if ((str = malloc(len)) == NULL)
+            return(VICUS_ENOMEM);
+         vicus_strlcpy(str, buff, len);
+         *((char **)outvalue) = str;
+         break;
+
+      case VICUS_OPT_CUR_URL:
+         if (!(vd->s_vudp))
+            return(VICUS_ENOTSUP);
+         if ((str = strdup(vd->s_vudp->vud_uri)) == NULL)
+            return(VICUS_ENOMEM);
+         *((char **)outvalue) = str;
+         break;
+
       case VICUS_OPT_NETTIME:
          *((int *)outvalue) = vd->s_timeout;
          break;
@@ -351,7 +374,12 @@ vicus_set_option(
       return(vicus_set_option_global(option, invalue));
 
    switch(option)
-   {
+   {  case VICUS_OPT_CUR_ADDR:
+         return(VICUS_ENOTSUP);
+
+      case VICUS_OPT_CUR_URL:
+         return(VICUS_ENOTSUP);
+
       case VICUS_OPT_NETTIME:
          vd->s_timeout = *((const int *)invalue);
          break;

@@ -98,6 +98,8 @@
 #define VICUS_OPT_SOCKET               4
 #define VICUS_OPT_NETTIME              5
 #define VICUS_OPT_REQTIME              6
+#define VICUS_OPT_CUR_URL              7
+#define VICUS_OPT_CUR_ADDR             8
 
 #define VICUS_TRUE                     1
 #define VICUS_FALSE                    0
