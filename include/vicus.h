@@ -96,10 +96,14 @@
 #define VICUS_OPT_TRACE                2
 #define VICUS_OPT_DEBUG_STDERR         3
 #define VICUS_OPT_SOCKET               4
+#define VICUS_OPT_NETTIME              5
+#define VICUS_OPT_REQTIME              6
 
 #define VICUS_TRUE                     1
 #define VICUS_FALSE                    0
 
+#define VICUS_DFLT_NETTIME             10
+#define VICUS_DFLT_REQTIME             45
 #define VICUS_DFLT_URI                 "/var/run/charon.vici"
 
 

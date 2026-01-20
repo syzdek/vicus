@@ -124,6 +124,8 @@ vicus_alloc(
       return(VICUS_ENOMEM);
    memset(vd, 0, sizeof(vicus_t));
    vd->s = -1;
+   vd->s_timeout     = VICUS_DFLT_NETTIME;
+   vd->req_timeout   = VICUS_DFLT_REQTIME;
 
    if ((rc = vicus_net_initialize(vd)) != VICUS_SUCCESS)
    {  free(vd);
@@ -228,6 +230,14 @@ vicus_get_option(
 
    switch(option)
    {
+      case VICUS_OPT_NETTIME:
+         *((int *)outvalue) = vd->s_timeout;
+         break;
+
+      case VICUS_OPT_REQTIME:
+         *((int *)outvalue) = vd->req_timeout;
+         break;
+
       case VICUS_OPT_SOCKET:
          *((int *)outvalue) = vd->s;
          break;
@@ -334,6 +344,23 @@ vicus_set_option(
 
    if (!(vd))
       return(vicus_set_option_global(option, invalue));
+
+   switch(option)
+   {
+      case VICUS_OPT_NETTIME:
+         vd->s_timeout = *((const int *)invalue);
+         break;
+
+      case VICUS_OPT_REQTIME:
+         vd->req_timeout = *((const int *)invalue);
+         break;
+
+      case VICUS_OPT_SOCKET:
+         return(VICUS_ENOTSUP);
+
+      default:
+         return(VICUS_EINVAL);
+   };
 
    return(0);
 }

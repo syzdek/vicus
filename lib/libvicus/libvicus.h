@@ -89,6 +89,8 @@
 
 struct _libvicus
 {  int                        s;
+   int                        s_timeout;
+   int                        req_timeout;
    int                        __int_padding;
    vicus_addrinfo_t *         s_ai;
    vicus_urldesc_t *          s_vudp;
