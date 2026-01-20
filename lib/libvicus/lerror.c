@@ -84,12 +84,12 @@ vicus_strerror(
 {
    switch(err)
    {  case VICUS_SUCCESS:              return("success");
-      case VICUS_ECONNECT:             return("connect error");
-      case VICUS_ECONNREFUSED:         return("can't contact VICI server");
+      case VICUS_ECONNECT:             return("connection error");
       case VICUS_EDNSRES:              return("unable to resolve hostname");
       case VICUS_EINVAL:               return("invalid argument");
       case VICUS_ENOMEM:               return("out of memory");
       case VICUS_ENOTSUP:              return("request or operation not supported");
+      case VICUS_ESERVER:              return("server down or connection closed");
       case VICUS_ESIZE:                return("input buffer too small");
       case VICUS_EUNKNOWN:             break;
       case VICUS_EURI:                 return("invalid URI");

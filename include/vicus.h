@@ -84,12 +84,13 @@
 #define VICUS_EUNKNOWN                 -1
 #define VICUS_ENOMEM                   -2
 #define VICUS_ECONNECT                 -3
-#define VICUS_ECONNREFUSED             -4
+//#define UNUSED                       -4
 #define VICUS_ENOTSUP                  -5
 #define VICUS_EINVAL                   -6
 #define VICUS_EURI                     -7
 #define VICUS_EDNSRES                  -8
 #define VICUS_ESIZE                    -9
+#define VICUS_ESERVER                  -10
 
 #define VICUS_OPT_DEBUG                1
 #define VICUS_OPT_TRACE                2
