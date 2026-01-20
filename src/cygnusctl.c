@@ -136,7 +136,7 @@
 //////////////////
 // MARK: - Prototypes
 
-extern int
+static int
 my_version(
          my_config_t *                 cnf );
 
