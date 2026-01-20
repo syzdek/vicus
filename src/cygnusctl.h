@@ -129,9 +129,10 @@ struct _my_config
    int                           flags;
    int                           format_out;
    int                           last_was_item;
+   vicus_t *                     vd;
    char * const *                argv;
    const char *                  prog_name;
-   const char *                  vici_sockpath;
+   const char *                  vici_uri;
    char *                        res_last_name;
    const char *                  alt_command;
    const char *                  alt_event;

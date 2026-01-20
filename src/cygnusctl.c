@@ -62,7 +62,7 @@
 ///////////////////
 // MARK: - Definitions
 
-#define  MY_SOPT              "hO:Pqu:Vv"
+#define  MY_SOPT              "0hO:Pqu:Vv"
 #define  MY_SOPT_ALL_IKE      "a"
 #define  MY_SOPT_BYPASS       "B"
 #define  MY_SOPT_CHILD        "c:"
@@ -82,12 +82,13 @@
 #define  MY_SOPT_TRAP         "T"
 
 
-#define  MY_LOPT              { "help",            no_argument,         NULL, 'h' }, \
+#define  MY_LOPT              { "debug",           no_argument,         NULL, '0' }, \
+                              { "help",            no_argument,         NULL, 'h' }, \
                               { "out-format",      required_argument,   NULL, 'O' }, \
                               { "pretty",          no_argument,         NULL, 'P' }, \
                               { "quiet",           no_argument,         NULL, 'q' }, \
                               { "silent",          no_argument,         NULL, 'q' }, \
-                              { "socket",          required_argument,   NULL, 'u' }, \
+                              { "uri",             required_argument,   NULL, 'u' }, \
                               { "version",         no_argument,         NULL, 'V' }, \
                               { "verbose",         no_argument,         NULL, 'v' }, \
                               { NULL, 0, NULL, 0 }
@@ -136,6 +137,22 @@
 //////////////////
 // MARK: - Prototypes
 
+//----------------//
+// main prototype //
+//----------------//
+#pragma mark main prototype
+
+extern int
+main(
+         int                           argc,
+         char **                       argv );
+
+
+//-----------------//
+// core prototypes //
+//-----------------//
+#pragma mark core prototypes
+
 static int
 my_arguments(
          my_config_t *                 cnf,
@@ -167,17 +184,6 @@ my_usage(
 static int
 my_version(
          my_config_t *                 cnf );
-
-
-//----------------//
-// main prototype //
-//----------------//
-#pragma mark main prototype
-
-extern int
-main(
-         int                           argc,
-         char **                       argv );
 
 
 /////////////////
@@ -938,6 +944,109 @@ static my_widget_t my_widget_map[] =
 /////////////////
 // MARK: - Functions
 
+//---------------//
+// main function //
+//---------------//
+#pragma mark main function
+
+int
+main(
+         int                           argc,
+         char **                       argv )
+{
+   int                        rc;
+   int                        s;
+   my_config_t *              cnf;
+   const char *               prog_name;
+
+   // determine program name
+   if ((prog_name = strrchr(argv[0], '/')) != NULL)
+      prog_name = &prog_name[1];
+   if (!(prog_name))
+      prog_name = argv[0];
+
+   // allocate and initialize config memory
+   if ((cnf = malloc(sizeof(my_config_t))) == NULL)
+   {  fprintf(stderr, "%s; out of virtual memory\n", prog_name);
+      return(1);
+   };
+   memset(cnf, 0, sizeof(my_config_t));
+   cnf->argc            = argc;
+   cnf->argv            = argv;
+   cnf->prog_name       = prog_name;
+
+   // check for symlink alias
+   if ((cnf->widget = my_lookup_widget(cnf->prog_name, 1)) != NULL)
+      cnf->symlinked = 1;
+
+   // processing common cli arguments
+   if (!(cnf->widget))
+   {  if ((rc = my_arguments(cnf, argc, argv)) != 0)
+      {  my_free(cnf);
+         return((rc == -1) ? 0 : 1);
+      };
+      if ((cnf->widget = my_lookup_widget(cnf->argv[0], 0)) == NULL)
+      {  fprintf(stderr, "%s: unknown or missing widget name\n", PROGRAM_NAME);
+         fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
+         my_free(cnf);
+         return(1);
+      };
+   };
+
+   // processing widget cli arguments
+   if ((rc = my_arguments(cnf, cnf->argc, cnf->argv)) != 0)
+   {  my_free(cnf);
+      return((rc == -1) ? 0 : 1);
+   };
+
+   // set signal handlers
+#ifdef SIGHUP
+   signal(SIGHUP,    my_signal_handler);
+#endif
+#ifdef SIGINT
+   signal(SIGINT,    my_signal_handler);
+#endif
+#ifdef SIGTERM
+   signal(SIGTERM,   my_signal_handler);
+#endif
+#ifdef SIGUSR1
+   signal(SIGUSR1,   SIG_IGN);
+#endif
+#ifdef SIGUSR2
+   signal(SIGUSR2,   SIG_IGN);
+#endif
+#ifdef SIGUSR2
+   signal(SIGPIPE,   SIG_IGN);
+#endif
+
+   if ((rc = vicus_initialize(&cnf->vd, cnf->vici_uri)) != VICUS_SUCCESS)
+   {  fprintf(stderr, "vicus_initialize(): %s\n", vicus_strerror(rc));
+      return(1);
+   };
+
+   if ((rc = vicus_connect(cnf->vd)) != VICUS_SUCCESS)
+   {  fprintf(stderr, "vicus_connect(): %s\n", vicus_strerror(rc));
+      vicus_disconnect(cnf->vd);
+      return(1);
+   };
+
+   if ((rc = vicus_get_option(cnf->vd, VICUS_OPT_SOCKET, &s)) != VICUS_SUCCESS)
+   {  fprintf(stderr, "vicus_get_option(VICUS_OPT_SOCKET): %s\n", vicus_strerror(rc));
+      vicus_disconnect(cnf->vd);
+      return(1);
+   };
+
+   vicus_disconnect(cnf->vd);
+
+   return(0);
+}
+
+
+//----------------//
+// core functions //
+//----------------//
+#pragma mark core functions
+
 int
 my_arguments(
          my_config_t *                 cnf,
@@ -946,6 +1055,7 @@ my_arguments(
 {
    int                        c;
    int                        opt_index;
+   int                        ival;
    const struct option *      long_opt;
    const char *               short_opt;
    const my_widget_t *        widget;
@@ -965,6 +1075,11 @@ my_arguments(
       {  case -1:       /* no more arguments */
          case 0:        /* long options toggles */
          break;
+
+         case '0':
+            ival = VICUS_TRUE;
+            vicus_set_option(NULL, VICUS_OPT_DEBUG, &ival);
+            break;
 
          case 'A':
             cnf->flags |= MY_FLG_REAUTH;
@@ -1065,7 +1180,7 @@ my_arguments(
             break;
 
          case 'u':
-            cnf->vici_sockpath = optarg;
+            cnf->vici_uri = optarg;
             break;
 
          case 'V':
@@ -1257,8 +1372,7 @@ my_usage(
       widget_help = ((cnf->widget->usage)) ? cnf->widget->usage : "";
 
    if ((widget = cnf->widget) == NULL)
-   {  printf("Usage: %s [OPTIONS] <address> [ <address> [ ... <address> ] ]\n", PROGRAM_NAME);
-      printf("       %s [OPTIONS] %s %s\n", PROGRAM_NAME, widget_name, widget_help);
+   {  printf("Usage: %s [OPTIONS] %s %s\n", PROGRAM_NAME, widget_name, widget_help);
       printf("       vici-%s %s\n", widget_name, widget_help);
       printf("       vici%s %s\n", widget_name, widget_help);
    } else if (cnf->symlinked == 0)
@@ -1290,7 +1404,7 @@ my_usage(
    if ((strchr(short_opt, 'q'))) printf("  -q,        --quiet, --silent do not print messages\n");
    if ((strchr(short_opt, 'T'))) printf("  -T,        --trap            list trap policies\n");
    if ((strchr(short_opt, 't'))) printf("  -t ms,     --timeout=ms      timeout in milliseconds before detaching\n");
-   if ((strchr(short_opt, 'u'))) printf("  -u path,   --socket=path     path to vici socket\n");
+   if ((strchr(short_opt, 'u'))) printf("  -u uri,    --uri=uri         URI to vici socket\n");
    if ((strchr(short_opt, 'V'))) printf("  -V,        --version         print version number and exit\n");
    if ((strchr(short_opt, 'v'))) printf("  -v,        --verbose         print verbose messages\n");
    if (!(cnf->widget))
@@ -1342,23 +1456,10 @@ my_version(
 }
 
 
-//---------------//
-// main function //
-//---------------//
-#pragma mark main function
-
-int
-main(
-         int                           argc,
-         char **                       argv )
-{
-   int                        i;
-
-   for(i = 0; (i < argc); i++)
-      printf("arg %i: %s\n", i, argv[i]);
-
-   return(0);
-}
+//-------------------//
+// widgets functions //
+//-------------------//
+#pragma mark widgets functions
 
 
 /* end of source */
