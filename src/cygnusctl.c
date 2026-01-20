@@ -107,6 +107,29 @@ main(
 /////////////////
 // MARK: - Functions
 
+char *
+my_prog_name(
+         my_config_t *                 cnf )
+{
+   static char    buff[512];
+
+   const char * prog_name;
+
+   prog_name   = ((cnf->prog_name))
+               ? cnf->prog_name
+               : PROGRAM_NAME;
+
+   if ( (!(cnf->widget)) || ((cnf->symlinked)) )
+   {  snprintf(buff, sizeof(buff), "%s", prog_name);
+      return(buff);
+   };
+
+   snprintf(buff, sizeof(buff), "%s %s", prog_name, cnf->widget->name);
+
+   return(buff);
+}
+
+
 void
 my_verbose(
          my_config_t *                 cnf,

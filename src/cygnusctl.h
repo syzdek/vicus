@@ -161,6 +161,11 @@ struct _my_widget
 //////////////////
 // MARK: - Prototypes
 
+extern char *
+my_prog_name(
+         my_config_t *                 cnf );
+
+
 extern void
 my_verbose(
          my_config_t *                 cnf,
