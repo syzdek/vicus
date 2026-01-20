@@ -186,6 +186,16 @@ my_version(
          my_config_t *                 cnf );
 
 
+//-------------------//
+// widgets functions //
+//-------------------//
+#pragma mark widgets functions
+
+static int
+my_widget_developer(
+         my_config_t *                 cnf );
+
+
 /////////////////
 //             //
 //  Variables  //
@@ -261,6 +271,22 @@ static my_widget_t my_widget_map[] =
       .arg_min       = 0,
       .arg_max       = 0,
       .func_exec     = NULL,
+      .func_usage    = NULL,
+   },
+
+   // developer widget
+   {  .name          = "developer",
+      .aliases       = NULL,
+      .desc          = NULL,
+      .vici_cmd      = NULL,
+      .vici_event    = NULL,
+      .flags         = 0,
+      .usage         = "[OPTIONS]",
+      .short_opt     = NULL,
+      .long_opt      = NULL,
+      .arg_min       = 0,
+      .arg_max       = 0,
+      .func_exec     = &my_widget_developer,
       .func_usage    = NULL,
    },
 
@@ -1460,6 +1486,18 @@ my_version(
 // widgets functions //
 //-------------------//
 #pragma mark widgets functions
+
+int
+my_widget_developer(
+         my_config_t *                 cnf )
+{
+   const my_widget_t *     widget;
+   if (!(cnf))
+      return(1);
+   widget   = cnf->widget;
+   my_verbose(cnf, "initializing %s widget ...\n", widget->name);
+   return(0);
+}
 
 
 /* end of source */
