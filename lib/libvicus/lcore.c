@@ -220,8 +220,7 @@ vicus_get_option(
 {
    VicusTrace();
 
-   assert(vd         != NULL);
-   assert(outvalue   != NULL);
+   assert(outvalue != NULL);
 
    if (!(vd))
       return(vicus_get_option_global(option, outvalue));
@@ -247,7 +246,7 @@ vicus_get_option_global(
 {
    VicusTrace();
 
-   assert(outvalue   != NULL);
+   assert(outvalue != NULL);
 
    switch(option)
    {
@@ -336,7 +335,6 @@ vicus_set_option(
 {
    VicusTrace();
 
-   assert(vd      != NULL);
    assert(invalue != NULL);
 
    if (!(vd))
