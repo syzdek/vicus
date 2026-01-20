@@ -201,11 +201,11 @@ vicus_disconnect(
    if (!(vd))
       return(0);
 
-   vicus_net_terminate(vd);
+   vicus_close(vd);
 
-   if (vd->s != -1)
-      close(vd->s);
    ldap_free_urldesc(vd->vudp);
+
+   vicus_net_terminate(vd);
 
    free(vd);
 
