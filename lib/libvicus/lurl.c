@@ -114,6 +114,32 @@ ldap_free_urldesc(
 
 
 int
+vicus_url_debug(
+         vicus_t *                     vd,
+         vicus_urldesc_t *             vudp )
+{
+   vicus_urldesc_t *    vudp_cur;
+   vicus_addrinfo_t *   ai;
+   char                 addrstr[256];
+
+   VicusTrace();
+
+   if ((vd))
+      vudp = vd->vudp;
+
+   for(vudp_cur = vudp; ((vudp_cur)); vudp_cur = vudp_cur->vud_next)
+   {  VicusDebug("   URL: %s\n", vudp_cur->vud_uri);
+      for(ai = vudp_cur->vud_addrinfo; ((ai)); ai = ai->ai_next)
+      {  vicus_ntop(ai, addrstr, sizeof(addrstr));
+         VicusDebug("        addresses: %s\n", addrstr);
+      };
+   };
+
+   return(0);
+}
+
+
+int
 vicus_url_parse(
          const char *                  url,
          vicus_urldesc_t **            vudpp )
@@ -125,6 +151,8 @@ vicus_url_parse(
    size_t               len;
    vicus_urldesc_t *    vudp;
    vicus_urldesc_t **   vudp_cur;
+
+   VicusTrace();
 
    assert(url     != NULL);
    assert(vudpp   != NULL);
@@ -192,6 +220,9 @@ vicus_url_parse(
    if (!(vudp))
       return(VICUS_EURI);
 
+   if ((vicus_opt_debug))
+      vicus_url_debug(NULL, vudp);
+
    *vudpp = vudp;
 
    return(VICUS_SUCCESS);
@@ -211,6 +242,8 @@ vicus_url_parse_tcp(
    char *               host_str;
    char *               port_str;
    char *               ptr;
+
+   VicusTrace();
 
    assert(str        != NULL);
    assert(vudpp      != NULL);
@@ -291,6 +324,8 @@ vicus_url_parse_unix(
    int                  rc;
    size_t               urilen;
    vicus_urldesc_t *    vudp;
+
+   VicusTrace();
 
    assert(path       != NULL);
    assert(vudpp      != NULL);

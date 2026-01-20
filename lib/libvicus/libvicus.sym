@@ -9,4 +9,5 @@ vicus_set_option
 vicus_strerror
 vicus_strlcat
 vicus_strlcpy
+vicus_url_debug
 vicus_url_parse

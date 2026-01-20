@@ -192,6 +192,12 @@ ldap_free_urldesc(
 
 
 _VICUS_F int
+vicus_url_debug(
+         vicus_t *                     vd,
+         vicus_urldesc_t *             vudp );
+
+
+_VICUS_F int
 vicus_url_parse(
          const char *                  url,
          vicus_urldesc_t **            vudppp );
