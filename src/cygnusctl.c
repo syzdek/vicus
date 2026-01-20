@@ -50,6 +50,7 @@
 #include <string.h>
 #include <strings.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <getopt.h>
 #include <signal.h>
 
@@ -105,6 +106,22 @@ main(
 //             //
 /////////////////
 // MARK: - Functions
+
+void
+my_verbose(
+         my_config_t *                 cnf,
+         const char *                  fmt,
+         ... )
+{
+   va_list     args;
+   if (!(cnf->verbose))
+      return;
+   va_start(args, fmt);
+   vfprintf(stderr, fmt, args);
+   va_end(args);
+   return;
+}
+
 
 int
 main(

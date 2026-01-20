@@ -53,7 +53,6 @@
 #endif
 
 #include <vicus.h>
-#include <poll.h>
 #include <inttypes.h>
 
 
@@ -99,6 +98,53 @@
 //////////////////
 // MARK: - Data Types
 
+typedef struct _my_config        my_config_t;
+typedef struct _my_widget        my_widget_t;
+
+
+struct _my_config
+{  int                           verbose;
+   int                           quiet;
+   int                           symlinked;
+   int                           queued;
+   int                           argc;
+   int                           flags;
+   int                           format_out;
+   int                           last_was_item;
+   char * const *                argv;
+   const char *                  prog_name;
+   const char *                  vici_sockpath;
+   char *                        res_last_name;
+   const char *                  alt_command;
+   const char *                  alt_event;
+   const char *                  ike_sa;
+   const char *                  ike_sa_id;
+   const char *                  child_sa;
+   const char *                  child_sa_id;
+   const char *                  opt_name;
+   const char *                  opt_timeout;
+   const char *                  opt_loglevel;
+   const my_widget_t *           widget;
+};
+
+
+struct _my_widget
+{  const char *               name;
+   const char *               desc;
+   const char *               vici_cmd;
+   const char *               vici_event;
+   const char * const *       aliases;
+   const char *               usage;
+   const char *               short_opt;
+   const struct option *      long_opt;
+   int                        arg_min;
+   int                        arg_max;
+   int                        alias_idx;
+   int                        flags;
+   int  (*func_exec)(my_config_t * cnf);
+   int  (*func_usage)(my_config_t * cnf);
+};
+
 
 /////////////////
 //             //
@@ -114,6 +160,12 @@
 //              //
 //////////////////
 // MARK: - Prototypes
+
+extern void
+my_verbose(
+         my_config_t *                 cnf,
+         const char *                  fmt,
+         ... );
 
 
 #endif /* end of header */
