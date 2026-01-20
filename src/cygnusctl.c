@@ -136,6 +136,11 @@
 //////////////////
 // MARK: - Prototypes
 
+static void
+my_free(
+         my_config_t *                 cnf );
+
+
 static int
 my_usage(
          my_config_t *                 cnf );
@@ -905,6 +910,19 @@ static my_widget_t my_widget_map[] =
 //             //
 /////////////////
 // MARK: - Functions
+
+void
+my_free(
+         my_config_t *                 cnf )
+{
+   if (!(cnf))
+      return;
+
+   free(cnf);
+
+   return;
+}
+
 
 char *
 my_prog_name(
