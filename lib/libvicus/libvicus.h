@@ -153,12 +153,12 @@ vicus_getunixinfo(
          vicus_addrinfo_t **           resp );
 
 
-_VICUS_F int
+extern int
 vicus_net_initialize(
          vicus_t *                     vd );
 
 
-_VICUS_F int
+extern int
 vicus_net_terminate(
          vicus_t *                     vd );
 
