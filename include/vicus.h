@@ -89,6 +89,7 @@
 #define VICUS_EINVAL                   -6
 #define VICUS_EURI                     -7
 #define VICUS_EDNSRES                  -8
+#define VICUS_ESIZE                    -9
 
 #define VICUS_OPT_DEBUG                1
 #define VICUS_OPT_TRACE                2

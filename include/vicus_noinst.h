@@ -118,6 +118,14 @@ vicus_debug_trace(
 //--------------------------//
 #pragma mark miscellaneous prototypes
 
+_VICUS_F int
+vicus_base64_encode(
+         char *                        dst,
+         size_t                        s,
+         const uint8_t *               src,
+         size_t                        n );
+
+
 _VICUS_F size_t
 vicus_strlcat(
          char * restrict               dst,
