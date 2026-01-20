@@ -255,12 +255,14 @@ vicus_ntop(
             return(VICUS_EUNKNOWN);
          break;
 
+#ifndef VICUS_WITH_WINSOCK2
       case PF_UNIX:
          addr = &((struct sockaddr_un *)ai->ai_addr)->sun_path;
          if ((len+1) < strlen((const char *)addr))
             return(VICUS_EUNKNOWN);
          vicus_strlcpy(dst, (const char *)addr, len);
          break;
+#endif
 
       default:
          return(VICUS_ENOTSUP);
