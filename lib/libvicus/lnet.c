@@ -183,11 +183,24 @@ vicus_getaddrinfo_copy(
          vicus_addrinfo_t **           dstp,
          struct addrinfo  *            src )
 {
+   unsigned                addrlen;
    vicus_addrinfo_t *      dst;
 
    assert(dstp != NULL);
    assert(src  != NULL);
 
+   // check results
+   if (src->ai_family != src->ai_addr->sa_family)
+      return(VICUS_EUNKNOWN);
+   switch(src->ai_family)
+   {  case PF_INET:  addrlen = sizeof(struct sockaddr_in);  break;
+      case PF_INET6: addrlen = sizeof(struct sockaddr_in6); break;
+      default:       return(VICUS_ENOTSUP);
+   };
+   if (addrlen != src->ai_addrlen)
+      return(VICUS_EUNKNOWN);
+
+   // allocate memory
    if ((dst = malloc(sizeof(vicus_addrinfo_t))) == NULL)
       return(VICUS_ENOMEM);
    memset(dst, 0, sizeof(vicus_addrinfo_t));
