@@ -100,7 +100,7 @@
 #define VICUS_TRUE                     1
 #define VICUS_FALSE                    0
 
-#define VICUS_URI                      "/var/run/charon.vici"
+#define VICUS_DFLT_URI                 "/var/run/charon.vici"
 
 
 //////////////////

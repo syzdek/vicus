@@ -307,7 +307,7 @@ vicus_initialize(
 
    assert(vdp != NULL);
 
-   uri = ((uri)) ? uri : VICUS_URI;
+   uri = ((uri)) ? uri : VICUS_DFLT_URI;
 
    if ((rc = vicus_alloc(&vd)) != VICUS_SUCCESS)
       return(rc);
