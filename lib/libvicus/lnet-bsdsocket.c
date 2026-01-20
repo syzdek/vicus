@@ -296,7 +296,6 @@ vicus_getunixinfo(
    memset(sa, 0, sizeof(struct sockaddr_storage));
    vicus_strlcpy(sa->sun_path, path, path_maxlen);
    sa->sun_family = PF_LOCAL;
-   sa->sun_len    = sizeof(struct sockaddr_un);
    dst->ai_addr   = sa;
 
    *resp = dst;
