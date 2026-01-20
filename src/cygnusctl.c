@@ -136,6 +136,13 @@
 //////////////////
 // MARK: - Prototypes
 
+static int
+my_arguments(
+         my_config_t *                 cnf,
+         int                           argc,
+         char * const *                argv );
+
+
 static void
 my_free(
          my_config_t *                 cnf );
@@ -916,6 +923,187 @@ static my_widget_t my_widget_map[] =
 //             //
 /////////////////
 // MARK: - Functions
+
+int
+my_arguments(
+         my_config_t *                 cnf,
+         int                           argc,
+         char * const *                argv )
+{
+   int                        c;
+   int                        opt_index;
+   const struct option *      long_opt;
+   const char *               short_opt;
+   const my_widget_t *        widget;
+
+   widget         = cnf->widget;
+   optind         = 0;
+   opt_index      = 0;
+   short_opt      = ( ((widget)) && ((widget->short_opt)) )
+                  ? widget->short_opt
+                  : "+" MY_SOPT;
+   long_opt       = ( ((widget)) && ((widget->long_opt)) )
+                  ? cnf->widget->long_opt
+                  : MY_LOPTS();
+
+   while((c = getopt_long(argc, argv, short_opt, long_opt, &opt_index)) != -1)
+   {  switch(c)
+      {  case -1:       /* no more arguments */
+         case 0:        /* long options toggles */
+         break;
+
+         case 'A':
+            cnf->flags |= MY_FLG_REAUTH;
+            break;
+
+         case 'a':
+            cnf->flags |= MY_FLG_ALL_IKE;
+            break;
+
+         case 'B':
+            cnf->flags |= MY_FLG_POLS_BYPASS;
+            break;
+
+         case 'C':
+            cnf->child_sa_id = optarg;
+            break;
+
+         case 'c':
+            cnf->child_sa = optarg;
+            break;
+
+         case 'D':
+            cnf->flags |= MY_FLG_POLS_DROP;
+            break;
+
+         case 'E':
+            cnf->alt_event = optarg;
+            break;
+
+         case 'e':
+            cnf->alt_command = optarg;
+            break;
+
+         case 'f':
+            cnf->flags |= MY_FLG_FORCE;
+            break;
+
+         case 'h':
+            my_usage(cnf);
+            return(-1);
+
+         case 'I':
+            cnf->ike_sa_id = optarg;
+            break;
+
+         case 'i':
+            cnf->ike_sa = optarg;
+            break;
+
+         case 'l':
+            cnf->flags |= MY_FLG_LEASES;
+            break;
+
+         case 'L':
+            cnf->opt_loglevel = optarg;
+            break;
+
+         case 'N':
+            cnf->flags |= MY_FLG_NOBLOCK;
+            break;
+
+         case 'n':
+            cnf->opt_name = optarg;
+            break;
+
+         case 'O':
+            if      (!(strcasecmp(optarg, "debug"))) cnf->format_out = MY_FMT_DEBUG;
+            else if (!(strcasecmp(optarg, "json")))  cnf->format_out = MY_FMT_JSON;
+            else if (!(strcasecmp(optarg, "xml")))   cnf->format_out = MY_FMT_XML;
+            else if (!(strcasecmp(optarg, "vici")))  cnf->format_out = MY_FMT_VICI;
+            else if (!(strcasecmp(optarg, "yaml")))  cnf->format_out = MY_FMT_YAML;
+            else
+            {  fprintf(stderr, "%s: unsupported output format `%s'\n", my_prog_name(cnf), optarg);
+               fprintf(stderr, "Try `%s --help' for more information.\n",  my_prog_name(cnf));
+               return(1);
+            };
+            break;
+
+         case 'P':
+            cnf->flags |= MY_FLG_PRETTY;
+            break;
+
+         case 'q':
+            cnf->quiet = 1;
+            if ((cnf->verbose))
+            {  fprintf(stderr, "%s: incompatible options `-q' and `-v'\n", my_prog_name(cnf));
+               fprintf(stderr, "Try `%s --help' for more information.\n",  my_prog_name(cnf));
+               return(1);
+            };
+            break;
+
+         case 'T':
+            cnf->flags |= MY_FLG_POLS_TRAP;
+            break;
+
+         case 't':
+            cnf->opt_timeout = optarg;
+            break;
+
+         case 'u':
+            cnf->vici_sockpath = optarg;
+            break;
+
+         case 'V':
+            my_version(cnf);
+            return(-1);
+
+         case 'v':
+            cnf->verbose++;
+            if ((cnf->quiet))
+            {  fprintf(stderr, "%s: incompatible options `-q' and `-v'\n", my_prog_name(cnf));
+               fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
+               return(1);
+            };
+            break;
+
+         case '?':
+            fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
+            return(1);
+
+         default:
+            fprintf(stderr, "%s: unrecognized option `--%c'\n", my_prog_name(cnf), c);
+            fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
+            return(1);
+      };
+   };
+
+   cnf->argc   = (argc - optind);
+   cnf->argv   = &argv[optind];
+
+   if (!(widget))
+   {  if (cnf->argc < 1)
+      {  fprintf(stderr, "%s: missing required argument\n", my_prog_name(cnf));
+         fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
+         return(1);
+      };
+      return(0);
+   };
+
+   if (cnf->argc < widget->arg_min)
+   {  fprintf(stderr, "%s: missing required argument\n", my_prog_name(cnf));
+      fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
+      return(1);
+   };
+   if ( (cnf->argc > widget->arg_max) && (widget->arg_max >= widget->arg_min) )
+   {  fprintf(stderr, "%s: unknown argument -- `%s'\n", my_prog_name(cnf), cnf->argv[widget->arg_max]);
+      fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
+      return(1);
+   };
+
+   return(0);
+}
+
 
 void
 my_free(
