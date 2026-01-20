@@ -154,6 +154,11 @@ my_lookup_widget(
          int                           exact );
 
 
+static void
+my_signal_handler(
+         int                           sig );
+
+
 static int
 my_usage(
          my_config_t *                 cnf );
@@ -181,6 +186,10 @@ main(
 //             //
 /////////////////
 // MARK: - Variables
+
+#pragma mark my_should_exit
+static int my_should_exit = 0;
+
 
 #pragma mark my_widget_map[]
 static my_widget_t my_widget_map[] =
@@ -1215,6 +1224,16 @@ my_prog_name(
    snprintf(buff, sizeof(buff), "%s %s", prog_name, cnf->widget->name);
 
    return(buff);
+}
+
+
+void
+my_signal_handler(
+         int                           sig )
+{
+   my_should_exit = 1;
+   signal(sig, my_signal_handler);
+   return;
 }
 
 
