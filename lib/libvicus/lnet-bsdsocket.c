@@ -109,6 +109,23 @@ vicus_connect_unix(
 // MARK: - Functions
 
 int
+vicus_close(
+         vicus_t *                     vd )
+{
+   assert(vd != NULL);
+
+   if (vd->s != -1)
+      close(vd->s);
+
+   vd->s       = -1;
+   vd->s_ai    = NULL;
+   vd->s_vudp  = NULL;
+
+   return(0);
+}
+
+
+int
 vicus_connect(
          vicus_t *                     vd )
 {
@@ -132,7 +149,10 @@ vicus_connect(
             default:          return(VICUS_ENOTSUP);
          };
          if (rc == VICUS_SUCCESS)
+         {  vd->s_ai    = ai;
+            vd->s_vudp  = vudp;
             return(0);
+         };
       };
    };
 
@@ -346,13 +366,11 @@ vicus_recv(
    if ((rc = poll(&fds, 1, 10000)) == -1)
       return(VICUS_EUNKNOWN);
    if (!(fds.revents & POLLIN))
-   {  close(vd->s);
-      vd->s = -1;
+   {  vicus_close(vd);
       return(VICUS_EUNKNOWN);
    };
    if ((size = recv(vd->s, buff, len, 0)) == -1)
-   {  close(vd->s);
-      vd->s = -1;
+   {  vicus_close(vd);
       return(VICUS_EUNKNOWN);
    };
 
@@ -382,13 +400,11 @@ vicus_send(
    if ((rc = poll(&fds, 1, 10000)) == -1)
       return(VICUS_EUNKNOWN);
    if (!(fds.revents & POLLOUT))
-   {  close(vd->s);
-      vd->s = -1;
+   {  vicus_close(vd);
       return(VICUS_EUNKNOWN);
    };
    if ((size = send(vd->s, buff, len, 0)) == -1)
-   {  close(vd->s);
-      vd->s = -1;
+   {  vicus_close(vd);
       return(VICUS_EUNKNOWN);
    };
 
