@@ -139,7 +139,6 @@ vicus_getaddrinfo(
    vicus_addrinfo_t *   res_rec;
 
    VicusTrace();
-
    assert(hostname != NULL);
    assert(resp != NULL);
 
@@ -191,7 +190,6 @@ vicus_getaddrinfo_copy(
    vicus_addrinfo_t *      dst;
 
    VicusTrace();
-
    assert(dstp != NULL);
    assert(src  != NULL);
 

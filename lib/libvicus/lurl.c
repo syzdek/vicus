@@ -153,7 +153,6 @@ vicus_url_parse(
    vicus_urldesc_t **   vudp_cur;
 
    VicusTrace();
-
    assert(url     != NULL);
    assert(vudpp   != NULL);
 
@@ -244,7 +243,6 @@ vicus_url_parse_tcp(
    char *               ptr;
 
    VicusTrace();
-
    assert(str        != NULL);
    assert(vudpp      != NULL);
 
@@ -326,7 +324,6 @@ vicus_url_parse_unix(
    vicus_urldesc_t *    vudp;
 
    VicusTrace();
-
    assert(path       != NULL);
    assert(vudpp      != NULL);
 
