@@ -165,13 +165,23 @@ vicus_connect_tcp(
       return(-1);
 
    // set socket options
+#ifdef SO_NOSIGPIPE
    opt = 1; setsockopt(s, SOL_SOCKET, SO_NOSIGPIPE, (void *)&opt, sizeof(int));
+#endif
+#ifdef SO_REUSEADDR
    opt = 1; setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (void *)&opt, sizeof(int));
+#endif
+#ifdef SO_REUSEPORT
    opt = 1; setsockopt(s, SOL_SOCKET, SO_REUSEPORT, (void *)&opt, sizeof(int));
+#endif
+#ifdef SO_KEEPALIVE
    opt = 1; setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, (void *)&opt, sizeof(int));
+#endif
 
    // set file descriptor flags
+#ifdef F_SETNOSIGPIPE
    fcntl(s, F_SETNOSIGPIPE, 1);
+#endif
 
    // connect to server
    if (connect(s, (struct sockaddr *)sa, ai->ai_addrlen) == -1)
@@ -218,10 +228,17 @@ vicus_connect_unix(
       return(-1);
 
    // set socket options
+#ifdef SO_NOSIGPIPE
    opt = 1; setsockopt(s, SOL_SOCKET, SO_NOSIGPIPE, (void *)&opt, sizeof(int));
+#endif
+#ifdef SO_KEEPALIVE
+   opt = 1; setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, (void *)&opt, sizeof(int));
+#endif
 
    // set file descriptor flags
+#ifdef F_SETNOSIGPIPE
    fcntl(s, F_SETNOSIGPIPE, 1);
+#endif
 
    // connect to server
    if (connect(s, (struct sockaddr *)sa, ai->ai_addrlen) == -1)
