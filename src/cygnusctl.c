@@ -141,6 +141,12 @@ my_free(
          my_config_t *                 cnf );
 
 
+static my_widget_t *
+my_lookup_widget(
+         const char *                  wname,
+         int                           exact );
+
+
 static int
 my_usage(
          my_config_t *                 cnf );
@@ -921,6 +927,78 @@ my_free(
    free(cnf);
 
    return;
+}
+
+
+my_widget_t *
+my_lookup_widget(
+         const char *                  wname,
+         int                           exact )
+{
+   int                        x;
+   int                        y;
+   size_t                     len;
+   size_t                     wname_len;
+   const char *               alias;
+   my_widget_t *              match;
+   my_widget_t *              widget;
+
+   // strip program prefix from widget name
+   len = strlen(PROGRAM_NAME);
+   if (!(strncasecmp(wname, PROGRAM_NAME, len)))
+   {
+      wname = &wname[len];
+      if (wname[0] == '-')
+         wname = &wname[1];
+   } else
+   {
+      len = strlen("davici");
+      if (!(strncasecmp(wname, "davici", len)))
+         wname = &wname[len];
+   };
+   if (!(wname[0]))
+      return(NULL);
+
+   match       = NULL;
+   wname_len   = strlen(wname);
+
+   // loop through widgets looking for match
+   for(x = 0; ((my_widget_map[x].name)); x++)
+   {  // check widget
+      widget = &my_widget_map[x];
+      if (widget->func_exec == NULL)
+         continue;
+      widget->alias_idx = -1;
+
+      // compare widget name for match
+      if (!(strncmp(widget->name, wname, wname_len)))
+      {  if (widget->name[wname_len] == '\0')
+            return(widget);
+         if ( ((match)) && (match != widget) )
+            return(NULL);
+         if (exact == 0)
+            match = widget;
+      };
+
+      if (!(widget->aliases))
+         continue;
+
+      for(y = 0; ((widget->aliases[y])); y++)
+      {  alias = widget->aliases[y];
+         if (!(strncmp(alias, wname, wname_len)))
+         {  if (alias[wname_len] == '\0')
+            {  widget->alias_idx = y;
+               return(widget);
+            };
+            if ( ((match)) && (match != widget) )
+               return(NULL);
+            if (exact == 0)
+               match = widget;
+         };
+      };
+   };
+
+   return((exact == 0) ? match : NULL);
 }
 
 
