@@ -102,6 +102,8 @@
 #define VICUS_PROTO_UNIX               0x00000001
 #define VICUS_PROTO_TCP                0x00000002
 
+#define VICUS_URI                      "/var/run/charon.vici"
+
 
 //////////////////
 //              //
