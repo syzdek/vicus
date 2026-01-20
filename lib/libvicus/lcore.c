@@ -78,6 +78,12 @@ vicus_alloc(
          vicus_t **                    vdp );
 
 
+static int
+vicus_set_option_global(
+         int                           option,
+         const void *                  invalue );
+
+
 /////////////////
 //             //
 //  Variables  //
@@ -252,6 +258,59 @@ vicus_initialize(
    vd->vudp = vudp;
 
    *vdp = vd;
+
+   return(0);
+}
+
+
+int
+vicus_set_option(
+         vicus_t *                     vd,
+         int                           option,
+         const void *                  invalue )
+{
+   VicusTrace();
+
+   assert(vd      != NULL);
+   assert(invalue != NULL);
+
+   if (!(vd))
+      return(vicus_set_option_global(option, invalue));
+
+   return(0);
+}
+
+
+int
+vicus_set_option_global(
+         int                           option,
+         const void *                  invalue )
+{
+   int      ival;
+
+   VicusTrace();
+
+   assert(invalue != NULL);
+
+   ival = *((const int *)invalue);
+
+   switch(option)
+   {
+      case VICUS_OPT_DEBUG:
+         vicus_opt_debug   = ((ival)) ? VICUS_TRUE : VICUS_FALSE;
+         break;
+
+      case VICUS_OPT_DEBUG_STDERR:
+         vicus_opt_debug_fileno  = ((ival)) ? STDERR_FILENO : STDOUT_FILENO;
+         break;
+
+      case VICUS_OPT_TRACE:
+         vicus_opt_trace   = ((ival)) ? VICUS_TRUE : VICUS_FALSE;
+         break;
+
+      default:
+         return(VICUS_EINVAL);
+   };
 
    return(0);
 }

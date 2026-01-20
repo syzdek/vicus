@@ -90,6 +90,12 @@
 #define VICUS_EURI                     -7
 #define VICUS_EDNSRES                  -8
 
+#define VICUS_OPT_DEBUG                1
+#define VICUS_OPT_TRACE                2
+#define VICUS_OPT_DEBUG_STDERR         3
+
+#define VICUS_TRUE                     1
+#define VICUS_FALSE                    0
 
 #define VICUS_PROTO_UNIX               0x00000001
 #define VICUS_PROTO_TCP                0x00000002
@@ -148,6 +154,13 @@ _VICUS_F int
 vicus_initialize(
          vicus_t **                    vdp,
          const char *                  uri );
+
+
+_VICUS_F int
+vicus_set_option(
+         vicus_t *                     vd,
+         int                           option,
+         const void *                  invalue );
 
 
 //------------------//

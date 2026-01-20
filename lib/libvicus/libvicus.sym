@@ -4,6 +4,7 @@ vicus_debug_trace
 vicus_disconnect
 vicus_init_fd
 vicus_initialize
+vicus_set_option
 vicus_strerror
 vicus_strlcat
 vicus_strlcpy
