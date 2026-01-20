@@ -153,6 +153,13 @@ vicus_strlcpy(
 #pragma mark network prototypes
 
 _VICUS_F ssize_t
+vicus_recv(
+         vicus_t *                     vd,
+         void *                        buff,
+         size_t                        len );
+
+
+_VICUS_F ssize_t
 vicus_send(
          vicus_t *                     vd,
          const void *                  buff,

@@ -7,6 +7,7 @@ vicus_get_option
 vicus_hexdump
 vicus_init_fd
 vicus_initialize
+vicus_recv
 vicus_send
 vicus_set_option
 vicus_strerror
