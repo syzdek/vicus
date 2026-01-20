@@ -148,7 +148,6 @@ vicus_connect_tcp(
    int                           s;
    int                           opt;
    int                           flgs;
-   int                           rc;
    struct sockaddr_storage *     sa;
    char                          addrstr[INET_ADDRSTRLEN+INET6_ADDRSTRLEN];
 
@@ -175,7 +174,7 @@ vicus_connect_tcp(
    fcntl(s, F_SETNOSIGPIPE, 1);
 
    // connect to server
-   if ((rc = connect(s, (struct sockaddr *)sa, ai->ai_addrlen)) == -1)
+   if (connect(s, (struct sockaddr *)sa, ai->ai_addrlen) == -1)
    {  close(s);
       return(-1);
    };
@@ -202,7 +201,6 @@ vicus_connect_unix(
    int                           s;
    int                           opt;
    int                           flgs;
-   int                           rc;
    struct sockaddr_storage *     sa;
    char                          addrstr[INET_ADDRSTRLEN+INET6_ADDRSTRLEN];
 
@@ -226,7 +224,7 @@ vicus_connect_unix(
    fcntl(s, F_SETNOSIGPIPE, 1);
 
    // connect to server
-   if ((rc = connect(s, (struct sockaddr *)sa, ai->ai_addrlen)) == -1)
+   if (connect(s, (struct sockaddr *)sa, ai->ai_addrlen) == -1)
    {  close(s);
       return(-1);
    };
