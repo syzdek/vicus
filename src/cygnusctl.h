@@ -90,6 +90,24 @@
 #   define PACKAGE_VERSION ""
 #endif
 
+#define MY_FLG_NOBLOCK        0x00000001
+#define MY_FLG_PRETTY         0x00000002
+#define MY_FLG_STREAM         0x00000004
+#define MY_FLG_ALL_IKE        0x00000008
+#define MY_FLG_LEASES         0x00000010
+#define MY_FLG_FORCE          0x00000020
+#define MY_FLG_POLS_DROP      0x00000040
+#define MY_FLG_POLS_BYPASS    0x00000080
+#define MY_FLG_POLS_TRAP      0x00000100
+#define MY_FLG_REAUTH         0x00000200
+
+#define MY_FMT_DEFAULT        0x00000000
+#define MY_FMT_DEBUG          0x00000001
+#define MY_FMT_VICI           0x00000002
+#define MY_FMT_JSON           0x00000003
+#define MY_FMT_YAML           0x00000004
+#define MY_FMT_XML            0x00000005
+
 
 //////////////////
 //              //

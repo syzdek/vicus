@@ -62,6 +62,53 @@
 ///////////////////
 // MARK: - Definitions
 
+#define  MY_SOPT              "hO:Pqu:Vv"
+#define  MY_SOPT_ALL_IKE      "a"
+#define  MY_SOPT_BYPASS       "B"
+#define  MY_SOPT_CHILD        "c:"
+#define  MY_SOPT_CHILD_ID     "C:"
+#define  MY_SOPT_DROP         "D"
+#define  MY_SOPT_COMMAND      "e:"
+#define  MY_SOPT_EVENT        "E:"
+#define  MY_SOPT_FORCE        "f"
+#define  MY_SOPT_IKE          "i:"
+#define  MY_SOPT_IKE_ID       "I:"
+#define  MY_SOPT_LEASES       "l"
+#define  MY_SOPT_LOGLEVEL     "L:"
+#define  MY_SOPT_NAME         "n:"
+#define  MY_SOPT_NOBLOCK      "N"
+#define  MY_SOPT_REAUTH       "A"
+#define  MY_SOPT_TIMEOUT      "t:"
+#define  MY_SOPT_TRAP         "T"
+
+
+#define  MY_LOPT              { "help",            no_argument,         NULL, 'h' }, \
+                              { "out-format",      required_argument,   NULL, 'O' }, \
+                              { "pretty",          no_argument,         NULL, 'P' }, \
+                              { "quiet",           no_argument,         NULL, 'q' }, \
+                              { "silent",          no_argument,         NULL, 'q' }, \
+                              { "socket",          required_argument,   NULL, 'u' }, \
+                              { "version",         no_argument,         NULL, 'V' }, \
+                              { "verbose",         no_argument,         NULL, 'v' }, \
+                              { NULL, 0, NULL, 0 }
+#define  MY_LOPT_ALL_IKE      { "all",             no_argument,         NULL, 'a' },
+#define  MY_LOPT_BYPASS       { "bypass",          no_argument,         NULL, 'B' },
+#define  MY_LOPT_CHILD        { "child",           required_argument,   NULL, 'c' },
+#define  MY_LOPT_CHILD_ID     { "child-id",        required_argument,   NULL, 'C' },
+#define  MY_LOPT_COMMAND      { "command",         required_argument,   NULL, 'e' },
+#define  MY_LOPT_DROP         { "drop",            no_argument,         NULL, 'D' },
+#define  MY_LOPT_EVENT        { "event",           required_argument,   NULL, 'E' },
+#define  MY_LOPT_FORCE        { "force",           no_argument,         NULL, 'f' },
+#define  MY_LOPT_IKE          { "ike",             required_argument,   NULL, 'i' },
+#define  MY_LOPT_IKE_ID       { "ike-id",          required_argument,   NULL, 'I' },
+#define  MY_LOPT_LEASES       { "leases",          no_argument,         NULL, 'l' },
+#define  MY_LOPT_LOGLEVEL     { "loglevel",        required_argument,   NULL, 'L' },
+#define  MY_LOPT_NAME         { "name",            required_argument,   NULL, 'n' },
+#define  MY_LOPT_NOBLOCK      { "noblock",         no_argument,         NULL, 'N' },
+#define  MY_LOPT_REAUTH       { "reauth",          no_argument,         NULL, 'A' },
+#define  MY_LOPT_TIMEOUT      { "name",            required_argument,   NULL, 'n' },
+#define  MY_LOPT_TRAP         { "trap",            no_argument,         NULL, 'T' },
+
 
 //////////////
 //          //
@@ -69,6 +116,9 @@
 //          //
 //////////////
 // MARK: - Macros
+
+#undef   MY_LOPTS
+#define  MY_LOPTS(...) (const struct option []) { __VA_ARGS__ MY_LOPT }
 
 
 /////////////////
