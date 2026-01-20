@@ -215,6 +215,17 @@ vicus_disconnect(
 }
 
 
+void
+vicus_free(
+         void *                        ptr )
+{
+   if (!(ptr))
+      return;
+   free(ptr);
+   return;
+}
+
+
 int
 vicus_get_option(
          vicus_t *                     vd,

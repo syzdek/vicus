@@ -3,6 +3,7 @@ vicus_connect
 vicus_debug
 vicus_debug_trace
 vicus_disconnect
+vicus_free
 vicus_get_option
 vicus_hexdump
 vicus_init_fd

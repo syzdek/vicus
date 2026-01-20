@@ -149,6 +149,11 @@ vicus_disconnect(
          vicus_t *                     vd );
 
 
+_VICUS_F void
+vicus_free(
+         void *                        ptr );
+
+
 _VICUS_F int
 vicus_get_option(
          vicus_t *                     vd,
