@@ -137,6 +137,11 @@
 // MARK: - Prototypes
 
 static int
+my_usage(
+         my_config_t *                 cnf );
+
+
+static int
 my_version(
          my_config_t *                 cnf );
 
@@ -921,6 +926,81 @@ my_prog_name(
    snprintf(buff, sizeof(buff), "%s %s", prog_name, cnf->widget->name);
 
    return(buff);
+}
+
+
+int
+my_usage(
+         my_config_t *                 cnf )
+{
+   size_t                     pos;
+   const char *               widget_name;
+   const char *               widget_help;
+   const char *               short_opt;
+   const my_widget_t *        widget;
+
+   assert(cnf != NULL);
+
+   widget_name  = (!(cnf->widget)) ? "widget"               : cnf->widget->name;
+   short_opt    = ((cnf->widget))  ? cnf->widget->short_opt : MY_SOPT;
+   short_opt    = ((short_opt))    ? short_opt              : MY_SOPT;
+   widget_help  = "";
+   if ((cnf->widget))
+      widget_help = ((cnf->widget->usage)) ? cnf->widget->usage : "";
+
+   if ((widget = cnf->widget) == NULL)
+   {  printf("Usage: %s [OPTIONS] <address> [ <address> [ ... <address> ] ]\n", PROGRAM_NAME);
+      printf("       %s [OPTIONS] %s %s\n", PROGRAM_NAME, widget_name, widget_help);
+      printf("       vici-%s %s\n", widget_name, widget_help);
+      printf("       vici%s %s\n", widget_name, widget_help);
+   } else if (cnf->symlinked == 0)
+   {  widget_name = (widget->alias_idx == -1) ? widget_name : widget->aliases[widget->alias_idx];
+      printf("Usage: %s %s %s\n", PROGRAM_NAME, widget_name, widget_help);
+   }
+   else
+   {  printf("Usage: %s %s\n", cnf->prog_name, widget_help);
+   };
+   printf("OPTIONS:\n");
+   if ((strchr(short_opt, 'A'))) printf("  -A,        --reauth          reauthenticate instead of rekey an IKEv2 SA\n");
+   if ((strchr(short_opt, 'a'))) printf("  -a,        --all             all IKE connections and IKE SA\n");
+   if ((strchr(short_opt, 'B'))) printf("  -B,        --bypass          list bypass policies\n");
+   if ((strchr(short_opt, 'C'))) printf("  -C id,     --child-id=id     filter child by unique identifier\n");
+   if ((strchr(short_opt, 'c'))) printf("  -c name,   --child=name      filter child SA or child connection by name\n");
+   if ((strchr(short_opt, 'D'))) printf("  -D,        --drop            list drop policies\n");
+   if ((strchr(short_opt, 'E'))) printf("  -E str,    --event=str       vici event to register\n");
+   if ((strchr(short_opt, 'e'))) printf("  -e str,    --command=str     vici command to queue\n");
+   if ((strchr(short_opt, 'f'))) printf("  -f,        --force           terminate IKE SA immediately unless using timeout\n");
+   if ((strchr(short_opt, 'h'))) printf("  -h,        --help            print this help and exit\n");
+   if ((strchr(short_opt, 'I'))) printf("  -I id,     --ike-id=id       filter IKE SA by unique identifier\n");
+   if ((strchr(short_opt, 'i'))) printf("  -i name,   --ike=name        filter IKE SA or IKE connection by name\n");
+   if ((strchr(short_opt, 'L'))) printf("  -L level,  --loglevel=level  verbosity of log\n");
+   if ((strchr(short_opt, 'l'))) printf("  -l,        --leases          list leases of each pool\n");
+   if ((strchr(short_opt, 'N'))) printf("  -N,        --noblock         don't wait for IKE_SAs in use\n");
+   if ((strchr(short_opt, 'n'))) printf("  -n str,    --name=str        filter by name\n");
+   if ((strchr(short_opt, 'O'))) printf("  -O fmt,    --out-format=fmt  output format (json, vici, xml, or yaml)\n");
+   if ((strchr(short_opt, 'P'))) printf("  -P,        --pretty          beautify response messages\n");
+   if ((strchr(short_opt, 'q'))) printf("  -q,        --quiet, --silent do not print messages\n");
+   if ((strchr(short_opt, 'T'))) printf("  -T,        --trap            list trap policies\n");
+   if ((strchr(short_opt, 't'))) printf("  -t ms,     --timeout=ms      timeout in milliseconds before detaching\n");
+   if ((strchr(short_opt, 'u'))) printf("  -u path,   --socket=path     path to vici socket\n");
+   if ((strchr(short_opt, 'V'))) printf("  -V,        --version         print version number and exit\n");
+   if ((strchr(short_opt, 'v'))) printf("  -v,        --verbose         print verbose messages\n");
+   if (!(cnf->widget))
+   {  printf("WIDGETS:\n");
+      for(pos = 0; my_widget_map[pos].name != NULL; pos++)
+      {  widget = &my_widget_map[pos];
+         if ( ((widget->desc)) && ((widget->func_exec)) )
+            printf("  %-25s %s\n", widget->name, widget->desc);
+      };
+      printf("\n");
+      return(0);
+   };
+
+   if ((cnf->widget))
+      if ((cnf->widget->func_usage))
+         cnf->widget->func_usage(cnf);
+
+   return(0);
 }
 
 
