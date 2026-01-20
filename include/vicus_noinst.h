@@ -55,10 +55,10 @@
 
 #ifdef USE_DEBUG
 #  define VicusDebug(...)  vicus_debug(__FILE__, __LINE__, __VA_ARGS__)
-#  define VicusTrace()     vicus_debug_trace(__FILE__, __LINE__, __FUNCTION__)
+#  define VicusTrace()     vicus_debug_trace(__FILE__, __LINE__, __func__)
 #else
 #  define VicusDebug(...)  /* vicus_debug(__FILE__, __LINE__, __VA_ARGS__) */
-#  define VicusTrace()     /* vicus_debug_trace(__FILE__, __LINE__, __FUNCTION__) */
+#  define VicusTrace()     /* vicus_debug_trace(__FILE__, __LINE__, __func__) */
 #endif
 
 
