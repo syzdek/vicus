@@ -109,6 +109,8 @@ vicus_freeaddrinfo(
    vicus_addrinfo_t *   res_rec;
    vicus_addrinfo_t *   res_next;
 
+   VicusTrace();
+
    if (!(res))
       return;
 
@@ -135,6 +137,8 @@ vicus_getaddrinfo(
    struct addrinfo *    ai_rec;
    vicus_addrinfo_t *   res;
    vicus_addrinfo_t *   res_rec;
+
+   VicusTrace();
 
    assert(hostname != NULL);
    assert(resp != NULL);
@@ -185,6 +189,8 @@ vicus_getaddrinfo_copy(
 {
    unsigned                addrlen;
    vicus_addrinfo_t *      dst;
+
+   VicusTrace();
 
    assert(dstp != NULL);
    assert(src  != NULL);
