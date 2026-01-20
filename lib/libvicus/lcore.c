@@ -123,6 +123,7 @@ vicus_alloc(
    if ((vd = malloc(sizeof(vicus_t))) == NULL)
       return(VICUS_ENOMEM);
    memset(vd, 0, sizeof(vicus_t));
+   vd->s = -1;
 
    if ((rc = vicus_net_initialize(vd)) != VICUS_SUCCESS)
    {  free(vd);
