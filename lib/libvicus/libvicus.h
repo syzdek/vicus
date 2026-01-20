@@ -162,6 +162,12 @@ _VICUS_F int
 vicus_net_terminate(
          vicus_t *                     vd );
 
+extern int
+vicus_ntop(
+         vicus_addrinfo_t *            ai,
+         char *                        dst,
+         size_t                        len );
+
 
 #endif /* end of header */
 

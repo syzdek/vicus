@@ -53,6 +53,7 @@
 #else
 #   include <arpa/inet.h>
 #   include <sys/socket.h>
+#   include <sys/un.h>
 #   include <netdb.h>
 #endif
 
@@ -206,6 +207,45 @@ vicus_getaddrinfo_copy(
    };
 
    *dstp = dst;
+
+   return(0);
+}
+
+
+int
+vicus_ntop(
+         vicus_addrinfo_t *            ai,
+         char *                        dst,
+         size_t                        len )
+{
+   void *               addr;
+
+   assert(ai   != NULL);
+   assert(dst  != NULL);
+
+   switch(ai->ai_family)
+   {  case PF_INET:
+         addr = &((struct sockaddr_in *)ai->ai_addr)->sin_addr;
+         if ((inet_ntop(ai->ai_family, addr, dst, (socklen_t)len)))
+            return(VICUS_EUNKNOWN);
+         break;
+
+      case PF_INET6:
+         addr = &((struct sockaddr_in6 *)ai->ai_addr)->sin6_addr;
+         if ((inet_ntop(ai->ai_family, addr, dst, (socklen_t)len)))
+            return(VICUS_EUNKNOWN);
+         break;
+
+      case PF_UNIX:
+         addr = &((struct sockaddr_un *)ai->ai_addr)->sun_path;
+         if ((len+1) < strlen((const char *)addr))
+            return(VICUS_EUNKNOWN);
+         vicus_strlcpy(dst, (const char *)addr, len);
+         break;
+
+      default:
+         return(VICUS_ENOTSUP);
+   };
 
    return(0);
 }
