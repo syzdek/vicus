@@ -76,6 +76,11 @@
 //////////////////
 // MARK: - Prototypes
 
+static int
+vicus_connect_tcp(
+         vicus_t *                     vd,
+         vicus_addrinfo_t *            ai );
+
 
 /////////////////
 //             //
@@ -83,6 +88,81 @@
 //             //
 /////////////////
 // MARK: - Functions
+
+int
+vicus_connect(
+         vicus_t *                     vd )
+{
+   int                     rc;
+   vicus_urldesc_t *       vudp;
+   vicus_addrinfo_t *      ai;
+
+   VicusTrace();
+   assert(vd != NULL);
+
+   if (!(vd->vudp))
+      return(VICUS_ENOTSUP);
+
+   for(vudp = vd->vudp; ((vudp)); vudp = vudp->vud_next)
+   {  VicusDebug("   using %s ...\n", vudp->vud_uri);
+      for(ai = vudp->vud_addrinfo; ((ai)); ai = ai->ai_next)
+      {  switch(ai->ai_family)
+         {  case PF_INET:     rc = vicus_connect_tcp(vd, ai);  break;
+            case PF_INET6:    rc = vicus_connect_tcp(vd, ai);  break;
+            default:          return(VICUS_ENOTSUP);
+         };
+         if (rc == VICUS_SUCCESS)
+            return(0);
+      };
+   };
+
+   return(VICUS_ECONNECT);
+}
+
+
+int
+vicus_connect_tcp(
+         vicus_t *                     vd,
+         vicus_addrinfo_t *            ai )
+{
+   int                           s;
+   int                           opt;
+   int                           rc;
+   struct sockaddr_storage *     sa;
+   char                          addrstr[INET_ADDRSTRLEN+INET6_ADDRSTRLEN];
+   u_long                        mode;
+
+   VicusTrace();
+   assert(vd != NULL);
+   assert(ai != NULL);
+
+   vicus_ntop(ai, addrstr, sizeof(addrstr));
+   VicusDebug("   connecting to %s ...\n", addrstr);
+
+   sa       = ai->ai_addr;
+
+   // create socket
+   if ((s = socket(sa->ss_family, SOCK_STREAM, IPPROTO_TCP)) == -1)
+      return(-1);
+
+   // set socket options
+   opt = 1; setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (void *)&opt, sizeof(int));
+   opt = 1; setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, (void *)&opt, sizeof(int));
+
+   // connect to server
+   if ((rc = connect(s, (struct sockaddr *)sa, ai->ai_addrlen)) == -1)
+   {  close(s);
+      return(-1);
+   };
+
+   // set non-blocking
+   mode = 1; ioctlsocket(s, FIONBIO, &mode);
+
+   vd->s = s;
+
+   return(0);
+}
+
 
 int
 vicus_getunixinfo(
