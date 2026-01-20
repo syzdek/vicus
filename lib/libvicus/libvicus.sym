@@ -2,6 +2,7 @@ vicus_connect
 vicus_debug
 vicus_debug_trace
 vicus_disconnect
+vicus_get_option
 vicus_init_fd
 vicus_initialize
 vicus_set_option

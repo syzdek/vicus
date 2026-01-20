@@ -93,6 +93,7 @@
 #define VICUS_OPT_DEBUG                1
 #define VICUS_OPT_TRACE                2
 #define VICUS_OPT_DEBUG_STDERR         3
+#define VICUS_OPT_SOCKET               4
 
 #define VICUS_TRUE                     1
 #define VICUS_FALSE                    0
@@ -141,6 +142,13 @@ vicus_connect(
 _VICUS_F int
 vicus_disconnect(
          vicus_t *                     vd );
+
+
+_VICUS_F int
+vicus_get_option(
+         vicus_t *                     vd,
+         int                           option,
+         void *                        outvalue );
 
 
 _VICUS_F int

@@ -79,6 +79,12 @@ vicus_alloc(
 
 
 static int
+vicus_get_option_global(
+         int                           option,
+         void *                        outvalue );
+
+
+static int
 vicus_set_option_global(
          int                           option,
          const void *                  invalue );
@@ -201,6 +207,65 @@ vicus_disconnect(
    ldap_free_urldesc(vd->vudp);
 
    free(vd);
+
+   return(0);
+}
+
+
+int
+vicus_get_option(
+         vicus_t *                     vd,
+         int                           option,
+         void *                        outvalue )
+{
+   VicusTrace();
+
+   assert(vd         != NULL);
+   assert(outvalue   != NULL);
+
+   if (!(vd))
+      return(vicus_get_option_global(option, outvalue));
+
+   switch(option)
+   {
+      case VICUS_OPT_SOCKET:
+         *((int *)outvalue) = vd->s;
+         break;
+
+      default:
+         return(VICUS_EINVAL);
+   };
+
+   return(0);
+}
+
+
+int
+vicus_get_option_global(
+         int                           option,
+         void *                        outvalue )
+{
+   VicusTrace();
+
+   assert(outvalue   != NULL);
+
+   switch(option)
+   {
+      case VICUS_OPT_DEBUG:
+         *((int *)outvalue) = vicus_opt_debug;
+         break;
+
+      case VICUS_OPT_DEBUG_STDERR:
+         *((int *)outvalue)  = (vicus_opt_debug_fileno == STDERR_FILENO) ? VICUS_TRUE : VICUS_FALSE;
+         break;
+
+      case VICUS_OPT_TRACE:
+         *((int *)outvalue) = vicus_opt_trace;
+         break;
+
+      default:
+         return(VICUS_EINVAL);
+   };
 
    return(0);
 }
