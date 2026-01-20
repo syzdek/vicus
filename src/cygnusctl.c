@@ -87,6 +87,11 @@
 // MARK: - Prototypes
 
 extern int
+my_version(
+         my_config_t *                 cnf );
+
+
+extern int
 main(
          int                           argc,
          char **                       argv );
@@ -143,6 +148,20 @@ my_verbose(
    vfprintf(stderr, fmt, args);
    va_end(args);
    return;
+}
+
+
+int
+my_version(
+         my_config_t *                 cnf )
+{
+   const char * prog_name;
+   prog_name = ((cnf)) ? cnf->prog_name : PROGRAM_NAME;
+   printf("%s (%s) %s\n", prog_name, PACKAGE_NAME, PACKAGE_VERSION);
+   printf("%s\n", PACKAGE_COPYRIGHT);
+   printf("All rights reserved.\n");
+   printf("\n");
+   return(0);
 }
 
 
