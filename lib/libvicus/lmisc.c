@@ -46,6 +46,8 @@
 #include <string.h>
 #include <strings.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <ctype.h>
 
 
 //////////////
@@ -149,6 +151,48 @@ vicus_base64_encode(
    dst[len] = '\0';
 
    return((int)len);
+}
+
+
+int
+vicus_hexdump(
+         const void *                  dat,
+         size_t                        datlen )
+{
+   size_t               x;
+   const uint8_t *      b;
+   char                 str[17];
+
+   assert(dat != NULL);
+
+   b        = dat;
+   str[16]  = '\0';
+
+   for(x = 0; (x < datlen); x++)
+   {  if (!(x & 0x00ff))
+         printf("\n offset    0  1  2  3   4  5  6  7   8  9  a  b   c  d  e  f  0123456789abcdef\n");
+      str[x&0x0f] = ((isprint((int)b[x]))) ? (char)b[x] : '.';
+      switch(x & 0x000f)
+      {  case 0x00:  printf("%08x  %02x", (unsigned)(x & ~0x0f), b[x]); break;
+         case 0x04:  printf("  %02x", b[x]); break;
+         case 0x08:  printf("  %02x", b[x]); break;
+         case 0x0c:  printf("  %02x", b[x]); break;
+         case 0x0f:  printf(" %02x  %s\n", b[x], str); break;
+         default:    printf(" %02x", b[x]); break;
+      };
+   };
+   for(; ((x & 0x0f)); x++)
+   {  str[x&0x0f] = ' ';
+      switch(x & 0x000f)
+      {  case 0x04:  printf("    "); break;
+         case 0x08:  printf("    "); break;
+         case 0x0c:  printf("    "); break;
+         case 0x0f:  printf("     %s\n", str); break;
+         default:    printf("   "); break;
+      };
+   };
+
+   return(0);
 }
 
 

@@ -53,6 +53,7 @@
 #endif
 
 #include <vicus.h>
+#include <vicus_noinst.h>
 #include <inttypes.h>
 
 

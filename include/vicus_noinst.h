@@ -126,6 +126,12 @@ vicus_base64_encode(
          size_t                        n );
 
 
+_VICUS_F int
+vicus_hexdump(
+         const void *                  dat,
+         size_t                        datlen );
+
+
 _VICUS_F size_t
 vicus_strlcat(
          char * restrict               dst,
