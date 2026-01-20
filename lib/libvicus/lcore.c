@@ -117,7 +117,6 @@ vicus_alloc(
    vicus_t *      vd;
 
    VicusTrace();
-
    assert(vdp != NULL);
 
    if ((vd = malloc(sizeof(vicus_t))) == NULL)
@@ -233,7 +232,6 @@ vicus_get_option(
          void *                        outvalue )
 {
    VicusTrace();
-
    assert(outvalue != NULL);
 
    if (!(vd))
@@ -267,7 +265,6 @@ vicus_get_option_global(
          void *                        outvalue )
 {
    VicusTrace();
-
    assert(outvalue != NULL);
 
    switch(option)
@@ -301,7 +298,6 @@ vicus_init_fd(
    vicus_t *            vd;
 
    VicusTrace();
-
    assert(vdp != NULL);
 
    if ((rc = vicus_alloc(&vd)) != VICUS_SUCCESS)
@@ -325,7 +321,6 @@ vicus_initialize(
    vicus_urldesc_t *    vudp;
 
    VicusTrace();
-
    assert(vdp != NULL);
 
    uri = ((uri)) ? uri : VICUS_DFLT_URI;
@@ -350,7 +345,6 @@ vicus_set_option(
          const void *                  invalue )
 {
    VicusTrace();
-
    assert(invalue != NULL);
 
    if (!(vd))
@@ -385,7 +379,6 @@ vicus_set_option_global(
    int      ival;
 
    VicusTrace();
-
    assert(invalue != NULL);
 
    ival = *((const int *)invalue);
