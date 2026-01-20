@@ -100,9 +100,6 @@
 #define VICUS_TRUE                     1
 #define VICUS_FALSE                    0
 
-#define VICUS_PROTO_UNIX               0x00000001
-#define VICUS_PROTO_TCP                0x00000002
-
 #define VICUS_URI                      "/var/run/charon.vici"
 
 
@@ -158,8 +155,7 @@ vicus_get_option(
 _VICUS_F int
 vicus_init_fd(
          vicus_t **                    vdp,
-         int                           fd,
-         int                           proto );
+         int                           fd );
 
 
 _VICUS_F int

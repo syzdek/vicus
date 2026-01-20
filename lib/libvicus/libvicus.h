@@ -89,7 +89,7 @@
 
 struct _libvicus
 {  int                        s;
-   int                        s_proto;
+   int                        __int_padding;
    vicus_addrinfo_t *         s_ai;
    vicus_urldesc_t *          s_vudp;
    vicus_urldesc_t *          vudp;       // vicus URL description pointer
