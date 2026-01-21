@@ -410,7 +410,6 @@ vicus_recv(
          void *                        buff,
          size_t                        len )
 {
-   int               rc;
    ssize_t           size;
    struct pollfd     fds;
 
@@ -423,8 +422,12 @@ vicus_recv(
    fds.fd      = vd->sock->s;
    fds.revents = 0;
    fds.events  = POLLIN;
-   if ((rc = poll(&fds, 1, 10000)) == -1)
+   if (poll(&fds, 1, (vd->net_timeout*1000)) == -1)
       return(VICUS_EUNKNOWN);
+   if ( ((fds.revents & POLLHUP)) || ((fds.revents & POLLNVAL)) )
+   {  vicus_close(vd);
+      return(VICUS_ESERVER);
+   };
    if (!(fds.revents & POLLIN))
    {  vicus_close(vd);
       return(VICUS_EUNKNOWN);
@@ -444,7 +447,6 @@ vicus_send(
          const void *                  buff,
          size_t                        len )
 {
-   int               rc;
    ssize_t           size;
    struct pollfd     fds;
 
@@ -457,7 +459,7 @@ vicus_send(
    fds.fd      = vd->sock->s;
    fds.revents = 0;
    fds.events  = POLLOUT;
-   if ((rc = poll(&fds, 1, 10000)) == -1)
+   if (poll(&fds, 1, (vd->net_timeout*1000)) == -1)
       return(VICUS_EUNKNOWN);
    if (!(fds.revents & POLLOUT))
    {  vicus_close(vd);
