@@ -81,6 +81,10 @@
 //////////////////
 // MARK: - Data Types
 
+struct _libvicus_socket
+{  int                        s;
+};
+
 
 //////////////////
 //              //
@@ -92,13 +96,15 @@
 static int
 vicus_connect_tcp(
          vicus_t *                     vd,
-         vicus_addrinfo_t *            ai );
+         vicus_addrinfo_t *            ai,
+         int *                         sp );
 
 
 static int
 vicus_connect_unix(
          vicus_t *                     vd,
-         vicus_addrinfo_t *            ai );
+         vicus_addrinfo_t *            ai,
+         int *                         sp );
 
 
 /////////////////
@@ -115,12 +121,14 @@ vicus_close(
    VicusTrace();
    assert(vd != NULL);
 
-   if (vd->s != -1)
-      close(vd->s);
-
-   vd->s       = -1;
-   vd->s_ai    = NULL;
-   vd->s_vudp  = NULL;
+   if ((vd->sock))
+   {  if (vd->sock->s != -1)
+         close(vd->sock->s);
+      free(vd->sock);
+   };
+   vd->sock       = NULL;
+   vd->sock_ai    = NULL;
+   vd->sock_vudp  = NULL;
 
    return(0);
 }
@@ -131,6 +139,7 @@ vicus_connect(
          vicus_t *                     vd )
 {
    int                     rc;
+   int                     s;
    vicus_urldesc_t *       vudp;
    vicus_addrinfo_t *      ai;
 
@@ -139,19 +148,26 @@ vicus_connect(
 
    if (!(vd->vudp))
       return(VICUS_ENOTSUP);
+   if ((vd->sock))
+      return(0);
 
    for(vudp = vd->vudp; ((vudp)); vudp = vudp->vud_next)
    {  VicusDebug("   using %s ...\n", vudp->vud_uri);
       for(ai = vudp->vud_addrinfo; ((ai)); ai = ai->ai_next)
       {  switch(ai->ai_family)
-         {  case PF_INET:     rc = vicus_connect_tcp(vd, ai);  break;
-            case PF_INET6:    rc = vicus_connect_tcp(vd, ai);  break;
-            case PF_UNIX:     rc = vicus_connect_unix(vd, ai); break;
+         {  case PF_INET:     rc = vicus_connect_tcp(vd,  ai, &s); break;
+            case PF_INET6:    rc = vicus_connect_tcp(vd,  ai, &s); break;
+            case PF_UNIX:     rc = vicus_connect_unix(vd, ai, &s); break;
             default:          return(VICUS_ENOTSUP);
          };
          if (rc == VICUS_SUCCESS)
-         {  vd->s_ai    = ai;
-            vd->s_vudp  = vudp;
+         {  if ((vd->sock = malloc(sizeof(vicus_socket_t))) == NULL)
+            {  close(s);
+               return(VICUS_ENOMEM);
+            };
+            vd->sock->s    = s;
+            vd->sock_ai    = ai;
+            vd->sock_vudp  = vudp;
             return(0);
          };
       };
@@ -164,7 +180,8 @@ vicus_connect(
 int
 vicus_connect_tcp(
          vicus_t *                     vd,
-         vicus_addrinfo_t *            ai )
+         vicus_addrinfo_t *            ai,
+         int *                         sp )
 {
    int                           s;
    int                           opt;
@@ -218,7 +235,7 @@ vicus_connect_tcp(
       return(-1);
    };
 
-   vd->s = s;
+   *sp = s;
 
    return(0);
 }
@@ -227,7 +244,8 @@ vicus_connect_tcp(
 int
 vicus_connect_unix(
          vicus_t *                     vd,
-         vicus_addrinfo_t *            ai )
+         vicus_addrinfo_t *            ai,
+         int *                         sp )
 {
    int                           s;
    int                           opt;
@@ -275,7 +293,7 @@ vicus_connect_unix(
       return(-1);
    };
 
-   vd->s = s;
+   *sp = s;
 
    return(0);
 }
@@ -326,11 +344,52 @@ vicus_getunixinfo(
 
 
 int
+vicus_net_get_fd(
+         vicus_t *                     vd,
+         int *                         fdp )
+{
+   VicusTrace();
+   assert(vd  != NULL);
+   assert(fdp != NULL);
+
+   if (!(vd->sock))
+   {  *fdp = -1;
+      return(0);
+   };
+
+   *fdp = vd->sock->s;
+
+   return(0);
+}
+
+
+int
 vicus_net_initialize(
          vicus_t *                     vd )
 {
    VicusTrace();
    assert(vd != NULL);
+   return(0);
+}
+
+
+int
+vicus_net_set_fd(
+         vicus_t *                     vd,
+         int                           fd )
+{
+   VicusTrace();
+   assert(vd  != NULL);
+
+   if (fd == -1)
+      return(VICUS_EINVAL);
+   if ((vd->sock))
+      return(VICUS_ENOTSUP);
+
+   if ((vd->sock = malloc(sizeof(vicus_socket_t))) == NULL)
+      return(VICUS_ENOMEM);
+   vd->sock->s = fd;
+
    return(0);
 }
 
@@ -358,10 +417,10 @@ vicus_recv(
    VicusTrace();
    assert(vd != NULL);
 
-   if (vd->s == -1)
+   if (vd->sock == NULL)
       return(VICUS_ECONNECT);
 
-   fds.fd      = vd->s;
+   fds.fd      = vd->sock->s;
    fds.revents = 0;
    fds.events  = POLLIN;
    if ((rc = poll(&fds, 1, 10000)) == -1)
@@ -370,7 +429,7 @@ vicus_recv(
    {  vicus_close(vd);
       return(VICUS_EUNKNOWN);
    };
-   if ((size = recv(vd->s, buff, len, 0)) == -1)
+   if ((size = recv(vd->sock->s, buff, len, 0)) == -1)
    {  vicus_close(vd);
       return(VICUS_EUNKNOWN);
    };
@@ -392,10 +451,10 @@ vicus_send(
    VicusTrace();
    assert(vd != NULL);
 
-   if (vd->s == -1)
+   if (vd->sock == NULL)
       return(VICUS_ECONNECT);
 
-   fds.fd      = vd->s;
+   fds.fd      = vd->sock->s;
    fds.revents = 0;
    fds.events  = POLLOUT;
    if ((rc = poll(&fds, 1, 10000)) == -1)
@@ -404,7 +463,7 @@ vicus_send(
    {  vicus_close(vd);
       return(VICUS_EUNKNOWN);
    };
-   if ((size = send(vd->s, buff, len, 0)) == -1)
+   if ((size = send(vd->sock->s, buff, len, 0)) == -1)
    {  vicus_close(vd);
       return(VICUS_EUNKNOWN);
    };

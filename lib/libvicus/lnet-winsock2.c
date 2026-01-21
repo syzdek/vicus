@@ -71,6 +71,18 @@
 
 //////////////////
 //              //
+//  Data Types  //
+//              //
+//////////////////
+// MARK: - Data Types
+
+struct _libvicus_socket
+{  SOCKET                     s;
+};
+
+
+//////////////////
+//              //
 //  Prototypes  //
 //              //
 //////////////////
@@ -79,7 +91,8 @@
 static int
 vicus_connect_tcp(
          vicus_t *                     vd,
-         vicus_addrinfo_t *            ai );
+         vicus_addrinfo_t *            ai,
+         SOCKET *                      sp );
 
 
 /////////////////
@@ -90,12 +103,33 @@ vicus_connect_tcp(
 // MARK: - Functions
 
 int
+vicus_close(
+         vicus_t *                     vd )
+{
+   VicusTrace();
+   assert(vd != NULL);
+
+   if ((vd->sock))
+   {  if (vd->sock->s != INVALID_SOCKET)
+         socketclose(vd->sock->s);
+      free(vd->sock);
+   };
+   vd->sock       = NULL;
+   vd->sock_ai    = NULL;
+   vd->sock_vudp  = NULL;
+
+   return(0);
+}
+
+
+int
 vicus_connect(
          vicus_t *                     vd )
 {
    int                     rc;
    vicus_urldesc_t *       vudp;
    vicus_addrinfo_t *      ai;
+   SOCKET                  s;
 
    VicusTrace();
    assert(vd != NULL);
@@ -107,12 +141,20 @@ vicus_connect(
    {  VicusDebug("   using %s ...\n", vudp->vud_uri);
       for(ai = vudp->vud_addrinfo; ((ai)); ai = ai->ai_next)
       {  switch(ai->ai_family)
-         {  case PF_INET:     rc = vicus_connect_tcp(vd, ai);  break;
-            case PF_INET6:    rc = vicus_connect_tcp(vd, ai);  break;
+         {  case PF_INET:     rc = vicus_connect_tcp(vd, ai, &s);  break;
+            case PF_INET6:    rc = vicus_connect_tcp(vd, ai, &s);  break;
             default:          return(VICUS_ENOTSUP);
          };
          if (rc == VICUS_SUCCESS)
+         {  if ((vd->sock = malloc(sizeof(vicus_socket_t))) == NULL)
+            {  socketclose(s);
+               return(VICUS_ENOMEM);
+            };
+            vd->sock->s    = s;
+            vd->sock_ai    = ai;
+            vd->sock_vudp  = vudp;
             return(0);
+         };
       };
    };
 
@@ -123,9 +165,10 @@ vicus_connect(
 int
 vicus_connect_tcp(
          vicus_t *                     vd,
-         vicus_addrinfo_t *            ai )
+         vicus_addrinfo_t *            ai,
+         SOCKET *                      sp )
 {
-   int                           s;
+   SOCKET                        s;
    int                           opt;
    int                           rc;
    struct sockaddr_storage *     sa;
@@ -142,7 +185,7 @@ vicus_connect_tcp(
    sa       = ai->ai_addr;
 
    // create socket
-   if ((s = socket(sa->ss_family, SOCK_STREAM, IPPROTO_TCP)) == -1)
+   if ((s = socket(sa->ss_family, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET)
       return(-1);
 
    // set socket options
@@ -151,14 +194,14 @@ vicus_connect_tcp(
 
    // connect to server
    if ((rc = connect(s, (struct sockaddr *)sa, ai->ai_addrlen)) == -1)
-   {  close(s);
+   {  socketclose(s);
       return(-1);
    };
 
    // set non-blocking
    mode = 1; ioctlsocket(s, FIONBIO, &mode);
 
-   vd->s = s;
+   *sp = s;
 
    return(0);
 }
@@ -183,6 +226,18 @@ vicus_getunixinfo(
 
 
 int
+vicus_net_get_fd(
+         vicus_t *                     vd,
+         int *                         fdp )
+{
+   VicusTrace();
+   assert(vd  != NULL);
+   assert(fdp != NULL);
+   return(VICUS_ENOTSUP);
+}
+
+
+int
 vicus_net_initialize(
          vicus_t *                     vd )
 {
@@ -197,6 +252,19 @@ vicus_net_initialize(
 
    return(0);
 }
+
+
+int
+vicus_net_set_fd(
+         vicus_t *                     vd,
+         int                           fd )
+{
+   VicusTrace();
+   assert(vd != NULL);
+   assert(fd != -1);
+   return(VICUS_ENOTSUP);
+}
+
 
 
 int

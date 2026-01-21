@@ -123,8 +123,7 @@ vicus_alloc(
    if ((vd = malloc(sizeof(vicus_t))) == NULL)
       return(VICUS_ENOMEM);
    memset(vd, 0, sizeof(vicus_t));
-   vd->s = -1;
-   vd->s_timeout     = VICUS_DFLT_NETTIME;
+   vd->net_timeout   = VICUS_DFLT_NETTIME;
    vd->req_timeout   = VICUS_DFLT_REQTIME;
 
    if ((rc = vicus_net_initialize(vd)) != VICUS_SUCCESS)
@@ -233,6 +232,7 @@ vicus_get_option(
          int                           option,
          void *                        outvalue )
 {
+   int         rc;
    char *      str;
    char        buff[256];
    size_t      len;
@@ -245,9 +245,9 @@ vicus_get_option(
 
    switch(option)
    {  case VICUS_OPT_CUR_ADDR:
-         if (!(vd->s_ai))
+         if (!(vd->sock_ai))
             return(VICUS_ENOTSUP);
-         if (vicus_ntop(vd->s_ai, buff, sizeof(buff)) != VICUS_SUCCESS)
+         if (vicus_ntop(vd->sock_ai, buff, sizeof(buff)) != VICUS_SUCCESS)
             return(VICUS_EUNKNOWN);
          len = strlen(buff) + 1;
          if ((str = malloc(len)) == NULL)
@@ -257,15 +257,15 @@ vicus_get_option(
          break;
 
       case VICUS_OPT_CUR_URL:
-         if (!(vd->s_vudp))
+         if (!(vd->sock_vudp))
             return(VICUS_ENOTSUP);
-         if ((str = strdup(vd->s_vudp->vud_uri)) == NULL)
+         if ((str = strdup(vd->sock_vudp->vud_uri)) == NULL)
             return(VICUS_ENOMEM);
          *((char **)outvalue) = str;
          break;
 
       case VICUS_OPT_NETTIME:
-         *((int *)outvalue) = vd->s_timeout;
+         *((int *)outvalue) = vd->net_timeout;
          break;
 
       case VICUS_OPT_REQTIME:
@@ -273,7 +273,8 @@ vicus_get_option(
          break;
 
       case VICUS_OPT_SOCKET:
-         *((int *)outvalue) = vd->s;
+         if ((rc = vicus_net_get_fd(vd, outvalue)) != VICUS_SUCCESS)
+            return(rc);
          break;
 
       default:
@@ -332,7 +333,10 @@ vicus_init_fd(
    if ((rc = vicus_alloc(&vd)) != VICUS_SUCCESS)
       return(rc);
 
-   vd->s = fd;
+   if ((rc = vicus_net_set_fd(vd, fd)) != VICUS_SUCCESS)
+   {  vicus_disconnect(vd);
+      return(rc);
+   };
 
    *vdp = vd;
 
@@ -387,7 +391,7 @@ vicus_set_option(
          return(VICUS_ENOTSUP);
 
       case VICUS_OPT_NETTIME:
-         vd->s_timeout = *((const int *)invalue);
+         vd->net_timeout = *((const int *)invalue);
          break;
 
       case VICUS_OPT_REQTIME:

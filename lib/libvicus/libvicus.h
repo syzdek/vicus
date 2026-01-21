@@ -88,12 +88,11 @@
 // MARK: - Data Types
 
 struct _libvicus
-{  int                        s;
-   int                        s_timeout;
+{  int                        net_timeout;
    int                        req_timeout;
-   int                        __int_padding;
-   vicus_addrinfo_t *         s_ai;
-   vicus_urldesc_t *          s_vudp;
+   vicus_socket_t *           sock;
+   vicus_addrinfo_t *         sock_ai;
+   vicus_urldesc_t *          sock_vudp;
    vicus_urldesc_t *          vudp;       // vicus URL description pointer
 };
 
@@ -164,8 +163,20 @@ vicus_getunixinfo(
 
 
 extern int
+vicus_net_get_fd(
+         vicus_t *                     vd,
+         int *                         fdp );
+
+
+extern int
 vicus_net_initialize(
          vicus_t *                     vd );
+
+
+extern int
+vicus_net_set_fd(
+         vicus_t *                     vd,
+         int                           fd );
 
 
 extern int

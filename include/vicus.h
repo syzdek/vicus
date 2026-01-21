@@ -120,6 +120,7 @@
 typedef struct _libvicus               vicus_t;
 typedef struct _libvicus_urldesc       vicus_urldesc_t;
 typedef struct _libvicus_addrinfo      vicus_addrinfo_t;
+typedef struct _libvicus_socket        vicus_socket_t;
 
 
 /////////////////
