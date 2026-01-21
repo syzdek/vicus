@@ -111,7 +111,7 @@ vicus_close(
 
    if ((vd->sock))
    {  if (vd->sock->s != INVALID_SOCKET)
-         socketclose(vd->sock->s);
+         closesocket(vd->sock->s);
       free(vd->sock);
    };
    vd->sock       = NULL;
@@ -147,7 +147,7 @@ vicus_connect(
          };
          if (rc == VICUS_SUCCESS)
          {  if ((vd->sock = malloc(sizeof(vicus_socket_t))) == NULL)
-            {  socketclose(s);
+            {  closesocket(s);
                return(VICUS_ENOMEM);
             };
             vd->sock->s    = s;
@@ -194,7 +194,7 @@ vicus_connect_tcp(
 
    // connect to server
    if ((rc = connect(s, (struct sockaddr *)sa, ai->ai_addrlen)) == -1)
-   {  socketclose(s);
+   {  closesocket(s);
       return(-1);
    };
 
@@ -276,5 +276,76 @@ vicus_net_terminate(
    WSACleanup();
    return(0);
 }
+
+
+ssize_t
+vicus_recv(
+         vicus_t *                     vd,
+         void *                        buff,
+         size_t                        len )
+{
+   int               size;
+   FD_SET            readfds;
+   int               rc;
+
+   VicusTrace();
+   assert(vd != NULL);
+
+   if (vd->sock == NULL)
+      return(VICUS_ECONNECT);
+
+   FD_ZERO(&readfds);
+   FD_SET(vd->sock->s, &readfds);
+   if ((rc = select(0, &readfds, NULL, NULL, NULL)) == SOCKET_ERROR)
+   {  vicus_close(vd);
+      return(VICUS_ESERVER);
+   };
+   if (!(FD_ISSET(vd->sock->s, &readfds)))
+   {  vicus_close(vd);
+      return(VICUS_EUNKNOWN);
+   };
+   if ((size = recv(vd->sock->s, buff, len, 0)) == -1)
+   {  vicus_close(vd);
+      return(VICUS_EUNKNOWN);
+   };
+
+   return((ssize_t)size);
+}
+
+
+ssize_t
+vicus_send(
+         vicus_t *                     vd,
+         const void *                  buff,
+         size_t                        len )
+{
+   int               size;
+   FD_SET            writefds;
+   int               rc;
+
+   VicusTrace();
+   assert(vd != NULL);
+
+   if (vd->sock == NULL)
+      return(VICUS_ECONNECT);
+
+   FD_ZERO(&writefds);
+   FD_SET(vd->sock->s, &writefds);
+   if ((rc = select(0, NULL, &writefds, NULL, NULL)) == SOCKET_ERROR)
+   {  vicus_close(vd);
+      return(VICUS_ESERVER);
+   };
+   if (!(FD_ISSET(vd->sock->s, &writefds)))
+   {  vicus_close(vd);
+      return(VICUS_EUNKNOWN);
+   };
+   if ((size = send(vd->sock->s, buff, len, 0)) == -1)
+   {  vicus_close(vd);
+      return(VICUS_EUNKNOWN);
+   };
+
+   return((ssize_t)size);
+}
+
 
 #endif /* end of source */
