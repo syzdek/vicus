@@ -84,13 +84,14 @@
 #define VICUS_EUNKNOWN                 -1
 #define VICUS_ENOMEM                   -2
 #define VICUS_ECONNECT                 -3
-//#define UNUSED                       -4
+#define VICUS_EUNBAL                   -4
 #define VICUS_ENOTSUP                  -5
 #define VICUS_EINVAL                   -6
 #define VICUS_EURI                     -7
 #define VICUS_EDNSRES                  -8
 #define VICUS_ESIZE                    -9
 #define VICUS_ESERVER                  -10
+#define VICUS_EPKT                     -11
 
 #define VICUS_OPT_DEBUG                1
 #define VICUS_OPT_TRACE                2
@@ -137,6 +138,8 @@ typedef struct _libvicus               vicus_t;
 typedef struct _libvicus_urldesc       vicus_urldesc_t;
 typedef struct _libvicus_addrinfo      vicus_addrinfo_t;
 typedef struct _libvicus_socket        vicus_socket_t;
+typedef struct _libvicus_packet        vicus_pkt_t;
+typedef struct _libvicus_message       vicus_msg_t;
 
 
 /////////////////
@@ -208,6 +211,78 @@ vicus_set_option(
 _VICUS_F const char *
 vicus_strerror(
          int                           err );
+
+
+//-------------------//
+// packet prototypes //
+//-------------------//
+// MARK: packet prototypes
+
+_VICUS_F void
+vicus_cmd_free(
+         vicus_msg_t *                 msg );
+
+
+_VICUS_F int
+vicus_cmd_init(
+         const char *                  command,
+         vicus_msg_t **                msgp );
+
+
+_VICUS_F int
+vicus_cmd_list_keybval(
+         vicus_msg_t *                 msg,
+         const char *                  name,
+         const void *                  bval,
+         size_t                        bvallen );
+
+
+_VICUS_F int
+vicus_cmd_list_keyval(
+         vicus_msg_t *                 msg,
+         const char *                  name,
+         const char *                  val );
+
+
+_VICUS_F int
+vicus_cmd_list_bitem(
+         vicus_msg_t *                 msg,
+         const void *                  bval,
+         size_t                        bvallen );
+
+
+_VICUS_F int
+vicus_cmd_list_end(
+         vicus_msg_t *                 msg );
+
+
+_VICUS_F int
+vicus_cmd_list_item(
+         vicus_msg_t *                 msg,
+         const char *                  val );
+
+
+_VICUS_F int
+vicus_cmd_list_start(
+         vicus_msg_t *                 msg,
+         const char *                  name );
+
+
+_VICUS_F int
+vicus_cmd_reset(
+         const char *                  command,
+         vicus_msg_t *                 msg );
+
+
+_VICUS_F int
+vicus_cmd_sect_end(
+         vicus_msg_t *                 msg );
+
+
+_VICUS_F int
+vicus_cmd_sect_start(
+         vicus_msg_t *                 msg,
+         const char *                  name );
 
 
 //-----------------//

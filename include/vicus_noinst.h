@@ -196,4 +196,21 @@ vicus_send(
          size_t                        len );
 
 
+//-------------------//
+// packet prototypes //
+//-------------------//
+// MARK: packet prototypes
+
+_VICUS_F int
+vicus_msg_pkt(
+         vicus_msg_t *                 msg,
+         const vicus_pkt_t **          pktp,
+         size_t *                      pktlenp );
+
+
+_VICUS_F int
+vicus_pkt_validate(
+         const vicus_pkt_t *           pkt );
+
+
 #endif /* end of header */

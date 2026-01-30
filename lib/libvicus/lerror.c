@@ -90,8 +90,10 @@ vicus_strerror(
       case VICUS_EINVAL:               return("invalid argument");
       case VICUS_ENOMEM:               return("out of memory");
       case VICUS_ENOTSUP:              return("request or operation not supported");
+      case VICUS_EPKT:                 return("invalid packet");
       case VICUS_ESERVER:              return("server down or connection closed");
       case VICUS_ESIZE:                return("input buffer too small");
+      case VICUS_EUNBAL:               return("unbalanced message elements");
       case VICUS_EUNKNOWN:             break;
       case VICUS_EURI:                 return("invalid URI");
       default:                         break;

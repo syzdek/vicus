@@ -1,4 +1,15 @@
 vicus_base64_encode
+vicus_cmd_free
+vicus_cmd_init
+vicus_cmd_list_bitem
+vicus_cmd_list_end
+vicus_cmd_list_item
+vicus_cmd_list_keybval
+vicus_cmd_list_keyval
+vicus_cmd_list_start
+vicus_cmd_reset
+vicus_cmd_sect_end
+vicus_cmd_sect_start
 vicus_connect
 vicus_debug
 vicus_debug_trace
@@ -11,9 +22,11 @@ vicus_hton32
 vicus_hton64
 vicus_init_fd
 vicus_initialize
+vicus_msg_pkt
 vicus_ntoh16
 vicus_ntoh32
 vicus_ntoh64
+vicus_pkt_validate
 vicus_recv
 vicus_send
 vicus_set_option

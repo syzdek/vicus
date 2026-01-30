@@ -114,6 +114,20 @@ struct _libvicus_urldesc
 };
 
 
+struct _libvicus_packet
+{  uint32_t                   len;
+   uint8_t                    msg[];
+};
+
+
+struct _libvicus_message
+{  size_t                     pkt_size;
+   size_t                     depth;
+   int *                      levels;
+   vicus_pkt_t *              pkt;
+};
+
+
 /////////////////
 //             //
 //  Variables  //
@@ -187,6 +201,60 @@ extern int
 vicus_ntop(
          vicus_addrinfo_t *            ai,
          char *                        dst,
+         size_t                        len );
+
+
+//-------------------//
+// packet prototypes //
+//-------------------//
+// MARK: packet prototypes
+
+extern int
+vicus_msg_alloc(
+         int                           type,
+         const char *                  name,
+         vicus_msg_t **                msgp );
+
+
+extern void
+vicus_msg_free(
+         vicus_msg_t *                 msg );
+
+
+extern int
+vicus_msg_reset(
+         int                           type,
+         const char *                  name,
+         vicus_msg_t *                 msg );
+
+
+extern int
+vicus_pkt_alloc(
+         int                           type,
+         const char *                  name,
+         vicus_pkt_t **                pktp,
+         size_t                        pktsize );
+
+
+extern void
+vicus_pkt_free(
+         vicus_pkt_t *                 pkt );
+
+
+extern size_t
+vicus_pkt_len(
+         const vicus_pkt_t *           pkt );
+
+
+extern size_t
+vicus_pkt_len_incr(
+         vicus_pkt_t *                 pkt,
+         size_t                        incr );
+
+
+extern size_t
+vicus_pkt_len_set(
+         vicus_pkt_t *                 pkt,
          size_t                        len );
 
 
