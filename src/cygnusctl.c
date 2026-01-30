@@ -62,7 +62,7 @@
 ///////////////////
 // MARK: - Definitions
 
-#define  MY_SOPT              "0hO:Pqu:Vv"
+#define  MY_SOPT              "dhO:Pqu:Vv"
 #define  MY_SOPT_ALL_IKE      "a"
 #define  MY_SOPT_BYPASS       "B"
 #define  MY_SOPT_CHILD        "c:"
@@ -82,7 +82,7 @@
 #define  MY_SOPT_TRAP         "T"
 
 
-#define  MY_LOPT              { "debug",           no_argument,         NULL, '0' }, \
+#define  MY_LOPT              { "debug",           no_argument,         NULL, 'd' }, \
                               { "help",            no_argument,         NULL, 'h' }, \
                               { "out-format",      required_argument,   NULL, 'O' }, \
                               { "pretty",          no_argument,         NULL, 'P' }, \
@@ -1102,11 +1102,6 @@ my_arguments(
          case 0:        /* long options toggles */
          break;
 
-         case '0':
-            ival = VICUS_TRUE;
-            vicus_set_option(NULL, VICUS_OPT_DEBUG, &ival);
-            break;
-
          case 'A':
             cnf->flags |= MY_FLG_REAUTH;
             break;
@@ -1129,6 +1124,12 @@ my_arguments(
 
          case 'D':
             cnf->flags |= MY_FLG_POLS_DROP;
+            break;
+
+         case 'd':
+            vicus_get_option(NULL, VICUS_OPT_DEBUG, &ival);
+            ival = (ival << 1) | 0x01;
+            vicus_set_option(NULL, VICUS_OPT_DEBUG, &ival);
             break;
 
          case 'E':
