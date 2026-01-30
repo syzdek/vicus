@@ -148,6 +148,21 @@ vicus_hton64(
          uint64_t                      u );
 
 
+_VICUS_F uint16_t
+vicus_ntoh16(
+         uint16_t                      u );
+
+
+_VICUS_F uint32_t
+vicus_ntoh32(
+         uint32_t                      u );
+
+
+_VICUS_F uint64_t
+vicus_ntoh64(
+         uint64_t                      u );
+
+
 _VICUS_F size_t
 vicus_strlcat(
          char * restrict               dst,

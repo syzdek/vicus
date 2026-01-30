@@ -11,6 +11,9 @@ vicus_hton32
 vicus_hton64
 vicus_init_fd
 vicus_initialize
+vicus_ntoh16
+vicus_ntoh32
+vicus_ntoh64
 vicus_recv
 vicus_send
 vicus_set_option

@@ -242,6 +242,30 @@ vicus_hton64(
 }
 
 
+uint16_t
+vicus_ntoh16(
+         uint16_t                      u )
+{
+   return( vicus_hton16(u) );
+}
+
+
+uint32_t
+vicus_ntoh32(
+         uint32_t                      u )
+{
+   return( vicus_hton32(u) );
+}
+
+
+uint64_t
+vicus_ntoh64(
+         uint64_t                      u )
+{
+   return( vicus_hton64(u) );
+}
+
+
 size_t
 vicus_strlcat(
          char * restrict               dst,
