@@ -118,6 +118,13 @@
 #define VICUS_EVENT_UNKNOWN            6
 #define VICUS_EVENT                    7
 
+#define VICUS_SECT_START               1
+#define VICUS_SECT_END                 2
+#define VICUS_KEY_VALUE                3
+#define VICUS_LIST_START               4
+#define VICUS_LIST_ITEM                5
+#define VICUS_LIST_END                 6
+
 
 //////////////////
 //              //
