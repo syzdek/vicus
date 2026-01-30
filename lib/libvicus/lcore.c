@@ -97,10 +97,8 @@ vicus_set_option_global(
 /////////////////
 // MARK: - Variables
 
-int      vicus_opt_debug         = VICUS_FALSE;
+int      vicus_opt_debug         = VICUS_DBG_NONE;
 int      vicus_opt_debug_stderr  = VICUS_FALSE;
-int      vicus_opt_debug_source  = VICUS_FALSE;
-int      vicus_opt_trace         = VICUS_FALSE;
 
 
 /////////////////
@@ -161,7 +159,7 @@ vicus_debug(
          ? stdout
          : stderr;
 
-   if ((vicus_opt_debug_source))
+   if ((vicus_opt_debug & VICUS_DBG_SRC))
       len += fprintf(fs, "%s: %i: ", file, line);
 
    va_start(ap, fmt);
@@ -180,14 +178,14 @@ vicus_debug_trace(
 {
    FILE *         fs;
 
-   if (!(vicus_opt_trace))
+   if (!(vicus_opt_debug & VICUS_DBG_TRACE))
       return(0);
 
    fs    = (vicus_opt_debug_stderr == VICUS_FALSE)
          ? stdout
          : stderr;
 
-   if (!(vicus_opt_debug_source))
+   if (!(vicus_opt_debug  & VICUS_DBG_SRC))
       return(fprintf(fs, "%s()\n", func));
    return(fprintf(fs, "%s: %i: %s()\n", file, line, func));
 }
@@ -299,16 +297,8 @@ vicus_get_option_global(
          *((int *)outvalue) = vicus_opt_debug;
          break;
 
-      case VICUS_OPT_DEBUG_SOURCE:
-         *((int *)outvalue)  = vicus_opt_debug_source;
-         break;
-
       case VICUS_OPT_DEBUG_STDERR:
          *((int *)outvalue)  = vicus_opt_debug_stderr;
-         break;
-
-      case VICUS_OPT_TRACE:
-         *((int *)outvalue) = vicus_opt_trace;
          break;
 
       default:
@@ -424,19 +414,11 @@ vicus_set_option_global(
    switch(option)
    {
       case VICUS_OPT_DEBUG:
-         vicus_opt_debug   = ((ival)) ? VICUS_TRUE : VICUS_FALSE;
-         break;
-
-      case VICUS_OPT_DEBUG_SOURCE:
-         vicus_opt_debug_source  = ((ival)) ? VICUS_TRUE : VICUS_FALSE;
+         vicus_opt_debug   = ival;
          break;
 
       case VICUS_OPT_DEBUG_STDERR:
          vicus_opt_debug_stderr  = ((ival)) ? VICUS_TRUE : VICUS_FALSE;
-         break;
-
-      case VICUS_OPT_TRACE:
-         vicus_opt_trace   = ((ival)) ? VICUS_TRUE : VICUS_FALSE;
          break;
 
       default:

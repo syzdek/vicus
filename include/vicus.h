@@ -94,14 +94,13 @@
 #define VICUS_EPKT                     -11
 
 #define VICUS_OPT_DEBUG                1
-#define VICUS_OPT_TRACE                2
+//#define VICUS_OPT_UNUSED             2
 #define VICUS_OPT_DEBUG_STDERR         3
 #define VICUS_OPT_SOCKET               4
 #define VICUS_OPT_NETTIME              5
 #define VICUS_OPT_REQTIME              6
 #define VICUS_OPT_CUR_URL              7
 #define VICUS_OPT_CUR_ADDR             8
-#define VICUS_OPT_DEBUG_SOURCE         9
 
 #define VICUS_TRUE                     1
 #define VICUS_FALSE                    0
@@ -109,6 +108,12 @@
 #define VICUS_DFLT_NETTIME             10
 #define VICUS_DFLT_REQTIME             45
 #define VICUS_DFLT_URI                 "/var/run/charon.vici"
+
+#define VICUS_DBG_NONE                 0x000000
+#define VICUS_DBG_INFO                 0x000001
+#define VICUS_DBG_TRACE                0x000002
+#define VICUS_DBG_PCKT                 0x000004
+#define VICUS_DBG_SRC                  0x000008
 
 #define VICUS_CMD_REQUEST              0
 #define VICUS_CMD_RESPONSE             1
