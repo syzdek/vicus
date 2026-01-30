@@ -94,7 +94,7 @@
 #define VICUS_EPKT                     -11
 
 #define VICUS_OPT_DEBUG                1
-//#define VICUS_OPT_UNUSED             2
+#define VICUS_OPT_DEBUG_PREFIX         2
 #define VICUS_OPT_DEBUG_STDERR         3
 #define VICUS_OPT_SOCKET               4
 #define VICUS_OPT_NETTIME              5

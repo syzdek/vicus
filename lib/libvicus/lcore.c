@@ -99,6 +99,8 @@ vicus_set_option_global(
 
 int      vicus_opt_debug         = VICUS_DBG_NONE;
 int      vicus_opt_debug_stderr  = VICUS_FALSE;
+const char *   vicus_opt_debug_prefix        = "libvicus";
+char *         vicus_opt_debug_prefix_buff   = NULL;
 
 
 /////////////////
@@ -151,13 +153,16 @@ vicus_debug(
    int            len;
    va_list        ap;
 
-   if (!(vicus_opt_debug))
+   if (!(vicus_opt_debug & VICUS_DBG_INFO))
       return(0);
 
    len   = 0;
    fs    = (vicus_opt_debug_stderr == VICUS_FALSE)
          ? stdout
          : stderr;
+
+   if ((vicus_opt_debug_prefix))
+      len += fprintf(fs, "%s: ", vicus_opt_debug_prefix);
 
    if ((vicus_opt_debug & VICUS_DBG_SRC))
       len += fprintf(fs, "%s: %i: ", file, line);
@@ -176,18 +181,26 @@ vicus_debug_trace(
          int                           line,
          const char *                  func )
 {
+   int            len;
    FILE *         fs;
 
    if (!(vicus_opt_debug & VICUS_DBG_TRACE))
       return(0);
 
+   len   = 0;
    fs    = (vicus_opt_debug_stderr == VICUS_FALSE)
          ? stdout
          : stderr;
 
-   if (!(vicus_opt_debug  & VICUS_DBG_SRC))
-      return(fprintf(fs, "%s()\n", func));
-   return(fprintf(fs, "%s: %i: %s()\n", file, line, func));
+   if ((vicus_opt_debug_prefix))
+      len += fprintf(fs, "%s: ", vicus_opt_debug_prefix);
+
+   if ((vicus_opt_debug & VICUS_DBG_SRC))
+      len += fprintf(fs, "%s: %i: ", file, line);
+
+   len += fprintf(fs, "%s()\n", func);
+
+   return(len);
 }
 
 
@@ -288,6 +301,8 @@ vicus_get_option_global(
          int                           option,
          void *                        outvalue )
 {
+   char *      str;
+
    VicusTrace();
    assert(outvalue != NULL);
 
@@ -295,6 +310,14 @@ vicus_get_option_global(
    {
       case VICUS_OPT_DEBUG:
          *((int *)outvalue) = vicus_opt_debug;
+         break;
+
+      case VICUS_OPT_DEBUG_PREFIX:
+         str = NULL;
+         if ((vicus_opt_debug_prefix))
+            if (!(str = strdup(vicus_opt_debug_prefix)))
+               return(VICUS_ENOMEM);
+         *((char **)outvalue)  = str;
          break;
 
       case VICUS_OPT_DEBUG_STDERR:
@@ -405,6 +428,7 @@ vicus_set_option_global(
          const void *                  invalue )
 {
    int      ival;
+   char *   str;
 
    VicusTrace();
    assert(invalue != NULL);
@@ -415,6 +439,17 @@ vicus_set_option_global(
    {
       case VICUS_OPT_DEBUG:
          vicus_opt_debug   = ival;
+         break;
+
+      case VICUS_OPT_DEBUG_PREFIX:
+         str = NULL;
+         if (( (const char *)invalue ))
+            if (!(str = strdup( (const char *)invalue )))
+               return(VICUS_ENOMEM);
+         if ((vicus_opt_debug_prefix_buff))
+            free(vicus_opt_debug_prefix_buff);
+         vicus_opt_debug_prefix_buff   = str;
+         vicus_opt_debug_prefix        = vicus_opt_debug_prefix_buff;
          break;
 
       case VICUS_OPT_DEBUG_STDERR:

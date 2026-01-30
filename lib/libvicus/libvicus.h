@@ -137,6 +137,8 @@ struct _libvicus_message
 
 extern int     vicus_opt_debug;
 extern int     vicus_opt_debug_stderr;
+extern const char *  vicus_opt_debug_prefix;
+extern char *        vicus_opt_debug_prefix_buff;
 
 
 //////////////////
