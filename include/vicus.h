@@ -109,6 +109,15 @@
 #define VICUS_DFLT_REQTIME             45
 #define VICUS_DFLT_URI                 "/var/run/charon.vici"
 
+#define VICUS_CMD_REQUEST              0
+#define VICUS_CMD_RESPONSE             1
+#define VICUS_CMD_UNKNOWN              2
+#define VICUS_EVENT_REGISTER           3
+#define VICUS_EVENT_UNREGISTER         4
+#define VICUS_EVENT_CONFIRM            5
+#define VICUS_EVENT_UNKNOWN            6
+#define VICUS_EVENT                    7
+
 
 //////////////////
 //              //
