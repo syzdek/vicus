@@ -97,8 +97,8 @@ vicus_set_option_global(
 /////////////////
 // MARK: - Variables
 
-int      vicus_opt_debug         = VICUS_DBG_NONE;
-int      vicus_opt_debug_stderr  = VICUS_FALSE;
+int            vicus_opt_debug               = VICUS_DBG_NONE;
+int            vicus_opt_debug_stderr        = VICUS_FALSE;
 const char *   vicus_opt_debug_prefix        = "libvicus";
 char *         vicus_opt_debug_prefix_buff   = NULL;
 

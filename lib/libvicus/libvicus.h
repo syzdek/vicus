@@ -135,8 +135,8 @@ struct _libvicus_message
 /////////////////
 // MARK: - Variables
 
-extern int     vicus_opt_debug;
-extern int     vicus_opt_debug_stderr;
+extern int           vicus_opt_debug;
+extern int           vicus_opt_debug_stderr;
 extern const char *  vicus_opt_debug_prefix;
 extern char *        vicus_opt_debug_prefix_buff;
 
