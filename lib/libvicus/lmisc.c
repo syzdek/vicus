@@ -198,6 +198,50 @@ vicus_hexdump(
 }
 
 
+uint16_t
+vicus_hton16(
+         uint16_t                      u )
+{
+   uint8_t *   up = (uint8_t *)&u;
+   return(
+      ((uint16_t)up[0] << 8) |
+      ((uint16_t)up[1] << 0)
+   );
+}
+
+
+uint32_t
+vicus_hton32(
+         uint32_t                      u )
+{
+   uint8_t *   up = (uint8_t *)&u;
+   return(
+      ((uint32_t)up[0] << 24) |
+      ((uint32_t)up[1] << 16) |
+      ((uint32_t)up[2] <<  8) |
+      ((uint32_t)up[3] <<  0)
+   );
+}
+
+
+uint64_t
+vicus_hton64(
+         uint64_t                      u )
+{
+   uint8_t *   up = (uint8_t *)&u;
+   return(
+      ((uint64_t)up[0] << 56) |
+      ((uint64_t)up[1] << 48) |
+      ((uint64_t)up[2] << 40) |
+      ((uint64_t)up[3] << 32) |
+      ((uint64_t)up[4] << 24) |
+      ((uint64_t)up[5] << 16) |
+      ((uint64_t)up[6] <<  8) |
+      ((uint64_t)up[7] <<  0)
+   );
+}
+
+
 size_t
 vicus_strlcat(
          char * restrict               dst,
