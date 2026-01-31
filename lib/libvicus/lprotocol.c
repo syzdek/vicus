@@ -213,7 +213,7 @@ vicus_msg_add_litem(
 
 
 int
-vicus_msg_add_list_item_str(
+vicus_msg_add_litem_str(
          vicus_msg_t *                 msg,
          const char *                  str )
 {

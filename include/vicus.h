@@ -246,7 +246,7 @@ vicus_msg_add_litem(
 
 
 _VICUS_F int
-vicus_msg_add_list_item_str(
+vicus_msg_add_litem_str(
          vicus_msg_t *                 msg,
          const char *                  str );
 
