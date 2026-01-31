@@ -279,15 +279,15 @@ vicus_msg_add_send(
          vicus_msg_t *                 msg );
 
 
-_VICUS_F void
-vicus_msg_free(
-         vicus_msg_t *                 msg );
-
-
 _VICUS_F int
 vicus_msg_add_sstart(
          vicus_msg_t *                 msg,
          const char *                  name );
+
+
+_VICUS_F void
+vicus_msg_free(
+         vicus_msg_t *                 msg );
 
 
 //-------------------//
