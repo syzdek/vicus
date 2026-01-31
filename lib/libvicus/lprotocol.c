@@ -225,7 +225,7 @@ vicus_msg_add_litem_str(
 
 
 int
-vicus_cmd_list_start(
+vicus_msg_add_lstart(
          vicus_msg_t *                 msg,
          const char *                  name )
 {

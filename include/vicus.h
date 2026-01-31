@@ -256,6 +256,12 @@ vicus_msg_add_litem_str(
          const char *                  str );
 
 
+_VICUS_F int
+vicus_msg_add_lstart(
+         vicus_msg_t *                 msg,
+         const char *                  name );
+
+
 _VICUS_F void
 vicus_msg_free(
          vicus_msg_t *                 msg );
@@ -270,12 +276,6 @@ _VICUS_F int
 vicus_cmd_init(
          const char *                  command,
          vicus_msg_t **                msgp );
-
-
-_VICUS_F int
-vicus_cmd_list_start(
-         vicus_msg_t *                 msg,
-         const char *                  name );
 
 
 _VICUS_F int
