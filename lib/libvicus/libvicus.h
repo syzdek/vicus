@@ -216,11 +216,6 @@ vicus_msg_alloc(
          vicus_msg_t **                msgp );
 
 
-extern void
-vicus_msg_free(
-         vicus_msg_t *                 msg );
-
-
 extern int
 vicus_msg_reset(
          int                           type,

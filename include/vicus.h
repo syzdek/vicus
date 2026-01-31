@@ -218,15 +218,20 @@ vicus_strerror(
          int                           err );
 
 
+//--------------------//
+// message prototypes //
+//--------------------//
+// MARK: message prototypes
+
+_VICUS_F void
+vicus_msg_free(
+         vicus_msg_t *                 msg );
+
+
 //-------------------//
 // packet prototypes //
 //-------------------//
 // MARK: packet prototypes
-
-_VICUS_F void
-vicus_cmd_free(
-         vicus_msg_t *                 msg );
-
 
 _VICUS_F int
 vicus_cmd_init(

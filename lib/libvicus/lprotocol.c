@@ -100,16 +100,6 @@ vicus_msg_unnest(
 /////////////////
 // MARK: - Functions
 
-void
-vicus_cmd_free(
-         vicus_msg_t *                 msg )
-{
-   VicusTrace();
-   vicus_msg_free(msg);
-   return;
-}
-
-
 int
 vicus_cmd_init(
          const char *                  command,
