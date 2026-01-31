@@ -224,6 +224,14 @@ vicus_strerror(
 // MARK: message prototypes
 
 _VICUS_F int
+vicus_msg_add_keyval(
+         vicus_msg_t *                 msg,
+         const char *                  name,
+         const void *                  val,
+         size_t                        vallen );
+
+
+_VICUS_F int
 vicus_msg_add_keyval_str(
          vicus_msg_t *                 msg,
          const char *                  name,
@@ -244,14 +252,6 @@ _VICUS_F int
 vicus_cmd_init(
          const char *                  command,
          vicus_msg_t **                msgp );
-
-
-_VICUS_F int
-vicus_cmd_list_keybval(
-         vicus_msg_t *                 msg,
-         const char *                  name,
-         const void *                  bval,
-         size_t                        bvallen );
 
 
 _VICUS_F int

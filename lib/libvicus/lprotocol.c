@@ -118,11 +118,11 @@ vicus_cmd_init(
 
 
 _VICUS_F int
-vicus_cmd_list_keybval(
+vicus_msg_add_keyval(
          vicus_msg_t *                 msg,
          const char *                  name,
-         const void *                  bval,
-         size_t                        bvallen )
+         const void *                  val,
+         size_t                        vallen )
 {
    int         rc;
    size_t      namelen;
@@ -130,28 +130,28 @@ vicus_cmd_list_keybval(
 
    VicusTrace();
    assert(msg  != NULL);
-   assert(bval != NULL);
-   assert(bvallen > 0);
+   assert(val  != NULL);
+   assert(vallen > 0);
 
-   if (bvallen > 0xffff)
+   if (vallen > 0xffff)
       return(VICUS_EINVAL);
 
    namelen = strlen(name);
    if (namelen > 255)
       return(VICUS_EINVAL);
 
-   if ((rc = vicus_msg_resize(msg, (namelen+bvallen+4))) != VICUS_SUCCESS)
+   if ((rc = vicus_msg_resize(msg, (namelen+vallen+4))) != VICUS_SUCCESS)
       return(rc);
    len                   = vicus_pkt_len(msg->pkt);
    msg->pkt->msg[len++]  = VICUS_KEY_VALUE;
    msg->pkt->msg[len++]  = (uint8_t)namelen;
    memcpy(&msg->pkt->msg[len], name, namelen);
    len += namelen;
-   msg->pkt->msg[len++]  = (bvallen >> 8) & 0x00ff;
-   msg->pkt->msg[len++]  = (bvallen >> 0) & 0x00ff;
-   memcpy(&msg->pkt->msg[len], bval, bvallen);
+   msg->pkt->msg[len++]  = (vallen >> 8) & 0x00ff;
+   msg->pkt->msg[len++]  = (vallen >> 0) & 0x00ff;
+   memcpy(&msg->pkt->msg[len], val, vallen);
 
-   vicus_pkt_len_incr(msg->pkt, namelen+bvallen+4);
+   vicus_pkt_len_incr(msg->pkt, namelen+vallen+4);
 
    return(VICUS_SUCCESS);
 }
@@ -167,7 +167,7 @@ vicus_msg_add_keyval_str(
    assert(msg  != NULL);
    assert(name != NULL);
    assert(str  != NULL);
-   return(vicus_cmd_list_keybval(msg, name, str, strlen(str)));
+   return(vicus_msg_add_keyval(msg, name, str, strlen(str)));
 }
 
 
