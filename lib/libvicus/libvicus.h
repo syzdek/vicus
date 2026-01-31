@@ -53,6 +53,7 @@
 #endif
 
 #include <sys/types.h>
+#include <pthread.h>
 
 #include <vicus.h>
 #include <vicus_noinst.h>
@@ -94,6 +95,7 @@ struct _libvicus
    vicus_addrinfo_t *         sock_ai;
    vicus_urldesc_t *          sock_vudp;
    vicus_urldesc_t *          vudp;       // vicus URL description pointer
+   pthread_mutex_t *          mutex;
 };
 
 
@@ -280,6 +282,32 @@ extern size_t
 vicus_pkt_len_set(
          vicus_pkt_t *                 pkt,
          size_t                        len );
+
+
+//-------------------//
+// thread prototypes //
+//-------------------//
+// MARK: thread prototypes
+
+extern int
+vicus_mutext_alloc(
+         pthread_mutex_t **            mutexp );
+
+
+extern void
+vicus_mutext_free(
+         pthread_mutex_t **            mutexp );
+
+
+extern int
+vicus_mutext_lock(
+         pthread_mutex_t *             mutex );
+
+
+extern int
+vicus_mutext_unlock(
+         pthread_mutex_t *             mutex,
+         int                           rc );
 
 
 #endif /* end of header */

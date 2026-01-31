@@ -131,6 +131,11 @@ vicus_alloc(
    vd->net_timeout   = VICUS_DFLT_NETTIME;
    vd->req_timeout   = VICUS_DFLT_REQTIME;
 
+   if ((rc = vicus_mutext_alloc(&vd->mutex)) != VICUS_SUCCESS)
+   {  vicus_disconnect(vd);
+      return(rc);
+   };
+
    if ((rc = vicus_net_initialize(vd)) != VICUS_SUCCESS)
    {  free(vd);
       return(rc);
@@ -154,8 +159,10 @@ vicus_connect(
    int   rc;
    VicusTrace();
    assert(vd != NULL);
+   if ((rc = vicus_mutext_lock(vd->mutex)) != VICUS_SUCCESS)
+      return(rc);
    rc = vicus_net_connect(vd);
-   return(rc);
+   return(vicus_mutext_unlock(vd->mutex, rc));
 }
 
 
@@ -230,6 +237,9 @@ vicus_disconnect(
    if (!(vd))
       return(0);
 
+   vicus_mutext_lock(vd->mutex);
+   vicus_mutext_free(&vd->mutex);
+
    vicus_close(vd);
 
    ldap_free_urldesc(vd->vudp);
@@ -273,7 +283,7 @@ vicus_get_option(
 
    rc = vicus_get_option_local(vd, option, outvalue);
 
-   return(rc);
+   return(vicus_mutext_unlock(vd->mutex, rc));
 }
 
 
@@ -517,5 +527,73 @@ vicus_set_option_global(
    return(0);
 }
 
+
+//------------------//
+// thread functions //
+//------------------//
+// MARK: thread functions
+
+int
+vicus_mutext_alloc(
+         pthread_mutex_t **            mutexp )
+{
+   pthread_mutex_t *    mutex;
+
+   VicusTrace();
+   assert(mutexp != NULL);
+
+   if ((mutex = malloc(sizeof(pthread_mutex_t))) == NULL)
+      return(VICUS_ENOMEM);
+   if ((pthread_mutex_init(mutex, NULL)))
+   {  free(mutex);
+      return(VICUS_ENOMEM);
+   };
+
+   *mutexp = mutex;
+
+   return(VICUS_SUCCESS);
+}
+
+
+void
+vicus_mutext_free(
+         pthread_mutex_t **            mutexp )
+{
+   VicusTrace();
+   assert(mutexp != NULL);
+   if (!(*mutexp))
+      return;
+   if (!(pthread_mutex_unlock(*mutexp)))
+      pthread_mutex_destroy(*mutexp);
+   free(*mutexp);
+   *mutexp = NULL;
+   return;
+}
+
+
+int
+vicus_mutext_lock(
+         pthread_mutex_t *             mutex )
+{
+   VicusTrace();
+   if (!(mutex))
+      return(VICUS_SUCCESS);
+   if ((pthread_mutex_lock(mutex)))
+      return(VICUS_EUNKNOWN);
+   return(VICUS_SUCCESS);
+}
+
+
+int
+vicus_mutext_unlock(
+         pthread_mutex_t *             mutex,
+         int                           rc )
+{
+   VicusTrace();
+   if (!(mutex))
+      return(rc);
+   pthread_mutex_unlock(mutex);
+   return(rc);
+}
 
 /* end of source */
