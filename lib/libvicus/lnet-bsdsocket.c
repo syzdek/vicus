@@ -115,7 +115,7 @@ vicus_net_connect_unix(
 // MARK: - Functions
 
 int
-vicus_close(
+vicus_net_close(
          vicus_t *                     vd )
 {
    VicusTrace();
@@ -425,15 +425,15 @@ vicus_net_recv(
    if (poll(&fds, 1, (vd->net_timeout*1000)) == -1)
       return(VICUS_EUNKNOWN);
    if ( ((fds.revents & POLLHUP)) || ((fds.revents & POLLNVAL)) )
-   {  vicus_close(vd);
+   {  vicus_net_close(vd);
       return(VICUS_ESERVER);
    };
    if (!(fds.revents & POLLIN))
-   {  vicus_close(vd);
+   {  vicus_net_close(vd);
       return(VICUS_EUNKNOWN);
    };
    if ((size = recv(vd->sock->s, buff, len, 0)) == -1)
-   {  vicus_close(vd);
+   {  vicus_net_close(vd);
       return(VICUS_EUNKNOWN);
    };
 
@@ -462,11 +462,11 @@ vicus_net_send(
    if (poll(&fds, 1, (vd->net_timeout*1000)) == -1)
       return(VICUS_EUNKNOWN);
    if (!(fds.revents & POLLOUT))
-   {  vicus_close(vd);
+   {  vicus_net_close(vd);
       return(VICUS_EUNKNOWN);
    };
    if ((size = send(vd->sock->s, buff, len, 0)) == -1)
-   {  vicus_close(vd);
+   {  vicus_net_close(vd);
       return(VICUS_EUNKNOWN);
    };
 

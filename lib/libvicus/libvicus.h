@@ -180,7 +180,7 @@ vicus_vd_free(
 // MARK: network prototypes
 
 extern int
-vicus_close(
+vicus_net_close(
          vicus_t *                     vd );
 
 

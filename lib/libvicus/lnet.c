@@ -129,7 +129,7 @@ vicus_disconnect(
 
    vicus_mutext_lock(vd->mutex);
 
-   vicus_close(vd);
+   vicus_net_close(vd);
 
    vicus_vd_free(vd);
 

@@ -103,7 +103,7 @@ vicus_net_connect_tcp(
 // MARK: - Functions
 
 int
-vicus_close(
+vicus_net_close(
          vicus_t *                     vd )
 {
    VicusTrace();
@@ -297,15 +297,15 @@ vicus_net_recv(
    FD_ZERO(&readfds);
    FD_SET(vd->sock->s, &readfds);
    if ((rc = select(0, &readfds, NULL, NULL, NULL)) == SOCKET_ERROR)
-   {  vicus_close(vd);
+   {  vicus_net_close(vd);
       return(VICUS_ESERVER);
    };
    if (!(FD_ISSET(vd->sock->s, &readfds)))
-   {  vicus_close(vd);
+   {  vicus_net_close(vd);
       return(VICUS_EUNKNOWN);
    };
    if ((size = recv(vd->sock->s, buff, len, 0)) == -1)
-   {  vicus_close(vd);
+   {  vicus_net_close(vd);
       return(VICUS_EUNKNOWN);
    };
 
@@ -332,15 +332,15 @@ vicus_net_send(
    FD_ZERO(&writefds);
    FD_SET(vd->sock->s, &writefds);
    if ((rc = select(0, NULL, &writefds, NULL, NULL)) == SOCKET_ERROR)
-   {  vicus_close(vd);
+   {  vicus_net_close(vd);
       return(VICUS_ESERVER);
    };
    if (!(FD_ISSET(vd->sock->s, &writefds)))
-   {  vicus_close(vd);
+   {  vicus_net_close(vd);
       return(VICUS_EUNKNOWN);
    };
    if ((size = send(vd->sock->s, buff, len, 0)) == -1)
-   {  vicus_close(vd);
+   {  vicus_net_close(vd);
       return(VICUS_EUNKNOWN);
    };
 
