@@ -158,6 +158,11 @@ vicus_close(
          vicus_t *                     vd );
 
 
+extern int
+vicus_net_connect(
+         vicus_t *                     vd );
+
+
 extern void
 vicus_freeaddrinfo(
          vicus_addrinfo_t *            res );

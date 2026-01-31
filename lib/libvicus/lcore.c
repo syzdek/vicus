@@ -143,6 +143,18 @@ vicus_alloc(
 
 
 int
+vicus_connect(
+         vicus_t *                     vd )
+{
+   int   rc;
+   VicusTrace();
+   assert(vd != NULL);
+   rc = vicus_net_connect(vd);
+   return(rc);
+}
+
+
+int
 vicus_debug(
          const char *                  file,
          int                           line,

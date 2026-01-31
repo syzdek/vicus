@@ -123,7 +123,7 @@ vicus_close(
 
 
 int
-vicus_connect(
+vicus_next_connect(
          vicus_t *                     vd )
 {
    int                     rc;

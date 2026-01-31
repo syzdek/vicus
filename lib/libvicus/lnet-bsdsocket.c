@@ -135,7 +135,7 @@ vicus_close(
 
 
 int
-vicus_connect(
+vicus_net_connect(
          vicus_t *                     vd )
 {
    int                     rc;
