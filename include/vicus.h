@@ -224,6 +224,12 @@ vicus_strerror(
 // MARK: message prototypes
 
 _VICUS_F int
+vicus_cmd_init(
+         const char *                  command,
+         vicus_msg_t **                msgp );
+
+
+_VICUS_F int
 vicus_msg_add_keyval(
          vicus_msg_t *                 msg,
          const char *                  name,
@@ -282,12 +288,6 @@ vicus_msg_add_sstart(
 // packet prototypes //
 //-------------------//
 // MARK: packet prototypes
-
-_VICUS_F int
-vicus_cmd_init(
-         const char *                  command,
-         vicus_msg_t **                msgp );
-
 
 _VICUS_F int
 vicus_cmd_reset(
