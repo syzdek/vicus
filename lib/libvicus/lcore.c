@@ -147,26 +147,6 @@ vicus_alloc(
 }
 
 
-//int
-//vicus_connect(
-//         vicus_t *                     vd );
-
-
-int
-vicus_connect(
-         vicus_t *                     vd )
-{
-   int   rc;
-   VicusTrace();
-   assert(vd != NULL);
-   if ((rc = vicus_mutext_lock(vd->mutex)) != VICUS_SUCCESS)
-      return(rc);
-   rc = vicus_net_connect(vd);
-   vicus_mutext_unlock(vd->mutex);
-   return(rc);
-}
-
-
 int
 vicus_debug(
          const char *                  file,
