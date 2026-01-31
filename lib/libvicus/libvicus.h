@@ -160,6 +160,13 @@ vicus_get_option_local(
          void *                        outvalue );
 
 
+extern int
+vicus_set_option_local(
+         vicus_t *                     vd,
+         int                           option,
+         const void *                  invalue );
+
+
 //--------------------//
 // network prototypes //
 //--------------------//

@@ -427,12 +427,29 @@ vicus_set_option(
          int                           option,
          const void *                  invalue )
 {
+   int   rc;
+
    VicusTrace();
    assert(invalue != NULL);
 
    if (!(vd))
       return(vicus_set_option_global(option, invalue));
 
+   if ((rc = vicus_mutext_lock(vd->mutex)) != VICUS_SUCCESS)
+      return(rc);
+
+   rc = vicus_set_option_local(vd, option, invalue);
+
+   return(vicus_mutext_unlock(vd->mutex, rc));
+}
+
+
+int
+vicus_set_option_local(
+         vicus_t *                     vd,
+         int                           option,
+         const void *                  invalue )
+{
    switch(option)
    {  case VICUS_OPT_CUR_ADDR:
          return(VICUS_ENOTSUP);
