@@ -110,59 +110,6 @@ vicus_set_option_global(
 //----------------//
 // MARK: core functions
 
-int
-vicus_vd_alloc(
-         vicus_t **                    vdp )
-{
-   int            rc;
-   vicus_t *      vd;
-
-   VicusTrace();
-   assert(vdp != NULL);
-
-   if ((vd = malloc(sizeof(vicus_t))) == NULL)
-      return(VICUS_ENOMEM);
-   memset(vd, 0, sizeof(vicus_t));
-   vd->net_timeout   = VICUS_DFLT_NETTIME;
-   vd->req_timeout   = VICUS_DFLT_REQTIME;
-
-   if ((rc = vicus_net_initialize(vd)) != VICUS_SUCCESS)
-   {  free(vd);
-      return(rc);
-   };
-
-   if ((rc = vicus_mutext_alloc(&vd->mutex)) != VICUS_SUCCESS)
-   {  vicus_vd_free(vd);
-      return(rc);
-   };
-
-   *vdp = vd;
-
-   return(0);
-}
-
-
-void
-vicus_vd_free(
-         vicus_t *                     vd )
-{
-   VicusTrace();
-
-   if (!(vd))
-      return;
-
-   vicus_net_terminate(vd);
-
-   vicus_mutext_free(&vd->mutex);
-
-   ldap_free_urldesc(vd->vudp);
-
-   free(vd);
-
-   return;
-}
-
-
 void
 vicus_free(
          void *                        ptr )
@@ -440,6 +387,59 @@ vicus_set_option_global(
    };
 
    return(0);
+}
+
+
+int
+vicus_vd_alloc(
+         vicus_t **                    vdp )
+{
+   int            rc;
+   vicus_t *      vd;
+
+   VicusTrace();
+   assert(vdp != NULL);
+
+   if ((vd = malloc(sizeof(vicus_t))) == NULL)
+      return(VICUS_ENOMEM);
+   memset(vd, 0, sizeof(vicus_t));
+   vd->net_timeout   = VICUS_DFLT_NETTIME;
+   vd->req_timeout   = VICUS_DFLT_REQTIME;
+
+   if ((rc = vicus_net_initialize(vd)) != VICUS_SUCCESS)
+   {  free(vd);
+      return(rc);
+   };
+
+   if ((rc = vicus_mutext_alloc(&vd->mutex)) != VICUS_SUCCESS)
+   {  vicus_vd_free(vd);
+      return(rc);
+   };
+
+   *vdp = vd;
+
+   return(0);
+}
+
+
+void
+vicus_vd_free(
+         vicus_t *                     vd )
+{
+   VicusTrace();
+
+   if (!(vd))
+      return;
+
+   vicus_net_terminate(vd);
+
+   vicus_mutext_free(&vd->mutex);
+
+   ldap_free_urldesc(vd->vudp);
+
+   free(vd);
+
+   return;
 }
 
 
