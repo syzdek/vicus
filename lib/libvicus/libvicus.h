@@ -217,7 +217,7 @@ vicus_msg_alloc(
 
 
 extern int
-vicus_msg_reset(
+vicus_msg_reinit(
          int                           type,
          const char *                  name,
          vicus_msg_t *                 msg );

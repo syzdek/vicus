@@ -125,7 +125,7 @@ vicus_cmd_reinit(
    VicusTrace();
    assert(command != NULL);
    assert(msg     != NULL);
-   return(vicus_msg_reset(VICUS_CMD_REQUEST, command, msg));
+   return(vicus_msg_reinit(VICUS_CMD_REQUEST, command, msg));
 }
 
 
@@ -368,7 +368,7 @@ vicus_msg_pkt(
 
 
 int
-vicus_msg_reset(
+vicus_msg_reinit(
          int                           type,
          const char *                  name,
          vicus_msg_t *                 msg )
