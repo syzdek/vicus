@@ -100,6 +100,11 @@ vicus_msg_unnest(
 /////////////////
 // MARK: - Functions
 
+//-------------------//
+// message functions //
+//-------------------//
+// MARK: message functions
+
 int
 vicus_cmd_init(
          const char *                  command,
@@ -438,6 +443,11 @@ vicus_msg_unnest(
    return(VICUS_SUCCESS);
 }
 
+
+//------------------//
+// packet functions //
+//------------------//
+// MARK: packet functions
 
 int
 vicus_pkt_alloc(
