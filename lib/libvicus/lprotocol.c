@@ -117,6 +117,18 @@ vicus_cmd_init(
 }
 
 
+int
+vicus_cmd_reinit(
+         const char *                  command,
+         vicus_msg_t *                 msg )
+{
+   VicusTrace();
+   assert(command != NULL);
+   assert(msg     != NULL);
+   return(vicus_msg_reset(VICUS_CMD_REQUEST, command, msg));
+}
+
+
 _VICUS_F int
 vicus_msg_add_keyval(
          vicus_msg_t *                 msg,
@@ -243,18 +255,6 @@ vicus_msg_add_send(
    VicusTrace();
    assert(msg != NULL);
    return(vicus_msg_unnest(msg, VICUS_SECT_START, VICUS_SECT_END));
-}
-
-
-int
-vicus_cmd_reset(
-         const char *                  command,
-         vicus_msg_t *                 msg )
-{
-   VicusTrace();
-   assert(command != NULL);
-   assert(msg     != NULL);
-   return(vicus_msg_reset(VICUS_CMD_REQUEST, command, msg));
 }
 
 

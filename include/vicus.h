@@ -230,6 +230,12 @@ vicus_cmd_init(
 
 
 _VICUS_F int
+vicus_cmd_reinit(
+         const char *                  command,
+         vicus_msg_t *                 msg );
+
+
+_VICUS_F int
 vicus_msg_add_keyval(
          vicus_msg_t *                 msg,
          const char *                  name,
@@ -288,11 +294,6 @@ vicus_msg_add_sstart(
 // packet prototypes //
 //-------------------//
 // MARK: packet prototypes
-
-_VICUS_F int
-vicus_cmd_reset(
-         const char *                  command,
-         vicus_msg_t *                 msg );
 
 
 //-----------------//

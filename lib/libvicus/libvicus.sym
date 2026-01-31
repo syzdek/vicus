@@ -1,6 +1,6 @@
 vicus_base64_encode
 vicus_cmd_init
-vicus_cmd_reset
+vicus_cmd_reinit
 vicus_connect
 vicus_debug
 vicus_debug_trace
