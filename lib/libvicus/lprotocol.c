@@ -158,16 +158,16 @@ vicus_cmd_list_keybval(
 
 
 int
-vicus_cmd_list_keyval(
+vicus_msg_add_keyval_str(
          vicus_msg_t *                 msg,
          const char *                  name,
-         const char *                  val )
+         const char *                  str )
 {
    VicusTrace();
    assert(msg  != NULL);
    assert(name != NULL);
-   assert(val  != NULL);
-   return(vicus_cmd_list_keybval(msg, name, val, strlen(val)));
+   assert(str  != NULL);
+   return(vicus_cmd_list_keybval(msg, name, str, strlen(str)));
 }
 
 
