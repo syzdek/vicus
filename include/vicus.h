@@ -238,6 +238,12 @@ vicus_msg_add_keyval_str(
          const char *                  str );
 
 
+_VICUS_F int
+vicus_msg_add_list_item_str(
+         vicus_msg_t *                 msg,
+         const char *                  str );
+
+
 _VICUS_F void
 vicus_msg_free(
          vicus_msg_t *                 msg );
@@ -264,12 +270,6 @@ vicus_cmd_list_bitem(
 _VICUS_F int
 vicus_cmd_list_end(
          vicus_msg_t *                 msg );
-
-
-_VICUS_F int
-vicus_cmd_list_item(
-         vicus_msg_t *                 msg,
-         const char *                  val );
 
 
 _VICUS_F int

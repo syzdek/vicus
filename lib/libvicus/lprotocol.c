@@ -213,14 +213,14 @@ vicus_cmd_list_end(
 
 
 int
-vicus_cmd_list_item(
+vicus_msg_add_list_item_str(
          vicus_msg_t *                 msg,
-         const char *                  val )
+         const char *                  str )
 {
    VicusTrace();
    assert(msg != NULL);
-   assert(val != NULL);
-   return(vicus_cmd_list_bitem(msg, val, strlen(val)));
+   assert(str != NULL);
+   return(vicus_cmd_list_bitem(msg, str, strlen(str)));
 }
 
 
