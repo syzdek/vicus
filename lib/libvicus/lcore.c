@@ -110,6 +110,11 @@ char *         vicus_opt_debug_prefix_buff   = NULL;
 /////////////////
 // MARK: - Functions
 
+//----------------//
+// core functions //
+//----------------//
+// MARK: core functions
+
 int
 vicus_alloc(
          vicus_t **                    vdp )
