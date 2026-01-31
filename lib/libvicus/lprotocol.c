@@ -143,7 +143,6 @@ vicus_cmd_list_keybval(
    if ((rc = vicus_msg_resize(msg, (namelen+bvallen+4))) != VICUS_SUCCESS)
       return(rc);
    len                   = vicus_pkt_len(msg->pkt);
-printf("keyval len: %zu\n", len);
    msg->pkt->msg[len++]  = VICUS_KEY_VALUE;
    msg->pkt->msg[len++]  = (uint8_t)namelen;
    memcpy(&msg->pkt->msg[len], name, namelen);
