@@ -172,7 +172,7 @@ vicus_msg_add_keyval_str(
 
 
 int
-vicus_cmd_list_end(
+vicus_msg_add_lend(
          vicus_msg_t *                 msg )
 {
    VicusTrace();
