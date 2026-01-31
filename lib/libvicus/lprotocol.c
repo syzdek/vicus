@@ -73,25 +73,6 @@
 //////////////////
 // MARK: - Prototypes
 
-static int
-vicus_msg_memincr(
-         vicus_msg_t *                 msg,
-         size_t                        increase );
-
-
-static int
-vicus_msg_nest(
-         vicus_msg_t *                 msg,
-         uint8_t                       type,
-         const char *                  name );
-
-
-static int
-vicus_msg_unnest(
-         vicus_msg_t *                 msg,
-         uint8_t                       starttype,
-         uint8_t                       endtype );
-
 
 /////////////////
 //             //
@@ -131,150 +112,146 @@ vicus_cmd_reinit(
 }
 
 
-_VICUS_F int
-vicus_msg_add_keyval(
+int
+vicus_msg_append(
          vicus_msg_t *                 msg,
+         int                           type,
          const char *                  name,
          const void *                  val,
          size_t                        vallen )
 {
-   int         rc;
-   size_t      namelen;
-   size_t      len;
+   size_t         namelen;
+   size_t         pktlen;
+   size_t         off;
+   size_t         size;
+   void *         ptr;
+   vicus_pkt_t *  pkt;
 
    VicusTrace();
    assert(msg  != NULL);
-   assert(val  != NULL);
-   assert(vallen > 0);
 
-   if (msg->pkt->msg[0] != VICUS_CMD_REQUEST)
-      return(VICUS_ENOTSUP);
-
-   if (vallen > 0xffff)
-      return(VICUS_EINVAL);
-
-   namelen = strlen(name);
+   // basic sanity checks
+   namelen = ((name)) ? strlen(name) : 0;
    if (namelen > 255)
       return(VICUS_EINVAL);
-
-   if ((rc = vicus_msg_memincr(msg, (namelen+vallen+4))) != VICUS_SUCCESS)
-      return(rc);
-   len                   = vicus_pkt_len(msg->pkt);
-   msg->pkt->msg[len++]  = VICUS_KEY_VALUE;
-   msg->pkt->msg[len++]  = (uint8_t)namelen;
-   memcpy(&msg->pkt->msg[len], name, namelen);
-   len += namelen;
-   msg->pkt->msg[len++]  = (vallen >> 8) & 0x00ff;
-   msg->pkt->msg[len++]  = (vallen >> 0) & 0x00ff;
-   memcpy(&msg->pkt->msg[len], val, vallen);
-
-   vicus_pkt_len_incr(msg->pkt, namelen+vallen+4);
-
-   return(VICUS_SUCCESS);
-}
-
-
-int
-vicus_msg_add_keyval_str(
-         vicus_msg_t *                 msg,
-         const char *                  name,
-         const char *                  str )
-{
-   VicusTrace();
-   assert(msg  != NULL);
-   assert(name != NULL);
-   assert(str  != NULL);
-   return(vicus_msg_add_keyval(msg, name, str, strlen(str)));
-}
-
-
-int
-vicus_msg_add_lend(
-         vicus_msg_t *                 msg )
-{
-   VicusTrace();
-   assert(msg != NULL);
-   return(vicus_msg_unnest(msg, VICUS_LIST_START, VICUS_LIST_END));
-}
-
-
-int
-vicus_msg_add_litem(
-         vicus_msg_t *                 msg,
-         const void *                  val,
-         size_t                        vallen )
-{
-   int      rc;
-   size_t   len;
-
-   VicusTrace();
-   assert(msg != NULL);
-   assert(val != NULL);
-   assert(vallen > 0);
-
+   if (vallen > 0xffff)
+      return(VICUS_EINVAL);
    if (msg->pkt->msg[0] != VICUS_CMD_REQUEST)
       return(VICUS_ENOTSUP);
 
-   if (vallen > 0xffff)
-      return(VICUS_EINVAL);
+   // type specific checks and determine new packet length
+   pktlen = vicus_pkt_len(msg->pkt) + 1; // 1 byte: element type
+   switch(type)
+   {  case VICUS_KEY_VALUE:
+         if ( (!(name)) || (!(val)) || (!(vallen)) )
+            return(VICUS_EINVAL);
+         pktlen += 3 + namelen + vallen; // 1 byte: name length; 2 bytes: value length
+         break;
 
-   if ((rc = vicus_msg_memincr(msg, (vallen+3))) != VICUS_SUCCESS)
-      return(rc);
-   len                   = vicus_pkt_len(msg->pkt);
-   msg->pkt->msg[len++]  = VICUS_LIST_ITEM;
-   msg->pkt->msg[len++]  = (vallen >> 8) & 0x00ff;
-   msg->pkt->msg[len++]  = (vallen >> 0) & 0x00ff;
-   memcpy(&msg->pkt->msg[len], val, vallen);
+      case VICUS_LIST_END:
+         if ( ((name)) || ((val)) || ((vallen)) )
+            return(VICUS_EINVAL);
+         if ( (!(msg->depth)) || (!(msg->levels)) )
+            return(VICUS_EUNBAL);
+         if (msg->levels[msg->depth] != VICUS_LIST_START)
+            return(VICUS_EUNBAL);
+         break;
 
-   vicus_pkt_len_incr(msg->pkt, (vallen+3));
+      case VICUS_SECT_END:
+         if ( ((name)) || ((val)) || ((vallen)) )
+            return(VICUS_EINVAL);
+         if ( (!(msg->depth)) || (!(msg->levels)) )
+            return(VICUS_EUNBAL);
+         if (msg->levels[msg->depth] != VICUS_SECT_START)
+            return(VICUS_EUNBAL);
+         break;
+
+      case VICUS_LIST_ITEM:
+         if ( ((name)) || (!(val)) || (!(vallen)) )
+            return(VICUS_EINVAL);
+         pktlen += 2 + vallen; // 2 bytes: value length
+         break;
+
+      case VICUS_LIST_START:
+      case VICUS_SECT_START:
+         if ( (!(name)) || ((val)) || ((vallen)) )
+            return(VICUS_EINVAL);
+         if ((ptr = realloc(msg->levels, ((msg->depth+1)*(sizeof(int))))) == NULL)
+            return(VICUS_ENOMEM);
+         msg->levels  = ptr;
+         pktlen      += 1 + namelen;  // 1 byte: name length
+         break;
+
+      default:
+         return(VICUS_ENOTSUP);
+   };
+
+   // increases memory allocation for packet
+   size = pktlen + 4;
+   if (size > msg->pkt_size)
+   {  size += ((size % 128))
+            ? (128 - (size % 128))
+            : 0;
+      if ((pkt = realloc(msg->pkt, size)) == NULL)
+         return(VICUS_ENOMEM);
+      msg->pkt       = pkt;
+      msg->pkt_size  = size;
+   };
+   pkt = msg->pkt;
+
+   // copies data into packet
+   off                  = vicus_pkt_len(msg->pkt);
+   msg->pkt->msg[off++] = (uint8_t)type;
+   switch(type)
+   {  case VICUS_KEY_VALUE:
+         msg->pkt->msg[off++]  = (uint8_t)namelen;
+         memcpy(&msg->pkt->msg[off], name, namelen);
+         off += namelen;
+         msg->pkt->msg[off++]  = (vallen >> 8) & 0x00ff;
+         msg->pkt->msg[off++]  = (vallen >> 0) & 0x00ff;
+         memcpy(&msg->pkt->msg[off], val, vallen);
+         off += vallen;
+         break;
+
+      case VICUS_LIST_END:
+      case VICUS_SECT_END:
+         break;
+
+      case VICUS_LIST_ITEM:
+         msg->pkt->msg[off++]  = (vallen >> 8) & 0x00ff;
+         msg->pkt->msg[off++]  = (vallen >> 0) & 0x00ff;
+         memcpy(&msg->pkt->msg[off], val, vallen);
+         off += vallen;
+         break;
+
+      case VICUS_LIST_START:
+      case VICUS_SECT_START:
+         msg->pkt->msg[off++]  = (uint8_t)namelen;
+         memcpy(&msg->pkt->msg[off], name, namelen);
+         off += namelen;
+         break;
+
+      default:
+         return(VICUS_ENOTSUP);
+   };
+   msg->pkt->len = vicus_hton32((uint32_t)pktlen);
 
    return(VICUS_SUCCESS);
 }
 
 
 int
-vicus_msg_add_litem_str(
+vicus_msg_append_str(
          vicus_msg_t *                 msg,
+         int                           type,
+         const char *                  name,
          const char *                  str )
 {
-   VicusTrace();
-   assert(msg != NULL);
-   assert(str != NULL);
-   return(vicus_msg_add_litem(msg, str, strlen(str)));
-}
-
-
-int
-vicus_msg_add_lstart(
-         vicus_msg_t *                 msg,
-         const char *                  name )
-{
+   size_t len;
    VicusTrace();
    assert(msg  != NULL);
-   assert(name != NULL);
-   return(vicus_msg_nest(msg, VICUS_LIST_START, name));
-}
-
-
-int
-vicus_msg_add_send(
-         vicus_msg_t *                 msg )
-{
-   VicusTrace();
-   assert(msg != NULL);
-   return(vicus_msg_unnest(msg, VICUS_SECT_START, VICUS_SECT_END));
-}
-
-
-int
-vicus_msg_add_sstart(
-         vicus_msg_t *                 msg,
-         const char *                  name )
-{
-   VicusTrace();
-   assert(msg  != NULL);
-   assert(name != NULL);
-   return(vicus_msg_nest(msg, VICUS_SECT_START, name));
+   len = ((str)) ? strlen(str) : 0;
+   return(vicus_msg_append(msg, type, name, str, len));
 }
 
 
@@ -322,77 +299,6 @@ vicus_msg_free(
 
 
 int
-vicus_msg_memincr(
-         vicus_msg_t *                 msg,
-         size_t                        increase )
-{
-   size_t         len;
-   size_t         size;
-   size_t         diff;
-   vicus_pkt_t *  pkt;
-
-   VicusTrace();
-   assert(msg      != NULL);
-   assert(msg->pkt != NULL);
-
-   len = vicus_pkt_len(msg->pkt) + 4;
-   if ( ((len + increase) <= msg->pkt_size) && ((msg->pkt)) )
-      return(VICUS_SUCCESS);
-
-   size = len + increase;
-   diff = size % 128;
-   size += ((diff)) ? 128 - diff : 0;
-   if ((pkt = realloc(msg->pkt, size)) == NULL)
-      return(VICUS_ENOMEM);
-   msg->pkt       = pkt;
-   msg->pkt_size  = size;
-
-   return(VICUS_SUCCESS);
-}
-
-
-int
-vicus_msg_nest(
-         vicus_msg_t *                 msg,
-         uint8_t                       type,
-         const char *                  name )
-{
-   int      rc;
-   size_t   len;
-   size_t   namelen;
-   void *   ptr;
-
-   VicusTrace();
-   assert(msg  != NULL);
-   assert(name != NULL);
-
-   if (msg->pkt->msg[0] != VICUS_CMD_REQUEST)
-      return(VICUS_ENOTSUP);
-
-   namelen = strlen(name);
-   if (namelen > 255)
-      return(VICUS_EINVAL);
-
-   if ((ptr = realloc(msg->levels, ((msg->depth+1)*(sizeof(int))))) == NULL)
-      return(VICUS_ENOMEM);
-   msg->levels = ptr;
-
-   if ((rc = vicus_msg_memincr(msg, (namelen+2))) != VICUS_SUCCESS)
-      return(rc);
-   len                         = vicus_pkt_len(msg->pkt);
-   msg->pkt->msg[len++]        = type;
-   msg->pkt->msg[len++]        = (uint8_t)namelen;
-   msg->levels[msg->depth]     = type;
-   msg->depth--;
-   memcpy(&msg->pkt->msg[len], name, namelen);
-
-   vicus_pkt_len_incr(msg->pkt, (namelen + 2));
-
-   return(VICUS_SUCCESS);
-}
-
-
-int
 vicus_msg_pkt(
          vicus_msg_t *                 msg,
          const vicus_pkt_t **          pktp,
@@ -422,36 +328,6 @@ vicus_msg_reinit(
       return(rc);
    if (vicus_pkt_len(msg->pkt) > msg->pkt_size)
       msg->pkt_size = vicus_pkt_len(msg->pkt);
-
-   return(VICUS_SUCCESS);
-}
-
-
-int
-vicus_msg_unnest(
-         vicus_msg_t *                 msg,
-         uint8_t                       starttype,
-         uint8_t                       endtype )
-{
-   int   rc;
-
-   VicusTrace();
-   assert(msg != NULL);
-
-   if (msg->pkt->msg[0] != VICUS_CMD_REQUEST)
-      return(VICUS_ENOTSUP);
-
-   if (!(msg->depth))
-      return(VICUS_EUNBAL);
-   if (msg->levels[msg->depth] != starttype)
-      return(VICUS_EUNBAL);
-
-   if ((rc = vicus_msg_memincr(msg, 1)) != VICUS_SUCCESS)
-      return(rc);
-   msg->pkt->msg[vicus_pkt_len(msg->pkt)] = endtype;
-   msg->depth--;
-
-   vicus_pkt_len_incr(msg->pkt, 1);
 
    return(VICUS_SUCCESS);
 }
@@ -520,19 +396,6 @@ vicus_pkt_len(
 {
    assert(pkt != NULL);
    return( vicus_hton32(pkt->len) );
-}
-
-
-size_t
-vicus_pkt_len_incr(
-         vicus_pkt_t *                 pkt,
-         size_t                        incr )
-{
-   size_t   pktlen;
-   assert(pkt != NULL);
-   pktlen = vicus_ntoh32(pkt->len) + incr;
-   pkt->len = vicus_hton32( (uint32_t)pktlen );
-   return( pktlen );
 }
 
 

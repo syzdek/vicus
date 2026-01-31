@@ -236,53 +236,20 @@ vicus_cmd_reinit(
 
 
 _VICUS_F int
-vicus_msg_add_keyval(
+vicus_msg_append(
          vicus_msg_t *                 msg,
+         int                           type,
          const char *                  name,
          const void *                  val,
          size_t                        vallen );
 
 
 _VICUS_F int
-vicus_msg_add_keyval_str(
+vicus_msg_append_str(
          vicus_msg_t *                 msg,
+         int                           type,
          const char *                  name,
          const char *                  str );
-
-
-_VICUS_F int
-vicus_msg_add_lend(
-         vicus_msg_t *                 msg );
-
-
-_VICUS_F int
-vicus_msg_add_litem(
-         vicus_msg_t *                 msg,
-         const void *                  val,
-         size_t                        vallen );
-
-
-_VICUS_F int
-vicus_msg_add_litem_str(
-         vicus_msg_t *                 msg,
-         const char *                  str );
-
-
-_VICUS_F int
-vicus_msg_add_lstart(
-         vicus_msg_t *                 msg,
-         const char *                  name );
-
-
-_VICUS_F int
-vicus_msg_add_send(
-         vicus_msg_t *                 msg );
-
-
-_VICUS_F int
-vicus_msg_add_sstart(
-         vicus_msg_t *                 msg,
-         const char *                  name );
 
 
 _VICUS_F void

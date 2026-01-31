@@ -292,12 +292,6 @@ vicus_pkt_len(
 
 
 extern size_t
-vicus_pkt_len_incr(
-         vicus_pkt_t *                 pkt,
-         size_t                        incr );
-
-
-extern size_t
 vicus_pkt_len_set(
          vicus_pkt_t *                 pkt,
          size_t                        len );
