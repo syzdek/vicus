@@ -74,16 +74,16 @@
 // MARK: - Prototypes
 
 static int
+vicus_msg_memincr(
+         vicus_msg_t *                 msg,
+         size_t                        increase );
+
+
+static int
 vicus_msg_nest(
          vicus_msg_t *                 msg,
          uint8_t                       type,
          const char *                  name );
-
-
-static int
-vicus_msg_resize(
-         vicus_msg_t *                 msg,
-         size_t                        increase );
 
 
 static int
@@ -152,7 +152,7 @@ vicus_msg_add_keyval(
    if (namelen > 255)
       return(VICUS_EINVAL);
 
-   if ((rc = vicus_msg_resize(msg, (namelen+vallen+4))) != VICUS_SUCCESS)
+   if ((rc = vicus_msg_memincr(msg, (namelen+vallen+4))) != VICUS_SUCCESS)
       return(rc);
    len                   = vicus_pkt_len(msg->pkt);
    msg->pkt->msg[len++]  = VICUS_KEY_VALUE;
@@ -210,7 +210,7 @@ vicus_msg_add_litem(
    if (vallen > 0xffff)
       return(VICUS_EINVAL);
 
-   if ((rc = vicus_msg_resize(msg, (vallen+3))) != VICUS_SUCCESS)
+   if ((rc = vicus_msg_memincr(msg, (vallen+3))) != VICUS_SUCCESS)
       return(rc);
    len                   = vicus_pkt_len(msg->pkt);
    msg->pkt->msg[len++]  = VICUS_LIST_ITEM;
@@ -314,6 +314,36 @@ vicus_msg_free(
 
 
 int
+vicus_msg_memincr(
+         vicus_msg_t *                 msg,
+         size_t                        increase )
+{
+   size_t         len;
+   size_t         size;
+   size_t         diff;
+   vicus_pkt_t *  pkt;
+
+   VicusTrace();
+   assert(msg      != NULL);
+   assert(msg->pkt != NULL);
+
+   len = vicus_pkt_len(msg->pkt) + 4;
+   if ( ((len + increase) <= msg->pkt_size) && ((msg->pkt)) )
+      return(VICUS_SUCCESS);
+
+   size = len + increase;
+   diff = size % 128;
+   size += ((diff)) ? 128 - diff : 0;
+   if ((pkt = realloc(msg->pkt, size)) == NULL)
+      return(VICUS_ENOMEM);
+   msg->pkt       = pkt;
+   msg->pkt_size  = size;
+
+   return(VICUS_SUCCESS);
+}
+
+
+int
 vicus_msg_nest(
          vicus_msg_t *                 msg,
          uint8_t                       type,
@@ -336,7 +366,7 @@ vicus_msg_nest(
       return(VICUS_ENOMEM);
    msg->levels = ptr;
 
-   if ((rc = vicus_msg_resize(msg, (namelen+2))) != VICUS_SUCCESS)
+   if ((rc = vicus_msg_memincr(msg, (namelen+2))) != VICUS_SUCCESS)
       return(rc);
    len                         = vicus_pkt_len(msg->pkt);
    msg->pkt->msg[len++]        = type;
@@ -387,36 +417,6 @@ vicus_msg_reinit(
 
 
 int
-vicus_msg_resize(
-         vicus_msg_t *                 msg,
-         size_t                        increase )
-{
-   size_t         len;
-   size_t         size;
-   size_t         diff;
-   vicus_pkt_t *  pkt;
-
-   VicusTrace();
-   assert(msg      != NULL);
-   assert(msg->pkt != NULL);
-
-   len = vicus_pkt_len(msg->pkt) + 4;
-   if ( ((len + increase) <= msg->pkt_size) && ((msg->pkt)) )
-      return(VICUS_SUCCESS);
-
-   size = len + increase;
-   diff = size % 128;
-   size += ((diff)) ? 128 - diff : 0;
-   if ((pkt = realloc(msg->pkt, size)) == NULL)
-      return(VICUS_ENOMEM);
-   msg->pkt       = pkt;
-   msg->pkt_size  = size;
-
-   return(VICUS_SUCCESS);
-}
-
-
-int
 vicus_msg_unnest(
          vicus_msg_t *                 msg,
          uint8_t                       starttype,
@@ -432,7 +432,7 @@ vicus_msg_unnest(
    if (msg->levels[msg->depth] != starttype)
       return(VICUS_EUNBAL);
 
-   if ((rc = vicus_msg_resize(msg, 1)) != VICUS_SUCCESS)
+   if ((rc = vicus_msg_memincr(msg, 1)) != VICUS_SUCCESS)
       return(rc);
    msg->pkt->msg[vicus_pkt_len(msg->pkt)] = endtype;
    msg->depth--;
