@@ -203,10 +203,10 @@ vicus_send(
          size_t                        len );
 
 
-//-------------------//
-// packet prototypes //
-//-------------------//
-// MARK: packet prototypes
+//--------------------//
+// message prototypes //
+//--------------------//
+// MARK: message prototypes
 
 _VICUS_F int
 vicus_msg_pkt(
@@ -214,6 +214,11 @@ vicus_msg_pkt(
          const vicus_pkt_t **          pktp,
          size_t *                      pktlenp );
 
+
+//-------------------//
+// packet prototypes //
+//-------------------//
+// MARK: packet prototypes
 
 _VICUS_F int
 vicus_pkt_validate(
