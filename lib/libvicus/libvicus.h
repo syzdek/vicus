@@ -220,6 +220,13 @@ vicus_net_recv(
          size_t                        len );
 
 
+extern ssize_t
+vicus_net_send(
+         vicus_t *                     vd,
+         const void *                  buff,
+         size_t                        len );
+
+
 extern int
 vicus_net_set_fd(
          vicus_t *                     vd,

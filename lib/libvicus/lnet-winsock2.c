@@ -314,7 +314,7 @@ vicus_net_recv(
 
 
 ssize_t
-vicus_send(
+vicus_net_send(
          vicus_t *                     vd,
          const void *                  buff,
          size_t                        len )
