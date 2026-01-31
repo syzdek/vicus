@@ -125,6 +125,8 @@ vicus_cmd_reinit(
    VicusTrace();
    assert(command != NULL);
    assert(msg     != NULL);
+   if (msg->pkt->msg[0] != VICUS_CMD_REQUEST)
+      return(VICUS_ENOTSUP);
    return(vicus_msg_reinit(VICUS_CMD_REQUEST, command, msg));
 }
 
@@ -144,6 +146,9 @@ vicus_msg_add_keyval(
    assert(msg  != NULL);
    assert(val  != NULL);
    assert(vallen > 0);
+
+   if (msg->pkt->msg[0] != VICUS_CMD_REQUEST)
+      return(VICUS_ENOTSUP);
 
    if (vallen > 0xffff)
       return(VICUS_EINVAL);
@@ -206,7 +211,10 @@ vicus_msg_add_litem(
    assert(msg != NULL);
    assert(val != NULL);
    assert(vallen > 0);
-   
+
+   if (msg->pkt->msg[0] != VICUS_CMD_REQUEST)
+      return(VICUS_ENOTSUP);
+
    if (vallen > 0xffff)
       return(VICUS_EINVAL);
 
@@ -358,6 +366,9 @@ vicus_msg_nest(
    assert(msg  != NULL);
    assert(name != NULL);
 
+   if (msg->pkt->msg[0] != VICUS_CMD_REQUEST)
+      return(VICUS_ENOTSUP);
+
    namelen = strlen(name);
    if (namelen > 255)
       return(VICUS_EINVAL);
@@ -426,6 +437,9 @@ vicus_msg_unnest(
 
    VicusTrace();
    assert(msg != NULL);
+
+   if (msg->pkt->msg[0] != VICUS_CMD_REQUEST)
+      return(VICUS_ENOTSUP);
 
    if (!(msg->depth))
       return(VICUS_EUNBAL);
