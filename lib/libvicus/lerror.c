@@ -75,9 +75,6 @@
 /////////////////
 // MARK: - Functions
 
-#define VICUS_EUNKNOWN                 -1
-#define VICUS_EURL                     -7
-
 const char *
 vicus_strerror(
          int                           err )
