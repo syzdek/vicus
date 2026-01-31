@@ -204,10 +204,10 @@ vicus_ntop(
          size_t                        len );
 
 
-//-------------------//
-// packet prototypes //
-//-------------------//
-// MARK: packet prototypes
+//--------------------//
+// message prototypes //
+//--------------------//
+// MARK: message prototypes
 
 extern int
 vicus_msg_alloc(
@@ -222,6 +222,11 @@ vicus_msg_reinit(
          const char *                  name,
          vicus_msg_t *                 msg );
 
+
+//-------------------//
+// packet prototypes //
+//-------------------//
+// MARK: packet prototypes
 
 extern int
 vicus_pkt_alloc(
