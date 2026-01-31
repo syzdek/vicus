@@ -118,6 +118,27 @@ vicus_connect(
 }
 
 
+int
+vicus_disconnect(
+         vicus_t *                     vd )
+{
+   VicusTrace();
+
+   if (!(vd))
+      return(0);
+
+   vicus_mutext_lock(vd->mutex);
+
+   vicus_close(vd);
+
+   vicus_net_terminate(vd);
+
+   vicus_vd_free(vd);
+
+   return(0);
+}
+
+
 void
 vicus_freeaddrinfo(
          vicus_addrinfo_t *            res )
