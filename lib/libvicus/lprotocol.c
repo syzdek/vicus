@@ -259,7 +259,7 @@ vicus_cmd_reset(
 
 
 int
-vicus_cmd_sect_start(
+vicus_msg_add_sstart(
          vicus_msg_t *                 msg,
          const char *                  name )
 {

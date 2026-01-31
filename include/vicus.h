@@ -272,6 +272,12 @@ vicus_msg_free(
          vicus_msg_t *                 msg );
 
 
+_VICUS_F int
+vicus_msg_add_sstart(
+         vicus_msg_t *                 msg,
+         const char *                  name );
+
+
 //-------------------//
 // packet prototypes //
 //-------------------//
@@ -287,12 +293,6 @@ _VICUS_F int
 vicus_cmd_reset(
          const char *                  command,
          vicus_msg_t *                 msg );
-
-
-_VICUS_F int
-vicus_cmd_sect_start(
-         vicus_msg_t *                 msg,
-         const char *                  name );
 
 
 //-----------------//
