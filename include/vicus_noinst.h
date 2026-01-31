@@ -94,10 +94,10 @@
 //////////////////
 // MARK: - Prototypes
 
-//-----------------//
-// core prototypes //
-//-----------------//
-// MARK: core prototypes
+//------------------//
+// debug prototypes //
+//------------------//
+// MARK: debug prototypes
 
 _VICUS_F int
 vicus_debug(

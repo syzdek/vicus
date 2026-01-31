@@ -192,6 +192,7 @@ lib_libvicus_a_SOURCES			= include/vicus.h \
 					  include/vicus_noinst.h \
 					  lib/libvicus/libvicus.h \
 					  lib/libvicus/lcore.c \
+					  lib/libvicus/ldebug.c \
 					  lib/libvicus/lerror.c \
 					  lib/libvicus/lmisc.c \
 					  lib/libvicus/lnet.c \

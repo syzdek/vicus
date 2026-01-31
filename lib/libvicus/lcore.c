@@ -97,11 +97,6 @@ vicus_set_option_global(
 /////////////////
 // MARK: - Variables
 
-int            vicus_opt_debug               = VICUS_DBG_NONE;
-int            vicus_opt_debug_stderr        = VICUS_FALSE;
-const char *   vicus_opt_debug_prefix        = "libvicus";
-char *         vicus_opt_debug_prefix_buff   = NULL;
-
 
 /////////////////
 //             //
@@ -144,68 +139,6 @@ vicus_vd_alloc(
    *vdp = vd;
 
    return(0);
-}
-
-
-int
-vicus_debug(
-         const char *                  file,
-         int                           line,
-         const char *                  fmt,
-         ... )
-{
-   FILE *         fs;
-   int            len;
-   va_list        ap;
-
-   if (!(vicus_opt_debug & VICUS_DBG_INFO))
-      return(0);
-
-   len   = 0;
-   fs    = (vicus_opt_debug_stderr == VICUS_FALSE)
-         ? stdout
-         : stderr;
-
-   if ((vicus_opt_debug_prefix))
-      len += fprintf(fs, "%s: ", vicus_opt_debug_prefix);
-
-   if ((vicus_opt_debug & VICUS_DBG_SRC))
-      len += fprintf(fs, "%s: %i: ", file, line);
-
-   va_start(ap, fmt);
-      len += vfprintf(fs, fmt, ap);
-   va_end(ap);
-
-   return(len);
-}
-
-
-int
-vicus_debug_trace(
-         const char *                  file,
-         int                           line,
-         const char *                  func )
-{
-   int            len;
-   FILE *         fs;
-
-   if (!(vicus_opt_debug & VICUS_DBG_TRACE))
-      return(0);
-
-   len   = 0;
-   fs    = (vicus_opt_debug_stderr == VICUS_FALSE)
-         ? stdout
-         : stderr;
-
-   if ((vicus_opt_debug_prefix))
-      len += fprintf(fs, "%s: ", vicus_opt_debug_prefix);
-
-   if ((vicus_opt_debug & VICUS_DBG_SRC))
-      len += fprintf(fs, "%s: %i: ", file, line);
-
-   len += fprintf(fs, "%s()\n", func);
-
-   return(len);
 }
 
 
