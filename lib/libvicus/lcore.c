@@ -105,11 +105,6 @@ vicus_set_option_global(
 /////////////////
 // MARK: - Functions
 
-//----------------//
-// core functions //
-//----------------//
-// MARK: core functions
-
 void
 vicus_free(
          void *                        ptr )
@@ -440,74 +435,6 @@ vicus_vd_free(
    free(vd);
 
    return;
-}
-
-
-//------------------//
-// thread functions //
-//------------------//
-// MARK: thread functions
-
-int
-vicus_mutext_alloc(
-         pthread_mutex_t **            mutexp )
-{
-   pthread_mutex_t *    mutex;
-
-   VicusTrace();
-   assert(mutexp != NULL);
-
-   if ((mutex = malloc(sizeof(pthread_mutex_t))) == NULL)
-      return(VICUS_ENOMEM);
-   if ((pthread_mutex_init(mutex, NULL)))
-   {  free(mutex);
-      return(VICUS_ENOMEM);
-   };
-
-   *mutexp = mutex;
-
-   return(VICUS_SUCCESS);
-}
-
-
-void
-vicus_mutext_free(
-         pthread_mutex_t **            mutexp )
-{
-   VicusTrace();
-   assert(mutexp != NULL);
-   if (!(*mutexp))
-      return;
-   if (!(pthread_mutex_unlock(*mutexp)))
-      pthread_mutex_destroy(*mutexp);
-   free(*mutexp);
-   *mutexp = NULL;
-   return;
-}
-
-
-int
-vicus_mutext_lock(
-         pthread_mutex_t *             mutex )
-{
-   VicusTrace();
-   if (!(mutex))
-      return(VICUS_SUCCESS);
-   if ((pthread_mutex_lock(mutex)))
-      return(VICUS_EUNKNOWN);
-   return(VICUS_SUCCESS);
-}
-
-
-int
-vicus_mutext_unlock(
-         pthread_mutex_t *             mutex )
-{
-   VicusTrace();
-   if (!(mutex))
-      return(0);
-   pthread_mutex_unlock(mutex);
-   return(0);
 }
 
 /* end of source */
