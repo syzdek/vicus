@@ -141,8 +141,8 @@ vicus_net_connect(
    {  VicusDebug("   using %s ...\n", vudp->vud_uri);
       for(ai = vudp->vud_addrinfo; ((ai)); ai = ai->ai_next)
       {  switch(ai->ai_family)
-         {  case PF_INET:     rc = vicus_connect_tcp(vd, ai, &s);  break;
-            case PF_INET6:    rc = vicus_connect_tcp(vd, ai, &s);  break;
+         {  case PF_INET:     rc = vicus_net_connect_tcp(vd, ai, &s);  break;
+            case PF_INET6:    rc = vicus_net_connect_tcp(vd, ai, &s);  break;
             default:          return(VICUS_ENOTSUP);
          };
          if (rc == VICUS_SUCCESS)
