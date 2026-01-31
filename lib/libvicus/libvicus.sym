@@ -12,7 +12,7 @@ vicus_hexdump_prefix
 vicus_hton16
 vicus_hton32
 vicus_hton64
-vicus_init_fd
+vicus_initfd
 vicus_initialize
 vicus_msg_add_keyval
 vicus_msg_add_keyval_str

@@ -363,7 +363,7 @@ vicus_get_option_global(
 
 
 int
-vicus_init_fd(
+vicus_initfd(
          vicus_t **                    vdp,
          int                           fd )
 {

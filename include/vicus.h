@@ -190,7 +190,7 @@ vicus_get_option(
 
 
 _VICUS_F int
-vicus_init_fd(
+vicus_initfd(
          vicus_t **                    vdp,
          int                           fd );
 
