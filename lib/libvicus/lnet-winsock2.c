@@ -89,7 +89,7 @@ struct _libvicus_socket
 // MARK: - Prototypes
 
 static int
-vicus_connect_tcp(
+vicus_net_connect_tcp(
          vicus_t *                     vd,
          vicus_addrinfo_t *            ai,
          SOCKET *                      sp );
@@ -163,7 +163,7 @@ vicus_net_connect(
 
 
 int
-vicus_connect_tcp(
+vicus_net_connect_tcp(
          vicus_t *                     vd,
          vicus_addrinfo_t *            ai,
          SOCKET *                      sp )
