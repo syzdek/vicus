@@ -162,7 +162,8 @@ vicus_connect(
    if ((rc = vicus_mutext_lock(vd->mutex)) != VICUS_SUCCESS)
       return(rc);
    rc = vicus_net_connect(vd);
-   return(vicus_mutext_unlock(vd->mutex, rc));
+   vicus_mutext_unlock(vd->mutex);
+   return(rc);
 }
 
 
@@ -283,7 +284,9 @@ vicus_get_option(
 
    rc = vicus_get_option_local(vd, option, outvalue);
 
-   return(vicus_mutext_unlock(vd->mutex, rc));
+   vicus_mutext_unlock(vd->mutex);
+
+   return(rc);
 }
 
 
@@ -450,7 +453,9 @@ vicus_set_option(
 
    rc = vicus_set_option_local(vd, option, invalue);
 
-   return(vicus_mutext_unlock(vd->mutex, rc));
+   vicus_mutext_unlock(vd->mutex);
+
+   return(rc);
 }
 
 
@@ -586,14 +591,13 @@ vicus_mutext_lock(
 
 int
 vicus_mutext_unlock(
-         pthread_mutex_t *             mutex,
-         int                           rc )
+         pthread_mutex_t *             mutex )
 {
    VicusTrace();
    if (!(mutex))
-      return(rc);
+      return(0);
    pthread_mutex_unlock(mutex);
-   return(rc);
+   return(0);
 }
 
 /* end of source */

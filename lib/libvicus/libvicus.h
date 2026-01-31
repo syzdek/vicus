@@ -306,8 +306,7 @@ vicus_mutext_lock(
 
 extern int
 vicus_mutext_unlock(
-         pthread_mutex_t *             mutex,
-         int                           rc );
+         pthread_mutex_t *             mutex );
 
 
 #endif /* end of header */
