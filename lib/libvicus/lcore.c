@@ -261,15 +261,35 @@ vicus_get_option(
          void *                        outvalue )
 {
    int         rc;
-   char *      str;
-   char        buff[256];
-   size_t      len;
 
    VicusTrace();
    assert(outvalue != NULL);
 
    if (!(vd))
       return(vicus_get_option_global(option, outvalue));
+
+   if ((rc = vicus_mutext_lock(vd->mutex)) != VICUS_SUCCESS)
+      return(rc);
+
+   rc = vicus_get_option_local(vd, option, outvalue);
+
+   return(rc);
+}
+
+
+int
+vicus_get_option_local(
+         vicus_t *                     vd,
+         int                           option,
+         void *                        outvalue )
+{
+   int         rc;
+   char *      str;
+   char        buff[256];
+   size_t      len;
+
+   VicusTrace();
+   assert(outvalue != NULL);
 
    switch(option)
    {  case VICUS_OPT_CUR_ADDR:

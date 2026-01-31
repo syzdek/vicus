@@ -149,6 +149,18 @@ extern char *        vicus_opt_debug_prefix_buff;
 // MARK: - Prototypes
 
 //--------------------//
+// core prototypes //
+//--------------------//
+// MARK: core prototypes
+
+extern int
+vicus_get_option_local(
+         vicus_t *                     vd,
+         int                           option,
+         void *                        outvalue );
+
+
+//--------------------//
 // network prototypes //
 //--------------------//
 // MARK: network prototypes
