@@ -169,6 +169,11 @@ vicus_set_option_local(
          const void *                  invalue );
 
 
+extern void
+vicus_vd_free(
+         vicus_t *                     vd );
+
+
 //--------------------//
 // network prototypes //
 //--------------------//

@@ -142,6 +142,27 @@ vicus_vd_alloc(
 }
 
 
+void
+vicus_vd_free(
+         vicus_t *                     vd )
+{
+   VicusTrace();
+
+   if (!(vd))
+      return;
+
+   vicus_mutext_free(&vd->mutex);
+
+   vicus_close(vd);
+
+   ldap_free_urldesc(vd->vudp);
+
+   free(vd);
+
+   return;
+}
+
+
 int
 vicus_disconnect(
          vicus_t *                     vd )
@@ -152,15 +173,13 @@ vicus_disconnect(
       return(0);
 
    vicus_mutext_lock(vd->mutex);
-   vicus_mutext_free(&vd->mutex);
 
    vicus_close(vd);
 
-   ldap_free_urldesc(vd->vudp);
 
    vicus_net_terminate(vd);
 
-   free(vd);
+   vicus_vd_free(vd);
 
    return(0);
 }
