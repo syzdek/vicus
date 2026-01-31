@@ -94,7 +94,7 @@ struct _libvicus_socket
 // MARK: - Prototypes
 
 static int
-vicus_connect_tcp(
+vicus_net_connect_tcp(
          vicus_t *                     vd,
          vicus_addrinfo_t *            ai,
          int *                         sp );
@@ -155,8 +155,8 @@ vicus_net_connect(
    {  VicusDebug("   using %s ...\n", vudp->vud_uri);
       for(ai = vudp->vud_addrinfo; ((ai)); ai = ai->ai_next)
       {  switch(ai->ai_family)
-         {  case PF_INET:     rc = vicus_connect_tcp(vd,  ai, &s); break;
-            case PF_INET6:    rc = vicus_connect_tcp(vd,  ai, &s); break;
+         {  case PF_INET:     rc = vicus_net_connect_tcp(vd,  ai, &s); break;
+            case PF_INET6:    rc = vicus_net_connect_tcp(vd,  ai, &s); break;
             case PF_UNIX:     rc = vicus_connect_unix(vd, ai, &s); break;
             default:          return(VICUS_ENOTSUP);
          };
@@ -178,7 +178,7 @@ vicus_net_connect(
 
 
 int
-vicus_connect_tcp(
+vicus_net_connect_tcp(
          vicus_t *                     vd,
          vicus_addrinfo_t *            ai,
          int *                         sp )
