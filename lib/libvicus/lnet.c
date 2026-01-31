@@ -272,4 +272,28 @@ vicus_ntop(
 }
 
 
+ssize_t
+vicus_recv(
+         vicus_t *                     vd,
+         void *                        buff,
+         size_t                        len )
+{
+   int         rc;
+   ssize_t     ssize;
+
+   VicusTrace();
+   assert(vd   != NULL);
+   assert(buff != NULL);
+
+   if ((rc = vicus_mutext_lock(vd->mutex)) != VICUS_SUCCESS)
+      return((ssize_t)rc);
+
+   ssize = vicus_net_recv(vd, buff, len);
+
+   vicus_mutext_unlock(vd->mutex);
+
+   return(ssize);
+}
+
+
 /* end of source */

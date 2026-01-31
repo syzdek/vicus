@@ -279,7 +279,7 @@ vicus_net_terminate(
 
 
 ssize_t
-vicus_recv(
+vicus_net_recv(
          vicus_t *                     vd,
          void *                        buff,
          size_t                        len )

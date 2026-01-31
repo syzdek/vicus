@@ -213,6 +213,13 @@ vicus_net_initialize(
          vicus_t *                     vd );
 
 
+extern ssize_t
+vicus_net_recv(
+         vicus_t *                     vd,
+         void *                        buff,
+         size_t                        len );
+
+
 extern int
 vicus_net_set_fd(
          vicus_t *                     vd,
