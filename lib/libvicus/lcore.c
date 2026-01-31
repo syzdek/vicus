@@ -126,13 +126,13 @@ vicus_vd_alloc(
    vd->net_timeout   = VICUS_DFLT_NETTIME;
    vd->req_timeout   = VICUS_DFLT_REQTIME;
 
-   if ((rc = vicus_mutext_alloc(&vd->mutex)) != VICUS_SUCCESS)
-   {  vicus_disconnect(vd);
+   if ((rc = vicus_net_initialize(vd)) != VICUS_SUCCESS)
+   {  free(vd);
       return(rc);
    };
 
-   if ((rc = vicus_net_initialize(vd)) != VICUS_SUCCESS)
-   {  free(vd);
+   if ((rc = vicus_mutext_alloc(&vd->mutex)) != VICUS_SUCCESS)
+   {  vicus_vd_free(vd);
       return(rc);
    };
 
@@ -151,9 +151,9 @@ vicus_vd_free(
    if (!(vd))
       return;
 
-   vicus_mutext_free(&vd->mutex);
+   vicus_net_terminate(vd);
 
-   vicus_close(vd);
+   vicus_mutext_free(&vd->mutex);
 
    ldap_free_urldesc(vd->vudp);
 

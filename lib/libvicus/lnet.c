@@ -131,8 +131,6 @@ vicus_disconnect(
 
    vicus_close(vd);
 
-   vicus_net_terminate(vd);
-
    vicus_vd_free(vd);
 
    return(0);
