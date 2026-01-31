@@ -133,6 +133,13 @@ vicus_hexdump(
          size_t                        datlen );
 
 
+_VICUS_F int
+vicus_hexdump_prefix(
+         const char *                  prefix,
+         const void *                  dat,
+         size_t                        datlen );
+
+
 _VICUS_F uint16_t
 vicus_hton16(
          uint16_t                      u );

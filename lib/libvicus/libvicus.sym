@@ -17,6 +17,7 @@ vicus_disconnect
 vicus_free
 vicus_get_option
 vicus_hexdump
+vicus_hexdump_prefix
 vicus_hton16
 vicus_hton32
 vicus_hton64

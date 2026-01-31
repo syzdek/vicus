@@ -160,6 +160,16 @@ vicus_hexdump(
          const void *                  dat,
          size_t                        datlen )
 {
+   return( vicus_hexdump_prefix(NULL, dat, datlen) );
+}
+
+
+int
+vicus_hexdump_prefix(
+         const char *                  prefix,
+         const void *                  dat,
+         size_t                        datlen )
+{
    size_t               x;
    const uint8_t *      b;
    char                 str[17];
@@ -169,10 +179,15 @@ vicus_hexdump(
 
    b        = dat;
    str[16]  = '\0';
+   prefix   = ((prefix)) ? prefix : "";
 
    for(x = 0; (x < datlen); x++)
-   {  if (!(x & 0x00ff))
-         printf("\n offset    0  1  2  3   4  5  6  7   8  9  a  b   c  d  e  f  0123456789abcdef\n");
+   {  if (!(x & 0x000f))
+         printf("%s", prefix);
+      if (!(x & 0x007f))
+      {  printf(" offset    0  1  2  3   4  5  6  7   8  9  a  b   c  d  e  f  0123456789abcdef\n");
+         printf("%s", prefix);
+      };
       str[x&0x0f] = ((isprint((int)b[x]))) ? (char)b[x] : '.';
       switch(x & 0x000f)
       {  case 0x00:  printf("%08x  %02x", (unsigned)(x & ~0x0f), b[x]); break;
