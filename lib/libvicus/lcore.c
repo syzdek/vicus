@@ -74,7 +74,7 @@
 // MARK: - Prototypes
 
 static int
-vicus_alloc(
+vicus_vd_alloc(
          vicus_t **                    vdp );
 
 
@@ -116,7 +116,7 @@ char *         vicus_opt_debug_prefix_buff   = NULL;
 // MARK: core functions
 
 int
-vicus_alloc(
+vicus_vd_alloc(
          vicus_t **                    vdp )
 {
    int            rc;
@@ -373,7 +373,7 @@ vicus_init_fd(
    VicusTrace();
    assert(vdp != NULL);
 
-   if ((rc = vicus_alloc(&vd)) != VICUS_SUCCESS)
+   if ((rc = vicus_vd_alloc(&vd)) != VICUS_SUCCESS)
       return(rc);
 
    if ((rc = vicus_net_set_fd(vd, fd)) != VICUS_SUCCESS)
@@ -401,7 +401,7 @@ vicus_initialize(
 
    uri = ((uri)) ? uri : VICUS_DFLT_URI;
 
-   if ((rc = vicus_alloc(&vd)) != VICUS_SUCCESS)
+   if ((rc = vicus_vd_alloc(&vd)) != VICUS_SUCCESS)
       return(rc);
 
    if ((rc = vicus_url_parse(uri, &vudp)) != VICUS_SUCCESS)
