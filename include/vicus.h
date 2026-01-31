@@ -262,6 +262,11 @@ vicus_msg_add_lstart(
          const char *                  name );
 
 
+_VICUS_F int
+vicus_msg_add_send(
+         vicus_msg_t *                 msg );
+
+
 _VICUS_F void
 vicus_msg_free(
          vicus_msg_t *                 msg );
@@ -281,11 +286,6 @@ vicus_cmd_init(
 _VICUS_F int
 vicus_cmd_reset(
          const char *                  command,
-         vicus_msg_t *                 msg );
-
-
-_VICUS_F int
-vicus_cmd_sect_end(
          vicus_msg_t *                 msg );
 
 
