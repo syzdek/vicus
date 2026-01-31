@@ -1,6 +1,5 @@
 vicus_base64_encode
 vicus_cmd_init
-vicus_cmd_list_bitem
 vicus_cmd_list_end
 vicus_cmd_list_start
 vicus_cmd_reset
@@ -21,6 +20,7 @@ vicus_init_fd
 vicus_initialize
 vicus_msg_add_keyval
 vicus_msg_add_keyval_str
+vicus_msg_add_litem
 vicus_msg_add_list_item_str
 vicus_msg_free
 vicus_msg_pkt

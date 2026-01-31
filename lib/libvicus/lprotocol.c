@@ -172,43 +172,43 @@ vicus_msg_add_keyval_str(
 
 
 int
-vicus_cmd_list_bitem(
-         vicus_msg_t *                 msg,
-         const void *                  bval,
-         size_t                        bvallen )
-{
-   int      rc;
-   size_t   len;
-
-   VicusTrace();
-   assert(msg != NULL);
-   assert(bval != NULL);
-   assert(bvallen > 0);
-   
-   if (bvallen > 0xffff)
-      return(VICUS_EINVAL);
-
-   if ((rc = vicus_msg_resize(msg, (bvallen+3))) != VICUS_SUCCESS)
-      return(rc);
-   len                   = vicus_pkt_len(msg->pkt);
-   msg->pkt->msg[len++]  = VICUS_LIST_ITEM;
-   msg->pkt->msg[len++]  = (bvallen >> 8) & 0x00ff;
-   msg->pkt->msg[len++]  = (bvallen >> 0) & 0x00ff;
-   memcpy(&msg->pkt->msg[len], bval, bvallen);
-
-   vicus_pkt_len_incr(msg->pkt, (bvallen+3));
-
-   return(VICUS_SUCCESS);
-}
-
-
-int
 vicus_cmd_list_end(
          vicus_msg_t *                 msg )
 {
    VicusTrace();
    assert(msg != NULL);
    return(vicus_msg_unnest(msg, VICUS_LIST_START, VICUS_LIST_END));
+}
+
+
+int
+vicus_msg_add_litem(
+         vicus_msg_t *                 msg,
+         const void *                  val,
+         size_t                        vallen )
+{
+   int      rc;
+   size_t   len;
+
+   VicusTrace();
+   assert(msg != NULL);
+   assert(val != NULL);
+   assert(vallen > 0);
+   
+   if (vallen > 0xffff)
+      return(VICUS_EINVAL);
+
+   if ((rc = vicus_msg_resize(msg, (vallen+3))) != VICUS_SUCCESS)
+      return(rc);
+   len                   = vicus_pkt_len(msg->pkt);
+   msg->pkt->msg[len++]  = VICUS_LIST_ITEM;
+   msg->pkt->msg[len++]  = (vallen >> 8) & 0x00ff;
+   msg->pkt->msg[len++]  = (vallen >> 0) & 0x00ff;
+   memcpy(&msg->pkt->msg[len], val, vallen);
+
+   vicus_pkt_len_incr(msg->pkt, (vallen+3));
+
+   return(VICUS_SUCCESS);
 }
 
 
@@ -220,7 +220,7 @@ vicus_msg_add_list_item_str(
    VicusTrace();
    assert(msg != NULL);
    assert(str != NULL);
-   return(vicus_cmd_list_bitem(msg, str, strlen(str)));
+   return(vicus_msg_add_litem(msg, str, strlen(str)));
 }
 
 
