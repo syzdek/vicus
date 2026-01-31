@@ -101,7 +101,7 @@ vicus_net_connect_tcp(
 
 
 static int
-vicus_connect_unix(
+vicus_net_connect_unix(
          vicus_t *                     vd,
          vicus_addrinfo_t *            ai,
          int *                         sp );
@@ -157,7 +157,7 @@ vicus_net_connect(
       {  switch(ai->ai_family)
          {  case PF_INET:     rc = vicus_net_connect_tcp(vd,  ai, &s); break;
             case PF_INET6:    rc = vicus_net_connect_tcp(vd,  ai, &s); break;
-            case PF_UNIX:     rc = vicus_connect_unix(vd, ai, &s); break;
+            case PF_UNIX:     rc = vicus_net_connect_unix(vd, ai, &s); break;
             default:          return(VICUS_ENOTSUP);
          };
          if (rc == VICUS_SUCCESS)
@@ -242,7 +242,7 @@ vicus_net_connect_tcp(
 
 
 int
-vicus_connect_unix(
+vicus_net_connect_unix(
          vicus_t *                     vd,
          vicus_addrinfo_t *            ai,
          int *                         sp )
