@@ -47,21 +47,22 @@ library for accessing [Versatile IKE Control Interface (VICI) protocol](https://
 sockets.  Key design differences between the vicus library and the davici
 library include:
 
-   * improving code portablity
-   * adding thread safe
-   * supporting for TCP/IP
-   * reducing use of call back functions
+   * libvicus improves code portablity
+   * libvicus adds thread safety
+   * libvicus supports TCP/IP
+   * libvicus does not rely on call back functions
 
 The cygnusctl tool is an alterative to the [swanctl tool](https://docs.strongswan.org/docs/latest/swanctl/swanctl.html)
 for some IKE adminsitrative tasks. Key design differences between the
 cygnusctl tool and the swanctl tool include:
 
-   * adding support for formatted output (JSON, YAML, and XML)
-   * adding ability to call all vici command and register all vici events
+   * cygnusctl supports formatted output (JSON, YAML, and XML)
+   * cygnusctl has the ability to call all vici commands and register all
+     vici events
  
 _Vicus_ is the Latin term for village or neighbourhood. The Latin plural of
 vicus is _vici_. Since the charon daemon's vici socket could potentially have
-muliple sockets opened concurrently by clients, it seemd appropiate that the
+multiple sockets opened concurrently by clients, it seemd appropiate that the
 library, which only supports a single connection concurrently, should be named
 for the singlular form. _Cygnus_ is the Latin term for swan.
 
